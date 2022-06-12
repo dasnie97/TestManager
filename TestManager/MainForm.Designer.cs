@@ -29,13 +29,11 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.topFailuresButton = new System.Windows.Forms.Button();
             this.breakdownTimeStartedLabel = new System.Windows.Forms.Label();
             this.timer1000ms = new System.Windows.Forms.Timer(this.components);
             this.label4 = new System.Windows.Forms.Label();
             this.operatorLoginLabel = new System.Windows.Forms.Label();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.stationNameLabel = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.panel7 = new System.Windows.Forms.Panel();
@@ -47,15 +45,22 @@
             this.detailsButton = new System.Windows.Forms.Button();
             this.breakdownButton = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.configToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.inputToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.outputToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dataLoggingSwitchButton = new System.Windows.Forms.Button();
             this.logOutButton = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.panel3 = new System.Windows.Forms.Panel();
             this.panel7.SuspendLayout();
             this.panel8.SuspendLayout();
             this.panel9.SuspendLayout();
             this.menuStrip1.SuspendLayout();
+            this.panel1.SuspendLayout();
+            this.panel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // topFailuresButton
@@ -75,13 +80,14 @@
             // 
             this.breakdownTimeStartedLabel.AutoSize = true;
             this.breakdownTimeStartedLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.breakdownTimeStartedLabel.Location = new System.Drawing.Point(154, 333);
+            this.breakdownTimeStartedLabel.Location = new System.Drawing.Point(188, 21);
             this.breakdownTimeStartedLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.breakdownTimeStartedLabel.Name = "breakdownTimeStartedLabel";
             this.breakdownTimeStartedLabel.Size = new System.Drawing.Size(57, 20);
             this.breakdownTimeStartedLabel.TabIndex = 1;
             this.breakdownTimeStartedLabel.Text = "label1";
             this.breakdownTimeStartedLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.breakdownTimeStartedLabel.Visible = false;
             // 
             // timer1000ms
             // 
@@ -91,6 +97,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
+            this.label4.BackColor = System.Drawing.SystemColors.ControlLight;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.label4.Location = new System.Drawing.Point(26, 27);
             this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -102,6 +109,7 @@
             // operatorLoginLabel
             // 
             this.operatorLoginLabel.AutoSize = true;
+            this.operatorLoginLabel.BackColor = System.Drawing.SystemColors.ControlLight;
             this.operatorLoginLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.operatorLoginLabel.Location = new System.Drawing.Point(61, 53);
             this.operatorLoginLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -110,23 +118,11 @@
             this.operatorLoginLabel.TabIndex = 7;
             this.operatorLoginLabel.Text = "label5";
             // 
-            // pictureBox1
-            // 
-            this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
-            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(247, 375);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(61, 40);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox1.TabIndex = 8;
-            this.pictureBox1.TabStop = false;
-            // 
             // stationNameLabel
             // 
             this.stationNameLabel.AutoSize = true;
             this.stationNameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.stationNameLabel.Location = new System.Drawing.Point(165, 83);
+            this.stationNameLabel.Location = new System.Drawing.Point(168, 56);
             this.stationNameLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.stationNameLabel.Name = "stationNameLabel";
             this.stationNameLabel.Size = new System.Drawing.Size(115, 20);
@@ -137,7 +133,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label1.Location = new System.Drawing.Point(8, 83);
+            this.label1.Location = new System.Drawing.Point(4, 56);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(119, 20);
@@ -148,20 +144,20 @@
             // 
             this.panel7.BackColor = System.Drawing.Color.SkyBlue;
             this.panel7.Controls.Add(this.TestedQtyLabel);
-            this.panel7.Location = new System.Drawing.Point(12, 178);
+            this.panel7.Location = new System.Drawing.Point(12, 160);
             this.panel7.Name = "panel7";
-            this.panel7.Size = new System.Drawing.Size(111, 38);
+            this.panel7.Size = new System.Drawing.Size(143, 56);
             this.panel7.TabIndex = 13;
             // 
             // TestedQtyLabel
             // 
-            this.TestedQtyLabel.AutoSize = true;
-            this.TestedQtyLabel.Font = new System.Drawing.Font("Segoe UI", 13F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.TestedQtyLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.TestedQtyLabel.Font = new System.Drawing.Font("Calibri", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.TestedQtyLabel.Location = new System.Drawing.Point(0, 0);
             this.TestedQtyLabel.Name = "TestedQtyLabel";
-            this.TestedQtyLabel.Size = new System.Drawing.Size(67, 25);
+            this.TestedQtyLabel.Size = new System.Drawing.Size(143, 56);
             this.TestedQtyLabel.TabIndex = 0;
-            this.TestedQtyLabel.Text = "Tested";
+            this.TestedQtyLabel.Text = "0";
             this.TestedQtyLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // panel8
@@ -170,41 +166,41 @@
             this.panel8.Controls.Add(this.FailedQtyLabel);
             this.panel8.Location = new System.Drawing.Point(12, 222);
             this.panel8.Name = "panel8";
-            this.panel8.Size = new System.Drawing.Size(111, 38);
+            this.panel8.Size = new System.Drawing.Size(143, 56);
             this.panel8.TabIndex = 14;
             // 
             // FailedQtyLabel
             // 
-            this.FailedQtyLabel.AutoSize = true;
             this.FailedQtyLabel.BackColor = System.Drawing.Color.Tomato;
             this.FailedQtyLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.FailedQtyLabel.Font = new System.Drawing.Font("Segoe UI", 13F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.FailedQtyLabel.Font = new System.Drawing.Font("Calibri", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.FailedQtyLabel.Location = new System.Drawing.Point(0, 0);
             this.FailedQtyLabel.Name = "FailedQtyLabel";
-            this.FailedQtyLabel.Size = new System.Drawing.Size(61, 25);
+            this.FailedQtyLabel.Size = new System.Drawing.Size(143, 56);
             this.FailedQtyLabel.TabIndex = 0;
-            this.FailedQtyLabel.Text = "Failed";
+            this.FailedQtyLabel.Text = "0";
+            this.FailedQtyLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // panel9
             // 
             this.panel9.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.panel9.Controls.Add(this.YieldLabel);
-            this.panel9.Location = new System.Drawing.Point(12, 266);
+            this.panel9.Location = new System.Drawing.Point(12, 284);
             this.panel9.Name = "panel9";
-            this.panel9.Size = new System.Drawing.Size(111, 38);
+            this.panel9.Size = new System.Drawing.Size(143, 56);
             this.panel9.TabIndex = 15;
             // 
             // YieldLabel
             // 
-            this.YieldLabel.AutoSize = true;
             this.YieldLabel.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.YieldLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.YieldLabel.Font = new System.Drawing.Font("Segoe UI", 13F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.YieldLabel.Font = new System.Drawing.Font("Calibri", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.YieldLabel.Location = new System.Drawing.Point(0, 0);
             this.YieldLabel.Name = "YieldLabel";
-            this.YieldLabel.Size = new System.Drawing.Size(54, 25);
+            this.YieldLabel.Size = new System.Drawing.Size(143, 56);
             this.YieldLabel.TabIndex = 0;
-            this.YieldLabel.Text = "Yield";
+            this.YieldLabel.Text = "0";
+            this.YieldLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // detailsButton
             // 
@@ -234,25 +230,52 @@
             // 
             // menuStrip1
             // 
+            this.menuStrip1.BackColor = System.Drawing.SystemColors.ControlLight;
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.configToolStripMenuItem});
+            this.toolStripMenuItem1});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(313, 24);
             this.menuStrip1.TabIndex = 16;
             this.menuStrip1.Text = "menuStrip1";
             // 
-            // configToolStripMenuItem
+            // toolStripMenuItem1
             // 
-            this.configToolStripMenuItem.Name = "configToolStripMenuItem";
-            this.configToolStripMenuItem.Size = new System.Drawing.Size(79, 20);
-            this.configToolStripMenuItem.Text = "Config Info";
+            this.toolStripMenuItem1.BackColor = System.Drawing.SystemColors.Menu;
+            this.toolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.inputToolStripMenuItem,
+            this.outputToolStripMenuItem,
+            this.copyToolStripMenuItem});
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(55, 20);
+            this.toolStripMenuItem1.Text = "Config";
+            // 
+            // inputToolStripMenuItem
+            // 
+            this.inputToolStripMenuItem.Name = "inputToolStripMenuItem";
+            this.inputToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.inputToolStripMenuItem.Text = "Input";
+            this.inputToolStripMenuItem.Click += new System.EventHandler(this.inputToolStripMenuItem_Click);
+            // 
+            // outputToolStripMenuItem
+            // 
+            this.outputToolStripMenuItem.Name = "outputToolStripMenuItem";
+            this.outputToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.outputToolStripMenuItem.Text = "Output";
+            this.outputToolStripMenuItem.Click += new System.EventHandler(this.outputToolStripMenuItem_Click);
+            // 
+            // copyToolStripMenuItem
+            // 
+            this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.copyToolStripMenuItem.Text = "Copy";
+            this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
             // 
             // dataLoggingSwitchButton
             // 
             this.dataLoggingSwitchButton.BackColor = System.Drawing.SystemColors.Control;
             this.dataLoggingSwitchButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.dataLoggingSwitchButton.Location = new System.Drawing.Point(15, 106);
+            this.dataLoggingSwitchButton.Location = new System.Drawing.Point(15, 109);
             this.dataLoggingSwitchButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.dataLoggingSwitchButton.Name = "dataLoggingSwitchButton";
             this.dataLoggingSwitchButton.Size = new System.Drawing.Size(280, 48);
@@ -278,48 +301,76 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label2.Location = new System.Drawing.Point(27, 333);
+            this.label2.Location = new System.Drawing.Point(61, 20);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(120, 21);
             this.label2.TabIndex = 17;
             this.label2.Text = "Awaria trwa już";
+            this.label2.Visible = false;
+            // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.panel1.Controls.Add(this.label1);
+            this.panel1.Controls.Add(this.stationNameLabel);
+            this.panel1.Location = new System.Drawing.Point(0, 27);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(313, 76);
+            this.panel1.TabIndex = 18;
+            // 
+            // panel2
+            // 
+            this.panel2.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.panel2.Location = new System.Drawing.Point(0, 109);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(313, 242);
+            this.panel2.TabIndex = 19;
+            // 
+            // panel3
+            // 
+            this.panel3.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.panel3.Controls.Add(this.label2);
+            this.panel3.Controls.Add(this.breakdownTimeStartedLabel);
+            this.panel3.Location = new System.Drawing.Point(0, 357);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(313, 58);
+            this.panel3.TabIndex = 20;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(313, 418);
-            this.Controls.Add(this.label2);
             this.Controls.Add(this.panel7);
             this.Controls.Add(this.panel8);
             this.Controls.Add(this.panel9);
-            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.operatorLoginLabel);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.stationNameLabel);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.breakdownTimeStartedLabel);
             this.Controls.Add(this.breakdownButton);
             this.Controls.Add(this.dataLoggingSwitchButton);
             this.Controls.Add(this.detailsButton);
             this.Controls.Add(this.logOutButton);
             this.Controls.Add(this.topFailuresButton);
             this.Controls.Add(this.menuStrip1);
+            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.panel2);
+            this.Controls.Add(this.panel3);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.Name = "MainForm";
             this.Text = "TestManager";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.DowntimeForm_FormClosed);
             this.Load += new System.EventHandler(this.Form1_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panel7.ResumeLayout(false);
-            this.panel7.PerformLayout();
             this.panel8.ResumeLayout(false);
-            this.panel8.PerformLayout();
             this.panel9.ResumeLayout(false);
-            this.panel9.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -332,7 +383,6 @@
         private System.Windows.Forms.Timer timer1000ms;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label operatorLoginLabel;
-        private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label stationNameLabel;
         private System.Windows.Forms.Label label1;
         private Panel panel7;
@@ -344,10 +394,16 @@
         private Button detailsButton;
         private Button breakdownButton;
         private MenuStrip menuStrip1;
-        private ToolStripMenuItem configToolStripMenuItem;
         private Button dataLoggingSwitchButton;
         private Button logOutButton;
         private Label label2;
+        private ToolStripMenuItem toolStripMenuItem1;
+        private ToolStripMenuItem inputToolStripMenuItem;
+        private ToolStripMenuItem outputToolStripMenuItem;
+        private Panel panel1;
+        private Panel panel2;
+        private Panel panel3;
+        private ToolStripMenuItem copyToolStripMenuItem;
     }
 }
 
