@@ -1,6 +1,9 @@
 ﻿using System.Data.SqlClient;
 using System.Text.RegularExpressions;
+using System.IO;
 using System.Configuration;
+using ***REMOVED***GenericTestReports;
+using System.Diagnostics;
 
 namespace TestManager
 {
@@ -14,10 +17,19 @@ namespace TestManager
     {
         #region Private fields
 
+        // Determines if breakdown state is present (station malfunction)
         private bool breakdownPresent = false;
+        // Handles malfunction start time
         private DateTime breakdownStarted = new DateTime();
-        private string stationName = string.Empty;
+        // Handles reference to login form. Necessary to handle logout function
         private Form loginForm;
+        // IO directory paths
+        private string InputDir = string.Empty;
+        private string OutputDir = string.Empty;
+        private string CopyDir = string.Empty;
+
+        private int numberOfFilesProcessed = 0;
+        private int numberOfFilesFailed = 0;
 
         #endregion
 
@@ -33,8 +45,8 @@ namespace TestManager
             InitializeComponent();
 
             // Assign data retrieved from loginForm to private fields
-            this.operatorLoginLabel.Text = operatorLogin;
-            this.loginForm = loginForm;
+            operatorLoginLabel.Text = operatorLogin;
+            loginForm = loginForm;
         }
 
         #endregion
@@ -50,15 +62,15 @@ namespace TestManager
         {
             if (breakdownPresent)
             {
-                this.breakdownButton.Text = "Awaria";
-                this.breakdownPresent = false;
+                breakdownButton.Text = "Awaria";
+                breakdownPresent = false;
                 ShowReportForm();
             }
             else
             {
-                this.breakdownStarted = DateTime.Now;
-                this.topFailuresButton.Text = "Koniec interwencji";
-                this.breakdownPresent = true;
+                breakdownStarted = DateTime.Now;
+                topFailuresButton.Text = "Koniec interwencji";
+                breakdownPresent = true;
                 RaiseAlarm();
                 StopWork();
             }
@@ -87,14 +99,68 @@ namespace TestManager
         /// <summary>
         /// Get station name from txt file located in same folder as exe 
         /// </summary>
-        private void GetStationName()
+        private bool LoadConfig()
         {
+            var success = true;
+
             foreach(var line in File.ReadLines("config.txt"))
             {
                 if (line.StartsWith("//") || line == String.Empty)
                     continue;
-                this.stationName = line;
+
+                if (line.StartsWith("TestStation"))
+                {
+                    var value = line.Split("\t")[1].Trim();
+                    stationNameLabel.Text = value;
+                }               
+
+                if (line.StartsWith("InputDir"))
+                {
+                    var value = line.Split("\t")[1].Trim();
+                    if (!Directory.Exists(value))
+                    {
+                        MessageBox.Show($"Path {value} does not exist!");
+                        success = false;
+                    }
+                    InputDir = value;
+                }                
+
+                if (line.StartsWith("OutputDir"))
+                {
+                    var value = line.Split("\t")[1].Trim();
+                    if (!Directory.Exists(value))
+                    {
+                        MessageBox.Show($"Path {value} does not exist!");
+                        success = false;
+                    }
+                    OutputDir = value;
+                }
+
+                if (line.StartsWith("CopyDir"))
+                {
+                    var value = line.Split("\t")[1].Trim();
+                    if (!Directory.Exists(value))
+                    {
+                        MessageBox.Show($"Path {value} does not exist!");
+                        success = false;
+                    }
+                    CopyDir = value;
+                }
             }
+
+            if (InputDir == String.Empty)
+            {
+                MessageBox.Show($"Input directory does not exist!");
+                success = false;
+            }
+
+            if (OutputDir == String.Empty)
+            {
+                MessageBox.Show($"Output directory does not exist!");
+                success = false;
+            }
+
+            return success;
         }
 
         /// <summary>
@@ -103,13 +169,34 @@ namespace TestManager
         private void ShowReportForm()
         {
 
-            this.breakdownTimeStartedLabel.Text = String.Empty;
-            this.label2.Visible = false;
+            breakdownTimeStartedLabel.Text = String.Empty;
+            label2.Visible = false;
         }
 
         private void logOutButton_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
+        }
+
+        private List<string> GetLogFiles()
+        {
+            // Create new regular expression: dddddddd_dddddd_  where d - digit
+            Regex r = new Regex(@"\d{8}\w{1}\d{6}\w{1}");
+
+
+            //////////////////////////////////////////////////////////////////////////////////
+            //File name example:    01032022_163836_20172797560108.txt
+            //                      01052022_213920_22023520891916E.txt
+            //                      01072022_123751_HID=582240701D7P2021481001056&REV=K.txt
+            //////////////////////////////////////////////////////////////////////////////////
+
+
+            // Assign files matching regular expression, having txt extension and with size > 0 to new list
+            List<string> files = Directory.GetFiles(InputDir, "*.txt")
+                     .Where(path => r.IsMatch(path) && new FileInfo(path).Length != 0)
+                     .ToList();
+
+            return files;
         }
 
         #endregion
@@ -123,9 +210,16 @@ namespace TestManager
         /// <param name="e"></param>
         private void Form1_Load(object sender, EventArgs e)
         {
+            if (!LoadConfig())
+            {
+                Close();
+                return;
+            }
+            inputToolStripMenuItem.Text = $"Input: {InputDir}";
+            outputToolStripMenuItem.Text = $"Output: {OutputDir}";
+            copyToolStripMenuItem.Text = $"Copy: {CopyDir}";
+
             timer1000ms.Start();
-            GetStationName();
-            this.stationNameLabel.Text = this.stationName;
         }
 
         /// <summary>
@@ -135,8 +229,47 @@ namespace TestManager
         /// <param name="e"></param>
         private void timer1000ms_Tick(object sender, EventArgs e)
         {
-            if (this.breakdownPresent)
-                this.breakdownTimeStartedLabel.Text = (DateTime.Now - this.breakdownStarted).ToString().Substring(0, 8);
+            if (breakdownPresent)
+                breakdownTimeStartedLabel.Text = (DateTime.Now - breakdownStarted).ToString().Substring(0, 8);
+
+            var logFiles = GetLogFiles();
+
+            foreach (var logFile in logFiles)
+            {
+                LogFile LF = new(logFile);
+
+                LF.SendTo_MySQL_DB();
+
+                File.Copy(logFile, Path.Combine(CopyDir, Path.GetFileName(logFile)));
+                File.Move(logFile, Path.Combine(OutputDir, Path.GetFileName(logFile)));
+
+                numberOfFilesProcessed++;
+                if (LF.BoardStatus != "Passed")
+                    numberOfFilesFailed++;
+
+                updateUI();
+            }
+
+        }
+
+        private void updateUI()
+        {
+            TestedQtyLabel.Text = numberOfFilesProcessed.ToString();
+            FailedQtyLabel.Text = numberOfFilesFailed.ToString();
+
+            try
+            {
+                var yield = (numberOfFilesProcessed - numberOfFilesFailed) * 100.0 / numberOfFilesProcessed;
+                YieldLabel.Text = $"{(yield).ToString("F")}%";
+                if (yield >= 96)
+                    YieldLabel.BackColor = Color.Green;
+                else
+                    YieldLabel.BackColor = Color.Red;
+            }
+            catch
+            {
+
+            }
         }
 
         /// <summary>
@@ -146,9 +279,47 @@ namespace TestManager
         /// <param name="e"></param>
         private void DowntimeForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            this.loginForm.Show();
+            loginForm.Show();
         }
 
         #endregion
+
+        private void inputToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ProcessStartInfo startInfo = new ProcessStartInfo
+            {
+                Arguments = InputDir,
+                FileName = "explorer.exe"
+            };
+
+            Process.Start(startInfo);
+        }
+
+        private void outputToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ProcessStartInfo startInfo = new ProcessStartInfo
+            {
+                Arguments = OutputDir,
+                FileName = "explorer.exe"
+            };
+
+            Process.Start(startInfo);
+        }
+
+        private void copyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    Arguments = CopyDir,
+                    FileName = "explorer.exe"
+                };
+
+                Process.Start(startInfo);
+            }
+            catch { }
+
+        }
     }
 }
