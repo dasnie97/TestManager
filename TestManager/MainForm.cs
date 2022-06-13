@@ -17,19 +17,27 @@ namespace TestManager
     {
         #region Private fields
 
-        // Determines if breakdown state is present (station malfunction)
+        // Determines if breakdown state is present (station malfunction), and data logging setting (process data or not)
         private bool breakdownPresent = false;
+        private bool dataLogging = true;
+
         // Handles malfunction start time
         private DateTime breakdownStarted = new DateTime();
+
         // Handles reference to login form. Necessary to handle logout function
         private Form loginForm;
+
         // IO directory paths
         private string InputDir = string.Empty;
         private string OutputDir = string.Empty;
         private string CopyDir = string.Empty;
 
+        // Holds information about processing results
         private int numberOfFilesProcessed = 0;
         private int numberOfFilesFailed = 0;
+
+        // Holds processed log files data
+        private List<LogFile> ProcessedData = new List<LogFile>();
 
         #endregion
 
@@ -40,18 +48,88 @@ namespace TestManager
         /// </summary>
         /// <param name="operatorLogin">Text entered in loginForm.</param>
         /// <param name="loginForm">loginForm object.</param>
-        public MainForm(string operatorLogin, Form loginForm)
+        public MainForm(string operatorLogin, Form LoginForm)
         {
             InitializeComponent();
 
             // Assign data retrieved from loginForm to private fields
             operatorLoginLabel.Text = operatorLogin;
-            loginForm = loginForm;
+            loginForm = LoginForm;
         }
 
         #endregion
 
         #region Buttons
+
+        private void logOutButton_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        /// <summary>
+        /// Sets dataLogging flag. ON = data is processed in main loop, OFF = data is not processed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dataLoggingSwitchButton_Click(object sender, EventArgs e)
+        {
+            if (dataLogging == true)
+            {
+                dataLoggingSwitchButton.Text = "OFF";
+                dataLoggingSwitchButton.BackColor = Color.Red;
+                dataLogging = false;
+            }
+            else
+            {
+                dataLoggingSwitchButton.Text = "ON";
+                dataLoggingSwitchButton.BackColor = Color.Green;
+                dataLogging = true;
+            }
+        }
+
+        /// <summary>
+        /// Displays new form with chart showing top failures within processed data
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void topFailuresButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Create new form and pass TestData as an input parameter
+                Pareto paretoForm = new Pareto(ProcessedData);
+
+                // Show new form
+                paretoForm.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Displays new form with table of data about all processed log files
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void detailsButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Create new form and pass TestData as an input parameter
+                Details detailsForm = new Details(ProcessedData);
+
+                // Show new form
+                detailsForm.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+
 
         /// <summary>
         /// Click this button to set/unset breakdownPresent flag. Click it first time to alarm technician about malfunction and stop work. Click it again to finish malfunction and show report form.
@@ -60,41 +138,53 @@ namespace TestManager
         /// <param name="e"></param>
         private void breakdownButton_Click(object sender, EventArgs e)
         {
-            if (breakdownPresent)
+
+        }
+
+        #endregion
+
+        #region MenuStrip
+
+        private void inputToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ProcessStartInfo startInfo = new ProcessStartInfo
             {
-                breakdownButton.Text = "Awaria";
-                breakdownPresent = false;
-                ShowReportForm();
-            }
-            else
+                Arguments = InputDir,
+                FileName = "explorer.exe"
+            };
+
+            Process.Start(startInfo);
+        }
+
+        private void outputToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ProcessStartInfo startInfo = new ProcessStartInfo
             {
-                breakdownStarted = DateTime.Now;
-                topFailuresButton.Text = "Koniec interwencji";
-                breakdownPresent = true;
-                RaiseAlarm();
-                StopWork();
+                Arguments = OutputDir,
+                FileName = "explorer.exe"
+            };
+
+            Process.Start(startInfo);
+        }
+
+        private void copyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    Arguments = CopyDir,
+                    FileName = "explorer.exe"
+                };
+
+                Process.Start(startInfo);
             }
+            catch { }
         }
 
         #endregion
 
         #region Private methods
-
-        /// <summary>
-        /// Block work on this test station
-        /// </summary>
-        private void StopWork()
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Inform technicians about malfunction of test station
-        /// </summary>
-        private void RaiseAlarm()
-        {
-            throw new NotImplementedException();
-        }
 
         /// <summary>
         /// Get station name from txt file located in same folder as exe 
@@ -103,16 +193,13 @@ namespace TestManager
         {
             var success = true;
 
-            foreach(var line in File.ReadLines("config.txt"))
+            foreach (var line in File.ReadLines("config.txt"))
             {
-                if (line.StartsWith("//") || line == String.Empty)
-                    continue;
-
                 if (line.StartsWith("TestStation"))
                 {
                     var value = line.Split("\t")[1].Trim();
                     stationNameLabel.Text = value;
-                }               
+                }
 
                 if (line.StartsWith("InputDir"))
                 {
@@ -123,7 +210,7 @@ namespace TestManager
                         success = false;
                     }
                     InputDir = value;
-                }                
+                }
 
                 if (line.StartsWith("OutputDir"))
                 {
@@ -164,20 +251,9 @@ namespace TestManager
         }
 
         /// <summary>
-        /// Show report form and reset main form if malfunction was reported succesfully
+        /// Filters files in input dir.
         /// </summary>
-        private void ShowReportForm()
-        {
-
-            breakdownTimeStartedLabel.Text = String.Empty;
-            label2.Visible = false;
-        }
-
-        private void logOutButton_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
-
+        /// <returns>List of filtered files paths</returns>
         private List<string> GetLogFiles()
         {
             // Create new regular expression: dddddddd_dddddd_  where d - digit
@@ -199,59 +275,9 @@ namespace TestManager
             return files;
         }
 
-        #endregion
-
-        #region Form events & timer
-
         /// <summary>
-        /// Set up form on first loading
+        /// Sets statistics on processed data
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            if (!LoadConfig())
-            {
-                Close();
-                return;
-            }
-            inputToolStripMenuItem.Text = $"Input: {InputDir}";
-            outputToolStripMenuItem.Text = $"Output: {OutputDir}";
-            copyToolStripMenuItem.Text = $"Copy: {CopyDir}";
-
-            timer1000ms.Start();
-        }
-
-        /// <summary>
-        /// Used for displaying time passed from start of malfunction
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void timer1000ms_Tick(object sender, EventArgs e)
-        {
-            if (breakdownPresent)
-                breakdownTimeStartedLabel.Text = (DateTime.Now - breakdownStarted).ToString().Substring(0, 8);
-
-            var logFiles = GetLogFiles();
-
-            foreach (var logFile in logFiles)
-            {
-                LogFile LF = new(logFile);
-
-                LF.SendTo_MySQL_DB();
-
-                File.Copy(logFile, Path.Combine(CopyDir, Path.GetFileName(logFile)));
-                File.Move(logFile, Path.Combine(OutputDir, Path.GetFileName(logFile)));
-
-                numberOfFilesProcessed++;
-                if (LF.BoardStatus != "Passed")
-                    numberOfFilesFailed++;
-
-                updateUI();
-            }
-
-        }
-
         private void updateUI()
         {
             TestedQtyLabel.Text = numberOfFilesProcessed.ToString();
@@ -272,6 +298,91 @@ namespace TestManager
             }
         }
 
+
+        /// <summary>
+        /// Block work on this test station
+        /// </summary>
+        private void StopWork()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Inform technicians about malfunction of test station
+        /// </summary>
+        private void RaiseAlarm()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Show report form and reset main form if malfunction was reported succesfully
+        /// </summary>
+        private void ShowReportForm()
+        {
+
+        }
+
+        #endregion
+
+        #region Form events & timer
+
+        /// <summary>
+        /// Load config data, set UI controls, start timer
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            if (!LoadConfig())
+            {
+                Close();
+                return;
+            }
+            inputToolStripMenuItem.Text = $"Input: {InputDir}";
+            outputToolStripMenuItem.Text = $"Output: {OutputDir}";
+            copyToolStripMenuItem.Text = $"Copy: {CopyDir}";
+
+            timer1000ms.Start();
+        }
+
+        /// <summary>
+        /// Main loop. Displays time passed from malfunction start, process input data, update UI
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void timer1000ms_Tick(object sender, EventArgs e)
+        {
+            // Displays time passed from malfunction start if breakdown is present
+            if (breakdownPresent)
+                breakdownTimeStartedLabel.Text = (DateTime.Now - breakdownStarted).ToString().Substring(0, 8);
+
+            var logFiles = GetLogFiles();
+
+            foreach (var logFile in logFiles)
+            {
+                if (dataLogging == false)
+                    continue;
+
+                LogFile LF = new(logFile);
+
+                ProcessedData.Add(LF);
+
+                LF.SendTo_MySQL_DB();
+
+                if (CopyDir != String.Empty)
+                    File.Copy(logFile, Path.Combine(CopyDir, Path.GetFileName(logFile)));
+
+                File.Move(logFile, Path.Combine(OutputDir, Path.GetFileName(logFile)), true);
+
+                numberOfFilesProcessed++;
+                if (LF.BoardStatus != "Passed")
+                    numberOfFilesFailed++;
+
+                updateUI();
+            }
+        }
+
         /// <summary>
         /// When user close this form, display login form again for next user to log in
         /// </summary>
@@ -283,43 +394,5 @@ namespace TestManager
         }
 
         #endregion
-
-        private void inputToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ProcessStartInfo startInfo = new ProcessStartInfo
-            {
-                Arguments = InputDir,
-                FileName = "explorer.exe"
-            };
-
-            Process.Start(startInfo);
-        }
-
-        private void outputToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ProcessStartInfo startInfo = new ProcessStartInfo
-            {
-                Arguments = OutputDir,
-                FileName = "explorer.exe"
-            };
-
-            Process.Start(startInfo);
-        }
-
-        private void copyToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                ProcessStartInfo startInfo = new ProcessStartInfo
-                {
-                    Arguments = CopyDir,
-                    FileName = "explorer.exe"
-                };
-
-                Process.Start(startInfo);
-            }
-            catch { }
-
-        }
     }
 }

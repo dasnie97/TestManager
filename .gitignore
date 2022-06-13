@@ -67,3 +67,4 @@
 /.vs/TestManager/v17/.suo
 /.vs/TestManager/v17/.futdcache.v1
 /.vs/TestManager/DesignTimeBuild/.dtbcache.v2
+/TestManager/bin/Debug/net6.0-windows/System.Windows.Forms.DataVisualization.dll
