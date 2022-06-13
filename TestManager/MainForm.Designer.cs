@@ -53,7 +53,6 @@
             this.logOutButton = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.panel2 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.panel7.SuspendLayout();
             this.panel8.SuspendLayout();
@@ -67,14 +66,14 @@
             // 
             this.topFailuresButton.BackColor = System.Drawing.SystemColors.Control;
             this.topFailuresButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.topFailuresButton.Location = new System.Drawing.Point(191, 178);
+            this.topFailuresButton.Location = new System.Drawing.Point(191, 193);
             this.topFailuresButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.topFailuresButton.Name = "topFailuresButton";
             this.topFailuresButton.Size = new System.Drawing.Size(92, 38);
             this.topFailuresButton.TabIndex = 0;
             this.topFailuresButton.Text = "Top błędy";
             this.topFailuresButton.UseVisualStyleBackColor = false;
-            this.topFailuresButton.Click += new System.EventHandler(this.breakdownButton_Click);
+            this.topFailuresButton.Click += new System.EventHandler(this.topFailuresButton_Click);
             // 
             // breakdownTimeStartedLabel
             // 
@@ -121,11 +120,11 @@
             // stationNameLabel
             // 
             this.stationNameLabel.AutoSize = true;
-            this.stationNameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.stationNameLabel.Location = new System.Drawing.Point(168, 56);
+            this.stationNameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.stationNameLabel.Location = new System.Drawing.Point(132, 61);
             this.stationNameLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.stationNameLabel.Name = "stationNameLabel";
-            this.stationNameLabel.Size = new System.Drawing.Size(115, 20);
+            this.stationNameLabel.Size = new System.Drawing.Size(129, 20);
             this.stationNameLabel.TabIndex = 6;
             this.stationNameLabel.Text = "Stacja robocza";
             // 
@@ -133,7 +132,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label1.Location = new System.Drawing.Point(4, 56);
+            this.label1.Location = new System.Drawing.Point(4, 61);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(119, 20);
@@ -144,7 +143,7 @@
             // 
             this.panel7.BackColor = System.Drawing.Color.SkyBlue;
             this.panel7.Controls.Add(this.TestedQtyLabel);
-            this.panel7.Location = new System.Drawing.Point(12, 160);
+            this.panel7.Location = new System.Drawing.Point(12, 175);
             this.panel7.Name = "panel7";
             this.panel7.Size = new System.Drawing.Size(143, 56);
             this.panel7.TabIndex = 13;
@@ -164,7 +163,7 @@
             // 
             this.panel8.BackColor = System.Drawing.Color.Tomato;
             this.panel8.Controls.Add(this.FailedQtyLabel);
-            this.panel8.Location = new System.Drawing.Point(12, 222);
+            this.panel8.Location = new System.Drawing.Point(12, 237);
             this.panel8.Name = "panel8";
             this.panel8.Size = new System.Drawing.Size(143, 56);
             this.panel8.TabIndex = 14;
@@ -185,7 +184,7 @@
             // 
             this.panel9.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.panel9.Controls.Add(this.YieldLabel);
-            this.panel9.Location = new System.Drawing.Point(12, 284);
+            this.panel9.Location = new System.Drawing.Point(12, 299);
             this.panel9.Name = "panel9";
             this.panel9.Size = new System.Drawing.Size(143, 56);
             this.panel9.TabIndex = 15;
@@ -206,27 +205,27 @@
             // 
             this.detailsButton.BackColor = System.Drawing.SystemColors.Control;
             this.detailsButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.detailsButton.Location = new System.Drawing.Point(191, 222);
+            this.detailsButton.Location = new System.Drawing.Point(191, 237);
             this.detailsButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.detailsButton.Name = "detailsButton";
             this.detailsButton.Size = new System.Drawing.Size(92, 38);
             this.detailsButton.TabIndex = 0;
             this.detailsButton.Text = "Szczegóły";
             this.detailsButton.UseVisualStyleBackColor = false;
-            this.detailsButton.Click += new System.EventHandler(this.breakdownButton_Click);
+            this.detailsButton.Click += new System.EventHandler(this.detailsButton_Click);
             // 
             // breakdownButton
             // 
             this.breakdownButton.BackColor = System.Drawing.SystemColors.Control;
+            this.breakdownButton.Enabled = false;
             this.breakdownButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.breakdownButton.Location = new System.Drawing.Point(191, 266);
+            this.breakdownButton.Location = new System.Drawing.Point(191, 281);
             this.breakdownButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.breakdownButton.Name = "breakdownButton";
             this.breakdownButton.Size = new System.Drawing.Size(92, 38);
             this.breakdownButton.TabIndex = 0;
             this.breakdownButton.Text = "Awaria";
             this.breakdownButton.UseVisualStyleBackColor = false;
-            this.breakdownButton.Click += new System.EventHandler(this.breakdownButton_Click);
             // 
             // menuStrip1
             // 
@@ -253,36 +252,36 @@
             // inputToolStripMenuItem
             // 
             this.inputToolStripMenuItem.Name = "inputToolStripMenuItem";
-            this.inputToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.inputToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
             this.inputToolStripMenuItem.Text = "Input";
             this.inputToolStripMenuItem.Click += new System.EventHandler(this.inputToolStripMenuItem_Click);
             // 
             // outputToolStripMenuItem
             // 
             this.outputToolStripMenuItem.Name = "outputToolStripMenuItem";
-            this.outputToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.outputToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
             this.outputToolStripMenuItem.Text = "Output";
             this.outputToolStripMenuItem.Click += new System.EventHandler(this.outputToolStripMenuItem_Click);
             // 
             // copyToolStripMenuItem
             // 
             this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
-            this.copyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
             this.copyToolStripMenuItem.Text = "Copy";
             this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
             // 
             // dataLoggingSwitchButton
             // 
-            this.dataLoggingSwitchButton.BackColor = System.Drawing.SystemColors.Control;
+            this.dataLoggingSwitchButton.BackColor = System.Drawing.Color.Green;
             this.dataLoggingSwitchButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.dataLoggingSwitchButton.Location = new System.Drawing.Point(15, 109);
+            this.dataLoggingSwitchButton.Location = new System.Drawing.Point(15, 124);
             this.dataLoggingSwitchButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.dataLoggingSwitchButton.Name = "dataLoggingSwitchButton";
             this.dataLoggingSwitchButton.Size = new System.Drawing.Size(280, 48);
             this.dataLoggingSwitchButton.TabIndex = 0;
             this.dataLoggingSwitchButton.Text = "ON";
             this.dataLoggingSwitchButton.UseVisualStyleBackColor = false;
-            this.dataLoggingSwitchButton.Click += new System.EventHandler(this.breakdownButton_Click);
+            this.dataLoggingSwitchButton.Click += new System.EventHandler(this.dataLoggingSwitchButton_Click);
             // 
             // logOutButton
             // 
@@ -301,7 +300,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label2.Location = new System.Drawing.Point(61, 20);
+            this.label2.Location = new System.Drawing.Point(47, 20);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(120, 21);
             this.label2.TabIndex = 17;
@@ -313,27 +312,19 @@
             this.panel1.BackColor = System.Drawing.SystemColors.ControlLight;
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.stationNameLabel);
-            this.panel1.Location = new System.Drawing.Point(0, 27);
+            this.panel1.Location = new System.Drawing.Point(0, 25);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(313, 76);
+            this.panel1.Size = new System.Drawing.Size(313, 93);
             this.panel1.TabIndex = 18;
-            // 
-            // panel2
-            // 
-            this.panel2.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.panel2.Location = new System.Drawing.Point(0, 109);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(313, 242);
-            this.panel2.TabIndex = 19;
             // 
             // panel3
             // 
             this.panel3.BackColor = System.Drawing.SystemColors.ControlLight;
             this.panel3.Controls.Add(this.label2);
             this.panel3.Controls.Add(this.breakdownTimeStartedLabel);
-            this.panel3.Location = new System.Drawing.Point(0, 357);
+            this.panel3.Location = new System.Drawing.Point(0, 361);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(313, 58);
+            this.panel3.Size = new System.Drawing.Size(313, 54);
             this.panel3.TabIndex = 20;
             // 
             // MainForm
@@ -353,7 +344,6 @@
             this.Controls.Add(this.topFailuresButton);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.panel1);
-            this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel3);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MainMenuStrip = this.menuStrip1;
@@ -401,7 +391,6 @@
         private ToolStripMenuItem inputToolStripMenuItem;
         private ToolStripMenuItem outputToolStripMenuItem;
         private Panel panel1;
-        private Panel panel2;
         private Panel panel3;
         private ToolStripMenuItem copyToolStripMenuItem;
     }
