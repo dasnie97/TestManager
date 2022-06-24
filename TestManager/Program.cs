@@ -26,7 +26,10 @@ namespace TestManager
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new LogIn());
+
+            // Changed to ommit operator login
+            Application.Run(new MainForm("kitron", new Form()));
+            //Application.Run(new MalfunctionReport());
         }
     }
 }
