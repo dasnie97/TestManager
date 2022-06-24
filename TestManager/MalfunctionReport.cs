@@ -32,31 +32,9 @@ namespace TestManager
             }
 
             // Check if text entered as technician name has correct format
-            string technicianLogin = this.technicianLoginTextbox.Text.Trim().ToLower();
-
-            // Number of chars should be 6
-            if (technicianLogin.Length != 6)
-            {
-                MessageBox.Show("Login technika powinien składać się z 6 znaków - dwie pierwsze litery imienia oraz cztery pierwsze litery nazwiska!");
-                this.technicianLoginTextbox.Clear();
-                return;
-            }
-
-            // Only latin chars are allowed
-            if (Regex.Matches(technicianLogin, @"[a-z]").Count != 6)
-            {
-                MessageBox.Show("Login technika powinien zawierać tylko litery bez polskich znaków!");
-                this.technicianLoginTextbox.Clear();
-                return;
-            }
-
-            this.technicianLogin = technicianLogin;
+            technicianLogin = technicianComboBox.Text.Trim().ToLower();
 
             InsertIntoDB();
-
-            this.technicianLoginTextbox.Clear();
-            this.actionTextbox.Clear();
-            this.descriptionTextbox.Clear();
         }
 
         /// <summary>
@@ -65,14 +43,14 @@ namespace TestManager
         private void InsertIntoDB()
         {
             // Connect to localhost using windows credentials
-            string connectionString = ConfigurationManager.ConnectionStrings["***REMOVED***DataBase"].ConnectionString;
+            string connectionString = ConfigurationManager.ConnectionStrings["***REMOVED***DataBase_MySQL"].ConnectionString;
             SqlConnection connection;
             SqlCommand command;
             SqlDataAdapter adapter = new SqlDataAdapter();
             String sql = "";
 
             // Build insertion command
-            sql = $@"INSERT INTO Breakdowns (ID,ProblemDescription,ActionTaken,Technician,StationID,Operator,TimeStarted,TimeFinished,BreakdownTotalTime) values(
+            sql = $@"INSERT INTO crashlog (ID,ProblemDescription,ActionTaken,Technician,StationID,Operator,TimeStarted,TimeFinished,BreakdownTotalTime) values(
                     '{Guid.NewGuid()}',
                     '{this.descriptionTextbox.Text.ToString()}',
                     '{this.actionTextbox.Text.ToString()}',
@@ -93,6 +71,11 @@ namespace TestManager
 
             command.Dispose();
             connection.Close();
+        }
+
+        private void MalfunctionReport_Shown(object sender, EventArgs e)
+        {
+            descriptionComboBox.Focus();
         }
     }
 }

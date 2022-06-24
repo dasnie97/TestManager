@@ -39,6 +39,9 @@ namespace TestManager
         // Holds processed log files data
         private List<LogFile> ProcessedData = new List<LogFile>();
 
+        // Holds log files sending option
+        private int sendingOption = -1;
+
         #endregion
 
         #region Constructor
@@ -78,12 +81,16 @@ namespace TestManager
                 dataLoggingSwitchButton.Text = "OFF";
                 dataLoggingSwitchButton.BackColor = Color.Red;
                 dataLogging = false;
+                sendOptionCombobox.Visible = true;
+                sendOptionCombobox.SelectedIndex = 0;
             }
             else
             {
                 dataLoggingSwitchButton.Text = "ON";
                 dataLoggingSwitchButton.BackColor = Color.Green;
                 dataLogging = true;
+                sendOptionCombobox.Visible = false;
+                sendingOption = sendOptionCombobox.SelectedIndex;
             }
         }
 
@@ -193,7 +200,15 @@ namespace TestManager
         {
             var success = true;
 
-            foreach (var line in File.ReadLines("config.txt"))
+            var configPath = "config.txt";
+
+            if (!File.Exists(configPath))
+            {
+                MessageBox.Show($"Path {configPath} does not exist!");
+                return false;
+            }
+
+            foreach (var line in File.ReadLines(configPath))
             {
                 if (line.StartsWith("TestStation"))
                 {
@@ -298,6 +313,67 @@ namespace TestManager
             }
         }
 
+        /// <summary>
+        /// Process test log files basing on sending option setting. Create LogFile object, add it to list of log file objects, send data to data base, move and copy file, 
+        /// calculate statistics and display it in UI.
+        /// </summary>
+        /// <param name="logFiles">List of input data paths</param>
+        private void ProcessLogFiles(List<string> logFiles)
+        {
+            try
+            {
+                foreach (var logFile in logFiles)
+                {
+                    LogFile LF = new(logFile);
+
+                    // Filter data basing on sending option setting
+                    if (sendingOption == 0)
+                    {
+                        if (LF.BoardStatus != "Passed")
+                        {
+                            File.Delete(logFile);
+                            continue;
+                        }
+                    }
+                    if (sendingOption == 1)
+                    {
+                        File.Delete(logFile);
+                        continue;
+                    }
+                    if (sendingOption == 2)
+                    {}
+
+                    // Add object to list for displaying Details and Pareto forms
+                    ProcessedData.Add(LF);
+
+                    var err = LF.SendTo_MySQL_DB(new string[] {"Operator", operatorLoginLabel.Text});
+                    if (err.Length > 2)
+                    {
+                        throw new Exception(err);
+                    }
+
+                    if (CopyDir != String.Empty)
+                        File.Copy(logFile, Path.Combine(CopyDir, Path.GetFileName(logFile)));
+
+                    File.Move(logFile, Path.Combine(OutputDir, Path.GetFileName(logFile)), true);
+
+                    numberOfFilesProcessed++;
+                    if (LF.BoardStatus != "Passed")
+                        numberOfFilesFailed++;
+
+                    updateUI();
+                }
+                if (sendingOption != -1)
+                    sendingOption = -1;
+            }
+            catch (Exception ex)
+            {
+                timer1000ms.Stop();
+                MessageBox.Show(ex.Message);
+                Close();
+            }
+        }
+
 
         /// <summary>
         /// Block work on this test station
@@ -357,30 +433,12 @@ namespace TestManager
             if (breakdownPresent)
                 breakdownTimeStartedLabel.Text = (DateTime.Now - breakdownStarted).ToString().Substring(0, 8);
 
-            var logFiles = GetLogFiles();
-
-            foreach (var logFile in logFiles)
+            // Process log files if data logging is turned on
+            if (dataLogging != false)
             {
-                if (dataLogging == false)
-                    continue;
-
-                LogFile LF = new(logFile);
-
-                ProcessedData.Add(LF);
-
-                LF.SendTo_MySQL_DB();
-
-                if (CopyDir != String.Empty)
-                    File.Copy(logFile, Path.Combine(CopyDir, Path.GetFileName(logFile)));
-
-                File.Move(logFile, Path.Combine(OutputDir, Path.GetFileName(logFile)), true);
-
-                numberOfFilesProcessed++;
-                if (LF.BoardStatus != "Passed")
-                    numberOfFilesFailed++;
-
-                updateUI();
-            }
+                var logFiles = GetLogFiles();
+                ProcessLogFiles(logFiles);
+            }     
         }
 
         /// <summary>
@@ -390,7 +448,8 @@ namespace TestManager
         /// <param name="e"></param>
         private void DowntimeForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            loginForm.Show();
+            // Commented to ommit operator login
+            //loginForm.Show();
         }
 
         #endregion
