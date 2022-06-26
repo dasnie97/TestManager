@@ -1,21 +1,38 @@
-﻿using System.Text.RegularExpressions;
-using System.Data.SqlClient;
-using System.Configuration;
+﻿using System.Configuration;
+using MySql.Data.MySqlClient;
+using System.Text.RegularExpressions;
 
 namespace TestManager
 {
+    /// <summary>
+    /// Provides functionality to report test station malfunction root causes and feedback from maintenance staff. Data can be then analyzed for improvement purposes.
+    /// </summary>
     public partial class MalfunctionReport : Form
     {
-        private string technicianLogin = string.Empty;
-        private string operatorLogin = string.Empty;
-        private DateTime breakdownFinished = new DateTime();
-        private DateTime breakdownStarted = new DateTime();
-        private string stationName = string.Empty;
+        #region Private fields
 
-        public MalfunctionReport()
+        private string operatorLogin;
+        private string stationName;
+        private DateTime BreakdownStarted;
+        private TimeSpan optionalBreakdownTimeInterval;
+
+        #endregion
+
+        #region Constructor
+
+        public MalfunctionReport(string OperatorLogin, string StationName)
         {
             InitializeComponent();
+            this.operatorLogin = OperatorLogin;
+            this.stationName = StationName;
+            this.BreakdownStarted = DateTime.Now;
+            timer1.Start();
+            SendQueryToDB($"UPDATE teststations SET IsDown = 1 WHERE TesterName = '{stationName}';");
         }
+
+        #endregion
+
+        #region Controls
 
         /// <summary>
         /// Click this button to validate and send data to DataBase.
@@ -24,58 +41,146 @@ namespace TestManager
         /// <param name="e"></param>
         private void confirmButton_Click(object sender, EventArgs e)
         {
-            // Check if textboxes are not empty
-            if (this.descriptionTextbox.Text.Length == 0 || this.actionTextbox.Text.Length == 0)
+            // Check if login combobox is not empty
+            if (this.technicianComboBox.Text.Length == 0)
+            {
+                MessageBox.Show("Wprowadź swój login!");
+                return;
+            }
+            // Check if comboboxes are not empty
+            if (this.descriptionComboBox.Text.Length == 0 || this.actionTakenComboBox.Text.Length == 0)
             {
                 MessageBox.Show("Wprowadź opis awarii oraz podjęte działania!");
                 return;
             }
+            // Check if optional textbox is empty, validate and get data from it
+            if (malfunctionTimeOptionalTextBox.Text.Length != 0)
+            {
+                var minutes = malfunctionTimeOptionalTextBox.Text.Trim();
 
-            // Check if text entered as technician name has correct format
-            technicianLogin = technicianComboBox.Text.Trim().ToLower();
+                // Check if textbox contains sequence of 1, 2 or 3 digits 
+                Regex r = new Regex(@"\d{1,3}");
+                Match m = r.Match(minutes);
 
-            InsertIntoDB();
+                // Check if regex succedded and data is no longer than 3
+                if (!m.Success || minutes.Length > 3)
+                {
+                    MessageBox.Show("Wprowadź odpowiednią ilość minut do opcjonalnego pola czasu trwania awarii!");
+                    malfunctionTimeOptionalTextBox.Clear();
+                    return;
+                }
+
+                // Get data into TimeSpan object
+                try
+                {
+                    var timeSpan = float.Parse(minutes);
+                    optionalBreakdownTimeInterval = TimeSpan.FromMinutes(timeSpan);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    return;
+                }
+            }
+
+            string sql;
+            // Decide if malfunction time should be caluclated basing on timer or optional textbox input
+            if (optionalBreakdownTimeInterval == new TimeSpan())
+            {
+***REMOVED***
+***REMOVED***
+***REMOVED***
+***REMOVED***
+***REMOVED***
+***REMOVED***
+***REMOVED***
+***REMOVED***
+***REMOVED***
+***REMOVED***
+            }
+            else
+            {
+***REMOVED***
+***REMOVED***
+***REMOVED***
+***REMOVED***
+***REMOVED***
+***REMOVED***
+***REMOVED***
+***REMOVED***
+***REMOVED***
+***REMOVED***
+            }
+            SendQueryToDB(sql);
+            Close();
         }
 
         /// <summary>
-        /// Connects to DB, builds insertion command, inserts data into DB
+        /// Used to focus combobox
         /// </summary>
-        private void InsertIntoDB()
-        {
-            // Connect to localhost using windows credentials
-            string connectionString = ConfigurationManager.ConnectionStrings["***REMOVED***DataBase_MySQL"].ConnectionString;
-            SqlConnection connection;
-            SqlCommand command;
-            SqlDataAdapter adapter = new SqlDataAdapter();
-            String sql = "";
-
-            // Build insertion command
-            sql = $@"INSERT INTO crashlog (ID,ProblemDescription,ActionTaken,Technician,StationID,Operator,TimeStarted,TimeFinished,BreakdownTotalTime) values(
-                    '{Guid.NewGuid()}',
-                    '{this.descriptionTextbox.Text.ToString()}',
-                    '{this.actionTextbox.Text.ToString()}',
-                    '{this.technicianLogin}',
-                    '{this.stationName}',
-                    '{this.operatorLogin}',
-                    '{this.breakdownStarted.ToString("yyyy-MM-dd HH:mm:ss.fff")}',
-                    '{this.breakdownFinished.ToString("yyyy-MM-dd HH:mm:ss.fff")}',
-                    '{(this.breakdownFinished - this.breakdownStarted).ToString()}');";
-
-            connection = new SqlConnection(connectionString);
-            connection.Open();
-
-            command = new SqlCommand(sql, connection);
-
-            adapter.InsertCommand = new SqlCommand(sql, connection);
-            adapter.InsertCommand.ExecuteNonQuery();
-
-            command.Dispose();
-            connection.Close();
-        }
-
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MalfunctionReport_Shown(object sender, EventArgs e)
         {
-            descriptionComboBox.Focus();
+            technicianComboBox.Focus();
         }
+
+        /// <summary>
+        /// Used for displaying time passed from malfunction start
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            breakdownTimeStartedLabel.Text = (DateTime.Now - BreakdownStarted).ToString().Substring(0, 8);
+        }
+
+        /// <summary>
+        /// Update DB when form closes
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MalfunctionReport_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            SendQueryToDB($"UPDATE teststations SET IsDown = 0 WHERE TesterName = '{stationName}';");
+        }
+
+        #endregion
+
+        #region Private methods
+
+        /// <summary>
+        /// Connects to MySQL DB, builds insertion command, inserts data into DB
+        /// </summary>
+        /// <param name="sql">SQL query string</param>
+        private void SendQueryToDB(string sql)
+        {
+            try
+            {
+                // Create SQL handle
+                MySqlConnection connection;
+
+                var connStr = ConfigurationManager.ConnectionStrings["***REMOVED***DataBase_MySQL"].ConnectionString;
+
+                // Open connection using connection string taken from config file of calling aplication
+                connection = new MySqlConnection(connStr);
+
+                connection.Open();
+
+                // Execute query
+                MySqlCommand command = new MySqlCommand(sql, connection);
+                command.ExecuteNonQuery();
+
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return;
+            }
+        }
+
+        #endregion
     }
 }
