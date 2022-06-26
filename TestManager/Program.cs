@@ -1,4 +1,3 @@
-//TODO:
 // Assumptions - this app is runinng on test PC. It is started with 'ygrdtest01' user log on.
 
 // In background, it archivies test log files on local disk.
@@ -12,6 +11,7 @@
 
 // Application monitors factory data base to see if test results are present in real time. If something is wrong, application blocks work and rise alarm.
 
+using System.Text.RegularExpressions;
 
 namespace TestManager
 {
@@ -27,9 +27,51 @@ namespace TestManager
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
 
-            // Changed to ommit operator login
-            Application.Run(new MainForm("kitron", new Form()));
-            //Application.Run(new MalfunctionReport());
+            var operatorName = LoadConfig();
+
+            if (operatorName == String.Empty)
+                Application.Run(new LogIn());
+            else
+                Application.Run(new MainForm(operatorName, new Form()));
+        }
+
+        /// <summary>
+        /// Get station name from txt file located in same folder as exe 
+        /// </summary>
+        static string LoadConfig()
+        {
+            var configPath = "config.txt";
+            var value = "";
+
+            if (!File.Exists(configPath))
+            {
+                MessageBox.Show($"Path {configPath} does not exist!");
+                Environment.Exit(0);
+            }
+
+            foreach (var line in File.ReadLines(configPath))
+            {
+                if (line.StartsWith("Operator"))
+                {
+                    value = line.Split("\t")[1].Trim().ToLower();
+                }
+            }
+
+            // Check if entered text has correct number of characters
+            if (value.Length != 6)
+            {
+                MessageBox.Show("Login operatora powinien sk³adaæ siê z 6 znaków!");
+                Environment.Exit(0);
+            }
+
+            // Check if entered text contains only allowed characters (Latin a-z)
+            if (Regex.Matches(value, @"[a-z]").Count != 6)
+            {
+                MessageBox.Show("Login powinien zawieraæ tylko litery bez polskich znaków!");
+                Environment.Exit(0);
+            }
+
+            return value;
         }
     }
 }

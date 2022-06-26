@@ -17,12 +17,8 @@ namespace TestManager
     {
         #region Private fields
 
-        // Determines if breakdown state is present (station malfunction), and data logging setting (process data or not)
-        private bool breakdownPresent = false;
+        // Determines data logging setting (process data or not)
         private bool dataLogging = true;
-
-        // Handles malfunction start time
-        private DateTime breakdownStarted = new DateTime();
 
         // Handles reference to login form. Necessary to handle logout function
         private Form loginForm;
@@ -78,19 +74,11 @@ namespace TestManager
         {
             if (dataLogging == true)
             {
-                dataLoggingSwitchButton.Text = "OFF";
-                dataLoggingSwitchButton.BackColor = Color.Red;
-                dataLogging = false;
-                sendOptionCombobox.Visible = true;
-                sendOptionCombobox.SelectedIndex = 0;
+                TurnOffLogging();
             }
             else
             {
-                dataLoggingSwitchButton.Text = "ON";
-                dataLoggingSwitchButton.BackColor = Color.Green;
-                dataLogging = true;
-                sendOptionCombobox.Visible = false;
-                sendingOption = sendOptionCombobox.SelectedIndex;
+                TurnOnLogging();
             }
         }
 
@@ -136,16 +124,26 @@ namespace TestManager
             }
         }
 
-
-
         /// <summary>
-        /// Click this button to set/unset breakdownPresent flag. Click it first time to alarm technician about malfunction and stop work. Click it again to finish malfunction and show report form.
+        /// Click this button to alarm technician about malfunction and stop work.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void breakdownButton_Click(object sender, EventArgs e)
         {
+            TurnOffLogging();
+            try
+            {
+                // Create new form and pass TestData as an input parameter
+                MalfunctionReport malfForm = new MalfunctionReport(operatorLoginLabel.Text, stationNameLabel.Text);
 
+                // Show new form
+                malfForm.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         #endregion
@@ -301,7 +299,7 @@ namespace TestManager
             try
             {
                 var yield = (numberOfFilesProcessed - numberOfFilesFailed) * 100.0 / numberOfFilesProcessed;
-                YieldLabel.Text = $"{(yield).ToString("F")}%";
+                YieldLabel.Text = $"{(yield).ToString("F")}";
                 if (yield >= 96)
                     YieldLabel.BackColor = Color.Green;
                 else
@@ -374,6 +372,29 @@ namespace TestManager
             }
         }
 
+        /// <summary>
+        /// Sets data logging mode OFF
+        /// </summary>
+        private void TurnOffLogging()
+        {
+            dataLoggingSwitchButton.Text = "OFF";
+            dataLoggingSwitchButton.BackColor = Color.Red;
+            dataLogging = false;
+            sendOptionCombobox.Visible = true;
+            sendOptionCombobox.SelectedIndex = 0;
+        }
+
+        /// <summary>
+        /// Sets data logging ON
+        /// </summary>
+        private void TurnOnLogging()
+        {
+            dataLoggingSwitchButton.Text = "ON";
+            dataLoggingSwitchButton.BackColor = Color.Green;
+            dataLogging = true;
+            sendOptionCombobox.Visible = false;
+            sendingOption = sendOptionCombobox.SelectedIndex;
+        }
 
         /// <summary>
         /// Block work on this test station
@@ -381,22 +402,6 @@ namespace TestManager
         private void StopWork()
         {
             throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Inform technicians about malfunction of test station
-        /// </summary>
-        private void RaiseAlarm()
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Show report form and reset main form if malfunction was reported succesfully
-        /// </summary>
-        private void ShowReportForm()
-        {
-
         }
 
         #endregion
@@ -429,10 +434,6 @@ namespace TestManager
         /// <param name="e"></param>
         private void timer1000ms_Tick(object sender, EventArgs e)
         {
-            // Displays time passed from malfunction start if breakdown is present
-            if (breakdownPresent)
-                breakdownTimeStartedLabel.Text = (DateTime.Now - breakdownStarted).ToString().Substring(0, 8);
-
             // Process log files if data logging is turned on
             if (dataLogging != false)
             {
