@@ -54,7 +54,9 @@ namespace TestManager
                 if (line.StartsWith("Operator"))
                 {
                     value = line.Split("\t")[1].Trim().ToLower();
+                    break;
                 }
+                return "";
             }
 
             // Check if entered text has correct number of characters

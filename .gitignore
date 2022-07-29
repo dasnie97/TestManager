@@ -674,3 +674,6 @@
 /TestManager/obj/publish/win-x64/project.assets.json
 /TestManager/Properties/PublishProfiles/FolderProfile.pubxml
 /TestManager/Properties/PublishProfiles/FolderProfile.pubxml.user
+/TestManager/obj/Release/net6.0-windows/TempPE/Properties.Resources.Designer.cs.dll
+/TestManager/obj/Release/net6.0-windows/TestManager.designer.deps.json
+/TestManager/obj/Release/net6.0-windows/TestManager.designer.runtimeconfig.json
