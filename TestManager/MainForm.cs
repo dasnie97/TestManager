@@ -103,11 +103,6 @@ namespace TestManager
             }
         }
 
-        /// <summary>
-        /// Displays new form with table of data about all processed log files
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void detailsButton_Click(object sender, EventArgs e)
         {
             try
@@ -320,6 +315,7 @@ namespace TestManager
         {
             try
             {
+                Thread.Sleep(2000);
                 foreach (var logFile in logFiles)
                 {
                     LogFile LF = new(logFile);
@@ -366,7 +362,7 @@ namespace TestManager
             }
             catch (Exception ex)
             {
-                timer1000ms.Stop();
+                timer3000ms.Stop();
                 MessageBox.Show(ex.Message);
                 Close();
             }
@@ -424,7 +420,7 @@ namespace TestManager
             outputToolStripMenuItem.Text = $"Output: {OutputDir}";
             copyToolStripMenuItem.Text = $"Copy: {CopyDir}";
 
-            timer1000ms.Start();
+            timer3000ms.Start();
         }
 
         /// <summary>

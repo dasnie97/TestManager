@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.topFailuresButton = new System.Windows.Forms.Button();
-            this.timer1000ms = new System.Windows.Forms.Timer(this.components);
+            this.timer3000ms = new System.Windows.Forms.Timer(this.components);
             this.label4 = new System.Windows.Forms.Label();
             this.operatorLoginLabel = new System.Windows.Forms.Label();
             this.stationNameLabel = new System.Windows.Forms.Label();
@@ -82,10 +82,10 @@
             this.topFailuresButton.UseVisualStyleBackColor = false;
             this.topFailuresButton.Click += new System.EventHandler(this.topFailuresButton_Click);
             // 
-            // timer1000ms
+            // timer3000ms
             // 
-            this.timer1000ms.Interval = 1000;
-            this.timer1000ms.Tick += new System.EventHandler(this.timer1000ms_Tick);
+            this.timer3000ms.Interval = 3000;
+            this.timer3000ms.Tick += new System.EventHandler(this.timer1000ms_Tick);
             // 
             // label4
             // 
@@ -175,7 +175,7 @@
             this.YieldLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.YieldLabel.Font = new System.Drawing.Font("Arial", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.YieldLabel.Location = new System.Drawing.Point(0, 0);
-            this.YieldLabel.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.YieldLabel.Margin = new System.Windows.Forms.Padding(0);
             this.YieldLabel.Name = "YieldLabel";
             this.YieldLabel.Size = new System.Drawing.Size(106, 56);
             this.YieldLabel.TabIndex = 0;
@@ -408,7 +408,7 @@
         #endregion
 
         private System.Windows.Forms.Button topFailuresButton;
-        private System.Windows.Forms.Timer timer1000ms;
+        private System.Windows.Forms.Timer timer3000ms;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label operatorLoginLabel;
         private System.Windows.Forms.Label stationNameLabel;
