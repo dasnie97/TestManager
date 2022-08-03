@@ -315,9 +315,15 @@ namespace TestManager
         {
             try
             {
-                Thread.Sleep(2000);
                 foreach (var logFile in logFiles)
                 {
+                    for (int i = 0; i < 5; i++)
+                    {
+                        if (!IsFileLocked(new FileInfo(logFile)))
+                            break;
+                        Thread.Sleep(100);
+                    }
+
                     LogFile LF = new(logFile);
 
                     // Filter data basing on sending option setting
@@ -366,6 +372,33 @@ namespace TestManager
                 MessageBox.Show(ex.Message);
                 Close();
             }
+        }
+
+        /// <summary>
+        /// Checks if file is ready to process.
+        /// </summary>
+        /// <param name="file">Path to file.</param>
+        /// <returns>True if file is used by another process. False if file is free.</returns>
+        private bool IsFileLocked(FileInfo file)
+        {
+            try
+            {
+                using (FileStream stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.None))
+                {
+                    stream.Close();
+                }
+            }
+            catch (IOException)
+            {
+                //the file is unavailable because it is:
+                //still being written to
+                //or being processed by another thread
+                //or does not exist (has already been processed)
+                return true;
+            }
+
+            //file is not locked
+            return false;
         }
 
         /// <summary>
