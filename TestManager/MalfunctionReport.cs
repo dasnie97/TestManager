@@ -27,7 +27,7 @@ namespace TestManager
             this.stationName = StationName;
             this.BreakdownStarted = DateTime.Now;
             timer1.Start();
-            SendQueryToDB($"UPDATE teststations SET IsDown = 1 WHERE TesterName = '{stationName}';");
+            SendQueryToDB($"UPDATE teststations SET ProblemOperator = 1 WHERE TesterName = '{stationName}';");
         }
 
         #endregion
@@ -142,7 +142,7 @@ namespace TestManager
         /// <param name="e"></param>
         private void MalfunctionReport_FormClosed(object sender, FormClosedEventArgs e)
         {
-            SendQueryToDB($"UPDATE teststations SET IsDown = 0 WHERE TesterName = '{stationName}';");
+            SendQueryToDB($"UPDATE teststations SET ProblemOperator = 0 WHERE TesterName = '{stationName}';");
         }
 
         #endregion
