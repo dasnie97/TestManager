@@ -4,6 +4,7 @@ using System.IO;
 using System.Configuration;
 using KitronGenericTestReports;
 using System.Diagnostics;
+using MySql.Data.MySqlClient;
 
 namespace TestManager
 {
@@ -426,11 +427,74 @@ namespace TestManager
         }
 
         /// <summary>
-        /// Block work on this test station
+        /// Asynchronous method for checking if test data is transferred correctly into factory traceability system.
         /// </summary>
-        private void StopWork()
+        /// <param name="lF">Represents currently processed test data object.</param>
+        /// <returns>Returned value is not used.</returns>
+        private async Task<LogFile> CheckLogInSystem(LogFile lF)
         {
-            throw new NotImplementedException();
+            var alarm = false;
+            await Task.Run(() =>
+            {
+                for (int i=0;i<5;i++)
+                {
+                    if (lF.TestDataPresentInSystem())
+                    {
+                        alarm = false;
+                        break;
+                    }
+                    else
+                    {
+                        alarm = true;
+                        Task.Delay(60000).Wait();
+                    }
+                }
+            });
+
+            if(alarm)
+            {
+                dataLoggingSwitchButton.PerformClick();
+                SendQueryToDB($"UPDATE teststations SET ProblemFLX = 1 WHERE TesterName = '{stationNameLabel.Text}';");
+            }
+            else
+            {
+                SendQueryToDB($"UPDATE teststations SET ProblemFLX = 0 WHERE TesterName = '{stationNameLabel.Text}';");
+            }
+
+
+            return lF;
+        }
+
+        /// <summary>
+        /// Connects to MySQL DB, builds insertion command, inserts data into DB
+        /// </summary>
+        /// <param name="sql">SQL query string</param>
+        private void SendQueryToDB(string sql)
+        {
+            try
+            {
+                // Create SQL handle
+                MySqlConnection connection;
+
+                var connStr = ConfigurationManager.ConnectionStrings["KitronDataBase_MySQL"].ConnectionString;
+
+                // Open connection using connection string taken from config file of calling aplication
+                connection = new MySqlConnection(connStr);
+
+                connection.Open();
+
+                // Execute query
+                MySqlCommand command = new MySqlCommand(sql, connection);
+                command.ExecuteNonQuery();
+
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return;
+            }
         }
 
         #endregion
@@ -468,6 +532,12 @@ namespace TestManager
             {
                 var logFiles = GetLogFiles();
                 ProcessLogFiles(logFiles);
+
+                // Check if data flows to factory system. If no - stop work (dataLogging false)
+                if (logFiles.Count > 0)
+                {
+                    Task task = CheckLogInSystem(ProcessedData.Last());
+                }
             }     
         }
 
