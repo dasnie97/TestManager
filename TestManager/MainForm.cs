@@ -433,36 +433,45 @@ namespace TestManager
         /// <returns>Returned value is not used.</returns>
         private async Task<LogFile> CheckLogInSystem(LogFile lF)
         {
-            var alarm = false;
-            await Task.Run(() =>
+            try
             {
-                for (int i=0;i<5;i++)
+                var alarm = true;
+                await Task.Run(() =>
                 {
-                    if (lF.TestDataPresentInSystem())
+                    for (int i = 0; i < 5; i++)
                     {
-                        alarm = false;
-                        break;
+                        if (lF.TestDataPresentInSystem())
+                        {
+                            alarm = false;
+                            break;
+                        }
+                        else
+                        {
+                            alarm = true;
+                            Task.Delay(60000).Wait();
+                        }
                     }
-                    else
-                    {
-                        alarm = true;
-                        Task.Delay(60000).Wait();
-                    }
+                });
+
+                if (alarm)
+                {
+                    dataLoggingSwitchButton.PerformClick();
+                    SendQueryToDB($"UPDATE teststations SET ProblemFLX = 1, CurrentOperator = '{operatorLoginLabel.Text}' WHERE TesterName = '{stationNameLabel.Text}';");
                 }
-            });
+                else
+                {
+                    SendQueryToDB($"UPDATE teststations SET ProblemFLX = 0 WHERE TesterName = '{stationNameLabel.Text}';");
+                }
 
-            if(alarm)
-            {
-                dataLoggingSwitchButton.PerformClick();
-                SendQueryToDB($"UPDATE teststations SET ProblemFLX = 1 WHERE TesterName = '{stationNameLabel.Text}';");
+
+                return lF;
             }
-            else
+            catch (Exception ex)
             {
-                SendQueryToDB($"UPDATE teststations SET ProblemFLX = 0 WHERE TesterName = '{stationNameLabel.Text}';");
+                MessageBox.Show(ex.Message);
+                return lF;
             }
 
-
-            return lF;
         }
 
         /// <summary>
