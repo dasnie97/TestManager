@@ -27,7 +27,7 @@ namespace TestManager
             this.stationName = StationName;
             this.BreakdownStarted = DateTime.Now;
             timer1.Start();
-            SendQueryToDB($"UPDATE teststations SET ProblemOperator = 1 WHERE TesterName = '{stationName}';");
+            SendQueryToDB($"UPDATE teststations SET ProblemOperator = 1, CurrentOperator = '{operatorLogin}' WHERE TesterName = '{stationName}';");
         }
 
         #endregion
