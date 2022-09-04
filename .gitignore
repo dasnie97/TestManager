@@ -714,3 +714,4 @@
 /.vs/TestManager/FileContentIndex/8a45c9cb-5a76-44a3-b8b7-38db2d2492e5.vsidx
 /.vs/TestManager/FileContentIndex/62d2364d-f867-4470-9b72-de86870ef85f.vsidx
 /TestManager/TestManager.csproj
+/TestManager/bin/Release/net6.0-windows/config.txt
