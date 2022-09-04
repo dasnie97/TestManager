@@ -54,8 +54,8 @@
 /TestManager/bin/Debug/net6.0-windows/runtimes/win/lib/netcoreapp2.1/System.Data.SqlClient.dll
 /TestManager/bin/Debug/net6.0-windows/runtimes/unix/lib/netcoreapp2.1/System.Data.SqlClient.dll
 /TestManager/bin/Debug/net6.0-windows/MySql.Data.dll
-/TestManager/bin/Debug/net6.0-windows/***REMOVED***GenericTestReports.pdb
-/TestManager/bin/Debug/net6.0-windows/***REMOVED***GenericTestReports.dll
+/TestManager/bin/Debug/net6.0-windows/KitronGenericTestReports.pdb
+/TestManager/bin/Debug/net6.0-windows/KitronGenericTestReports.dll
 /TestManager/bin/Debug/net6.0-windows/K4os.Hash.xxHash.dll
 /TestManager/bin/Debug/net6.0-windows/K4os.Compression.LZ4.Streams.dll
 /TestManager/bin/Debug/net6.0-windows/K4os.Compression.LZ4.dll
@@ -425,8 +425,8 @@
 /TestManager/bin/Release/net6.0-windows/win-x64/ko/PresentationFramework.resources.dll
 /TestManager/bin/Release/net6.0-windows/win-x64/ko/PresentationCore.resources.dll
 /TestManager/bin/Release/net6.0-windows/win-x64/ko/Microsoft.VisualBasic.Forms.resources.dll
-/TestManager/bin/Release/net6.0-windows/win-x64/***REMOVED***GenericTestReports.pdb
-/TestManager/bin/Release/net6.0-windows/win-x64/***REMOVED***GenericTestReports.dll
+/TestManager/bin/Release/net6.0-windows/win-x64/KitronGenericTestReports.pdb
+/TestManager/bin/Release/net6.0-windows/win-x64/KitronGenericTestReports.dll
 /TestManager/bin/Release/net6.0-windows/win-x64/K4os.Hash.xxHash.dll
 /TestManager/bin/Release/net6.0-windows/win-x64/K4os.Compression.LZ4.Streams.dll
 /TestManager/bin/Release/net6.0-windows/win-x64/K4os.Compression.LZ4.dll
@@ -607,12 +607,12 @@
 /TestManager/bin/Release/net6.0-windows/publish/win-x64/sni.dll
 /TestManager/bin/Release/net6.0-windows/publish/win-x64/PresentationNative_cor3.dll
 /TestManager/bin/Release/net6.0-windows/publish/win-x64/PenImc_cor3.dll
-/TestManager/bin/Release/net6.0-windows/publish/win-x64/***REMOVED***GenericTestReports.pdb
+/TestManager/bin/Release/net6.0-windows/publish/win-x64/KitronGenericTestReports.pdb
 /TestManager/bin/Release/net6.0-windows/publish/win-x64/D3DCompiler_47_cor3.dll
 /TestManager/bin/Release/net6.0-windows/publish/win-x64/config.txt
 /TestManager/bin/Release/net6.0-windows/MySql.Data.dll
-/TestManager/bin/Release/net6.0-windows/***REMOVED***GenericTestReports.pdb
-/TestManager/bin/Release/net6.0-windows/***REMOVED***GenericTestReports.dll
+/TestManager/bin/Release/net6.0-windows/KitronGenericTestReports.pdb
+/TestManager/bin/Release/net6.0-windows/KitronGenericTestReports.dll
 /TestManager/bin/Release/net6.0-windows/K4os.Hash.xxHash.dll
 /TestManager/bin/Release/net6.0-windows/K4os.Compression.LZ4.Streams.dll
 /TestManager/bin/Release/net6.0-windows/K4os.Compression.LZ4.dll
@@ -724,3 +724,5 @@
 /TestManager/Details.Designer.cs
 /TestManager/TestManager.csproj.user
 /TestManager/TestManager.csproj
+*.dll
+*.pdb

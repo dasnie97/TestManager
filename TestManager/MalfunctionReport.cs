@@ -98,13 +98,13 @@ namespace TestManager
             // Decide if malfunction time should be caluclated basing on timer or optional textbox input
             if (optionalBreakdownTimeInterval == new TimeSpan())
             {
-                sqlHandle.CrashStarted = $"'{BreakdownStarted.ToString("yyyy-MM-dd HH:mm:ss.fff")}'";
-                sqlHandle.CrashTime = $"'{DateTime.Now - BreakdownStarted}'";
+                sqlHandle.CrashStarted = BreakdownStarted.ToString("yyyy-MM-dd HH:mm:ss.fff");
+                sqlHandle.CrashTime = (DateTime.Now - BreakdownStarted).ToString("hh\\:mm\\:ss");
             }
             else
             {
-                sqlHandle.CrashStarted = $"'{(DateTime.Now - optionalBreakdownTimeInterval).ToString("yyyy-MM-dd HH:mm:ss.fff")}'";
-                sqlHandle.CrashTime = $"'{optionalBreakdownTimeInterval}'";
+                sqlHandle.CrashStarted = (DateTime.Now - optionalBreakdownTimeInterval).ToString("yyyy-MM-dd HH:mm:ss.fff");
+                sqlHandle.CrashTime = optionalBreakdownTimeInterval.ToString("hh\\:mm\\:ss");
             }
             sqlHandle.ProblemDescription = descriptionComboBox.Text + " " + descriptionTextbox.Text;
             sqlHandle.ActionTaken = actionTakenComboBox.Text + " " + actionTextbox.Text;
