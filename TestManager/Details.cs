@@ -1,26 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using ***REMOVED***GenericTestReports;
+﻿using GenericTestReport;
 
 namespace TestManager
 {
+    /// <summary>
+    /// Show summary of processed data in form of table.
+    /// </summary>
     public partial class Details : Form
     {
         public Details(List<LogFile> InputData)
         {
             InitializeComponent();
-            UpdateUI(InputData);
+            ShowDetails(InputData);
         }
 
-        // Create new row in table of results
-        private void UpdateUI(List<LogFile> inputData)
+        private void ShowDetails(List<LogFile> inputData)
         {
             foreach (var logFile in inputData)
             {
@@ -39,7 +32,6 @@ namespace TestManager
                     this.TableOfResults.Rows[lastRowIndex].DefaultCellStyle.BackColor = Color.FromArgb(232, 65, 65);
                 }
             }
-
         }
     }
 }
