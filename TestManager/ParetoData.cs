@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TestManager
+﻿namespace TestManager
 {
-    /// <summary>
-    /// Has 2 properties. TestStepName is a name of particular test step. Quantity is number of occurences in analyzed data of this particular test step name.
-    /// </summary>
     public class ParetoData
     {
+        /// <summary>
+        /// Name of particular test step.
+        /// </summary>
         public string TestStepName { get; set; }
+
+        /// <summary>
+        /// Number of occurences in analyzed data of this particular test step name.
+        /// </summary>
         public int Quantity { get; set; }
 
         public ParetoData(string testName, int qty)

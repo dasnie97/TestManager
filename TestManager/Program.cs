@@ -1,16 +1,3 @@
-// Assumptions - this app is runinng on test PC. It is started with 'ygrdtest01' user log on.
-
-// In background, it archivies test log files on local disk.
-
-// Operator logs in with his short login before starting work. On shift finish, operator logs out.
-
-// If something is wrong with tester, technician is alarmed and comes to see whats the problem. After fixing it, he reports what was the cause and
-// action he took. Application provides interface, where technician can enter details about intervention. It is then sent to data base.
-
-// Application sends test log files to factory data base and test data base in real time.
-
-// Application monitors factory data base to see if test results are present in real time. If something is wrong, application blocks work and rise alarm.
-
 using System.Text.RegularExpressions;
 
 namespace TestManager
@@ -27,7 +14,7 @@ namespace TestManager
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
 
-            var operatorName = LoadConfig();
+            var operatorName = LoadDefaultOperator();
 
             if (operatorName == String.Empty)
                 Application.Run(new LogIn());
@@ -36,9 +23,9 @@ namespace TestManager
         }
 
         /// <summary>
-        /// Get station name from txt file located in same folder as exe 
+        /// Load default operator name from txt config file located in same folder as exe.
         /// </summary>
-        static string LoadConfig()
+        static string LoadDefaultOperator()
         {
             var configPath = "config.txt";
             var value = "";
@@ -72,7 +59,6 @@ namespace TestManager
                 MessageBox.Show("Login powinien zawieraæ tylko litery bez polskich znaków!");
                 Environment.Exit(0);
             }
-
             return value;
         }
     }
