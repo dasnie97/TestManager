@@ -1,40 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using KitronGenericTestReports;
+﻿using System.Data;
+using GenericTestReport;
 
 namespace TestManager
 {
     public partial class Pareto : Form
     {
-        // Create empty list of LogFile objects to be filled with data passed from parent form
-        private List<LogFile> TestData = new List<LogFile>();
-
         /// <summary>
-        /// Default constructor. Takes data from parent form and calls private methods to build a chart.
+        /// Takes data from parent form and builds a chart from it.
         /// </summary>
-        /// <param name="TestData"></param>
+        /// <param name="TestData">List of LogFile objects.</param>
         public Pareto(object TestData)
         {
             InitializeComponent();
 
-            // Set private field with data passed from parent form
-            this.TestData = (List<LogFile>)TestData;
-
             // Analyze failed test data, calculate statistics on how many of particular test steps failed
-            var sortedFailedTestData = getFailedTests(this.TestData);
-
+            var sortedFailedTestData = getFailedTests((List<LogFile>)TestData);
             UpdateUI(sortedFailedTestData);
         }
 
         /// <summary>
-        /// This method takes List of ParetoData objects and builds diagram from this data.
+        /// Takes List of ParetoData objects and builds diagram from this data.
         /// </summary>
         /// <param name="sortedFailedTestData">List of ParetoData objects being list of most common test failures together with number of occurences.</param>
         private void UpdateUI(List<ParetoData> sortedFailedTestData)
@@ -97,9 +82,9 @@ namespace TestManager
         }
 
         /// <summary>
-        /// This method creates List of ParetoData objects. Every object handles unique name of failed test and number of its occurences in input data.
+        /// Creates List of ParetoData objects. Every object handles unique name of failed test and number of its occurences in input data.
         /// </summary>
-        /// <param name="testData">List of LogFile objects, handles data harvested from log files.</param>
+        /// <param name="testData">List of LogFile objects, represents log files.</param>
         /// <returns>List of ParetoData objects.</returns>
         private List<ParetoData> getFailedTests(List<LogFile> testData)
         {
@@ -126,7 +111,7 @@ namespace TestManager
             // Loop through every unique failed test name
             foreach (var uniqueFailedTest in uniqueFailedTests)
             {
-                // Set vaiable indicating number of occurences to 0
+                // Set variable indicating number of occurences to 0
                 var numberOfOccurences = 0;
 
                 // Loop through every failed test step from data input
