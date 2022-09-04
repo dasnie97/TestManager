@@ -65,8 +65,6 @@ namespace TestManager
             // Assign data retrieved from loginForm to private fields
             operatorLoginLabel.Text = operatorLogin;
             loginForm = LoginForm;
-
-            this.sqlHandle = new MySQLManager(sName: this.stationNameLabel.Text, oName: operatorLogin);
         }
 
         #endregion
@@ -223,13 +221,13 @@ namespace TestManager
 
             foreach (var line in File.ReadLines(configPath))
             {
-                if (line.StartsWith("TestStation"))
+                if (line.StartsWith("TestStation:\t"))
                 {
                     var value = line.Split("\t")[1].Trim();
                     stationNameLabel.Text = value;
                 }
 
-                if (line.StartsWith("InputDir"))
+                if (line.StartsWith("InputDir:\t"))
                 {
                     var value = line.Split("\t")[1].Trim();
                     if (!Directory.Exists(value))
@@ -240,7 +238,7 @@ namespace TestManager
                     InputDir = value;
                 }
 
-                if (line.StartsWith("OutputDir"))
+                if (line.StartsWith("OutputDir:\t"))
                 {
                     var value = line.Split("\t")[1].Trim();
                     if (!Directory.Exists(value))
@@ -251,7 +249,7 @@ namespace TestManager
                     OutputDir = value;
                 }
 
-                if (line.StartsWith("CopyDir"))
+                if (line.StartsWith("CopyDir:\t"))
                 {
                     var value = line.Split("\t")[1].Trim();
                     if (!Directory.Exists(value))
@@ -479,6 +477,7 @@ namespace TestManager
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+                Close();
                 return lF;
             }
 
@@ -503,8 +502,8 @@ namespace TestManager
             inputToolStripMenuItem.Text = $"Input: {InputDir}";
             outputToolStripMenuItem.Text = $"Output: {OutputDir}";
             copyToolStripMenuItem.Text = $"Copy: {CopyDir}";
-
             timer3000ms.Start();
+            this.sqlHandle = new MySQLManager(sName: this.stationNameLabel.Text, oName: this.operatorLoginLabel.Text);
         }
 
         /// <summary>
