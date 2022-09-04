@@ -10,16 +10,13 @@ namespace TestManager
         // Create MainForm field for MainForm object. This way it is possible to close both forms if needed.
         private MainForm mainForm;
 
-        /// <summary>
-        /// Default constructor
-        /// </summary>
         public LogIn()
         {
             InitializeComponent();
         }
 
         /// <summary>
-        /// Make it possible to login using enter key
+        /// Enable logging in using enter key
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -32,7 +29,7 @@ namespace TestManager
         }
 
         /// <summary>
-        /// Secret combination of keys to close both login form and downtime form
+        /// Secret combination of keys to close both login form and main form
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -42,7 +39,7 @@ namespace TestManager
             {
                 this.Close();
 
-                // Make sure MainForm field is not NULL and close the form it is not
+                // Make sure MainForm field is not NULL and close the form if its not
                 mainForm?.Close();
             }
         }
@@ -78,7 +75,7 @@ namespace TestManager
             // Set visible property of this form to false
             this.Hide();
 
-            // Create Downtime form and pass operator login text and this form to it
+            // Create MainForm and pass operator login text and this form to it
             mainForm = new MainForm(operatorLogin, this.FindForm());
             mainForm.Show();
         }

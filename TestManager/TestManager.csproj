@@ -10,14 +10,13 @@
 
   <ItemGroup>
     <PackageReference Include="Maikebing.System.Windows.Forms.DataVisualization" Version="5.0.1" />
-    <PackageReference Include="MySql.Data" Version="8.0.29" />
+    <PackageReference Include="MySql.Data" Version="8.0.30" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="***REMOVED***GenericTestReports">
-      <HintPath>..\..\***REMOVED***GenericTestReports\***REMOVED***GenericTestReports\bin\Debug\net6.0\***REMOVED***GenericTestReports.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\..\GenericTestReport\GenericTestReport\GenericTestReport.csproj" />
+    <ProjectReference Include="..\..\MySQL\MySQL\MySQLManager.csproj" />
   </ItemGroup>
 
   <ItemGroup>

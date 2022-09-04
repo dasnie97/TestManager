@@ -1,33 +1,45 @@
-﻿using System.Configuration;
-using MySql.Data.MySqlClient;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace TestManager
 {
     /// <summary>
-    /// Provides functionality to report test station malfunction root causes and feedback from maintenance staff. Data can be then analyzed for improvement purposes.
+    /// Provides functionality for reporting test station malfunction root causes and feedback from maintenance staff. Data can be then analyzed for improvement purposes.
     /// </summary>
     public partial class MalfunctionReport : Form
     {
-        #region Private fields
+        #region Fields
 
-        private string operatorLogin;
-        private string stationName;
-        private DateTime BreakdownStarted;
-        private TimeSpan optionalBreakdownTimeInterval;
+        /// <summary>
+        /// Date and time of malfunction start
+        /// </summary>
+        public DateTime BreakdownStarted;
+
+        /// <summary>
+        /// Time interval entered by user manually. Optional feature.
+        /// </summary>
+        public TimeSpan optionalBreakdownTimeInterval;
+
+        /// <summary>
+        /// Handles all sql traffic.
+        /// </summary>
+        private MySQLManager sqlHandle;
 
         #endregion
 
         #region Constructor
 
+        /// <summary>
+        /// Create malfunction reporting form. Sets flag in DB indicating problem with tester.
+        /// </summary>
+        /// <param name="OperatorLogin"></param>
+        /// <param name="StationName"></param>
         public MalfunctionReport(string OperatorLogin, string StationName)
         {
             InitializeComponent();
-            this.operatorLogin = OperatorLogin;
-            this.stationName = StationName;
             this.BreakdownStarted = DateTime.Now;
             timer1.Start();
-            SendQueryToDB($"UPDATE teststations SET IsDown = 1 WHERE TesterName = '{stationName}';");
+            this.sqlHandle = new MySQLManager(oName: OperatorLogin, sName: StationName);
+            this.sqlHandle.UpdateTeststations(problemOperator: "1");
         }
 
         #endregion
@@ -83,40 +95,26 @@ namespace TestManager
                 }
             }
 
-            string sql;
             // Decide if malfunction time should be caluclated basing on timer or optional textbox input
             if (optionalBreakdownTimeInterval == new TimeSpan())
             {
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
+                sqlHandle.CrashStarted = $"'{BreakdownStarted.ToString("yyyy-MM-dd HH:mm:ss.fff")}'";
+                sqlHandle.CrashTime = $"'{DateTime.Now - BreakdownStarted}'";
             }
             else
             {
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
+                sqlHandle.CrashStarted = $"'{(DateTime.Now - optionalBreakdownTimeInterval).ToString("yyyy-MM-dd HH:mm:ss.fff")}'";
+                sqlHandle.CrashTime = $"'{optionalBreakdownTimeInterval}'";
             }
-            SendQueryToDB(sql);
+            sqlHandle.ProblemDescription = descriptionComboBox.Text + " " + descriptionTextbox.Text;
+            sqlHandle.ActionTaken = actionTakenComboBox.Text + " " + actionTextbox.Text;
+            sqlHandle.Technician = technicianComboBox.Text;
+            sqlHandle.InsertCrashlog();
             Close();
         }
 
         /// <summary>
-        /// Used to focus combobox
+        /// Focus combobox
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -142,43 +140,7 @@ namespace TestManager
         /// <param name="e"></param>
         private void MalfunctionReport_FormClosed(object sender, FormClosedEventArgs e)
         {
-            SendQueryToDB($"UPDATE teststations SET IsDown = 0 WHERE TesterName = '{stationName}';");
-        }
-
-        #endregion
-
-        #region Private methods
-
-        /// <summary>
-        /// Connects to MySQL DB, builds insertion command, inserts data into DB
-        /// </summary>
-        /// <param name="sql">SQL query string</param>
-        private void SendQueryToDB(string sql)
-        {
-            try
-            {
-                // Create SQL handle
-                MySqlConnection connection;
-
-                var connStr = ConfigurationManager.ConnectionStrings["***REMOVED***DataBase_MySQL"].ConnectionString;
-
-                // Open connection using connection string taken from config file of calling aplication
-                connection = new MySqlConnection(connStr);
-
-                connection.Open();
-
-                // Execute query
-                MySqlCommand command = new MySqlCommand(sql, connection);
-                command.ExecuteNonQuery();
-
-                command.Dispose();
-                connection.Close();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                return;
-            }
+            sqlHandle.UpdateTeststations(problemOperator: "0");
         }
 
         #endregion
