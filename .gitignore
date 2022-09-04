@@ -712,3 +712,15 @@
 /TestManager/bin/Debug/net6.0-windows/GenericTestReport.pdb
 /TestManager/bin/Debug/net6.0-windows/GenericTestReport.dll
 *.vsidx
+/TestManager/Pareto.resx
+/TestManager/Pareto.Designer.cs
+/TestManager/MalfunctionReport.resx
+/TestManager/MalfunctionReport.Designer.cs
+/TestManager/MainForm.resx
+/TestManager/MainForm.Designer.cs
+/TestManager/LogIn.resx
+/TestManager/LogIn.Designer.cs
+/TestManager/Details.resx
+/TestManager/Details.Designer.cs
+/TestManager/TestManager.csproj.user
+/TestManager/TestManager.csproj
