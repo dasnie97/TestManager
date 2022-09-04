@@ -1,50 +1,60 @@
-﻿using System.Data.SqlClient;
-using System.Text.RegularExpressions;
-using System.IO;
-using System.Configuration;
-using KitronGenericTestReports;
+﻿using System.Text.RegularExpressions;
+using GenericTestReport;
 using System.Diagnostics;
-using MySql.Data.MySqlClient;
 
 namespace TestManager
 {
     /// <summary>
-    /// Test manager is complex tool for handling test data. It performs several functions:
-    /// Informs user about: currently working operator, test station name, tester performance (yield, tested quantity).
-    /// Provides functionality to: send test data to factory traceability system and to test data base (this can be turned on and off using button), display top failure causes, display details about every tested board since startup.
-    /// Also provides functionality for operator to raise ana alarm when malfunction occurs. Maintenance technicians are informed and once tester is repaired, technician can report what was cause of problem and action taken. This data along with operator name, station ID, starting and finishing time of malfunction, and technician name are then send to data base for further analysis.
+    /// TestManager main form.
     /// </summary>
     public partial class MainForm : Form
     {
         #region Private fields
 
-        // Determines data logging setting (process data or not)
+        /// <summary>
+        /// Data transfer setting (process data or not)
+        /// </summary>
         private bool dataLogging = true;
 
-        // Handles reference to login form. Necessary to handle logout function
+        /// <summary>
+        /// Reference to login form. Necessary to handle logout function
+        /// </summary>
         private Form loginForm;
 
-        // IO directory paths
+        /// <summary>
+        /// IO directory paths
+        /// </summary>
         private string InputDir = string.Empty;
         private string OutputDir = string.Empty;
         private string CopyDir = string.Empty;
 
-        // Holds information about processing results
+        /// <summary>
+        /// Statistics
+        /// </summary>
         private int numberOfFilesProcessed = 0;
         private int numberOfFilesFailed = 0;
 
-        // Holds processed log files data
+        /// <summary>
+        /// Processed log files data
+        /// </summary>
         private List<LogFile> ProcessedData = new List<LogFile>();
 
-        // Holds log files sending option
+        /// <summary>
+        /// Data transfer option
+        /// </summary>
         private int sendingOption = -1;
+
+        /// <summary>
+        /// Sql traffic handle
+        /// </summary>
+        private MySQLManager sqlHandle;
 
         #endregion
 
         #region Constructor
 
         /// <summary>
-        /// Constructor. Retrieves text entered in loginForm and loginForm itself as an object.
+        /// Retrieves text entered in loginForm and loginForm itself as an object.
         /// </summary>
         /// <param name="operatorLogin">Text entered in loginForm.</param>
         /// <param name="loginForm">loginForm object.</param>
@@ -55,6 +65,8 @@ namespace TestManager
             // Assign data retrieved from loginForm to private fields
             operatorLoginLabel.Text = operatorLogin;
             loginForm = LoginForm;
+
+            this.sqlHandle = new MySQLManager(sName: this.stationNameLabel.Text, oName: operatorLogin);
         }
 
         #endregion
@@ -67,7 +79,7 @@ namespace TestManager
         }
 
         /// <summary>
-        /// Sets dataLogging flag. ON = data is processed in main loop, OFF = data is not processed
+        /// Sets dataLogging flag. ON = data is transferred, OFF = data is not transferred
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -92,10 +104,7 @@ namespace TestManager
         {
             try
             {
-                // Create new form and pass TestData as an input parameter
-                Pareto paretoForm = new Pareto(ProcessedData);
-
-                // Show new form
+                Pareto paretoForm = new Pareto(this.ProcessedData);
                 paretoForm.ShowDialog();
             }
             catch (Exception ex)
@@ -104,14 +113,16 @@ namespace TestManager
             }
         }
 
+        /// <summary>
+        /// Displays new form with table of results since startup.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void detailsButton_Click(object sender, EventArgs e)
         {
             try
             {
-                // Create new form and pass TestData as an input parameter
                 Details detailsForm = new Details(ProcessedData);
-
-                // Show new form
                 detailsForm.ShowDialog();
             }
             catch (Exception ex)
@@ -121,7 +132,7 @@ namespace TestManager
         }
 
         /// <summary>
-        /// Click this button to alarm technician about malfunction and stop work.
+        /// Click this button to alarm technician about malfunction and stop transferring data.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -130,10 +141,7 @@ namespace TestManager
             TurnOffLogging();
             try
             {
-                // Create new form and pass TestData as an input parameter
                 MalfunctionReport malfForm = new MalfunctionReport(operatorLoginLabel.Text, stationNameLabel.Text);
-
-                // Show new form
                 malfForm.ShowDialog();
             }
             catch (Exception ex)
@@ -146,6 +154,11 @@ namespace TestManager
 
         #region MenuStrip
 
+        /// <summary>
+        /// Open directory in file explorer by clicking on menu strip item.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void inputToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo
@@ -153,10 +166,14 @@ namespace TestManager
                 Arguments = InputDir,
                 FileName = "explorer.exe"
             };
-
             Process.Start(startInfo);
         }
 
+        /// <summary>
+        /// Open directory in file explorer by clicking on menu strip item.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void outputToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo
@@ -164,10 +181,14 @@ namespace TestManager
                 Arguments = OutputDir,
                 FileName = "explorer.exe"
             };
-
             Process.Start(startInfo);
         }
 
+        /// <summary>
+        /// Open directory in file explorer by clicking on menu strip item.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void copyToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
@@ -177,7 +198,6 @@ namespace TestManager
                     Arguments = CopyDir,
                     FileName = "explorer.exe"
                 };
-
                 Process.Start(startInfo);
             }
             catch { }
@@ -188,12 +208,11 @@ namespace TestManager
         #region Private methods
 
         /// <summary>
-        /// Get station name from txt file located in same folder as exe 
+        /// Get configuration settings from txt file located in same folder as exe 
         /// </summary>
         private bool LoadConfig()
         {
             var success = true;
-
             var configPath = "config.txt";
 
             if (!File.Exists(configPath))
@@ -255,7 +274,6 @@ namespace TestManager
                 MessageBox.Show($"Output directory does not exist!");
                 success = false;
             }
-
             return success;
         }
 
@@ -268,14 +286,12 @@ namespace TestManager
             // Create new regular expression: dddddddd_dddddd_  where d - digit
             Regex r = new Regex(@"\d{8}\w{1}\d{6}\w{1}");
 
-
             //////////////////////////////////////////////////////////////////////////////////
             //File name example:    01032022_163836_20172797560108.txt
             //                      01052022_213920_22023520891916E.txt
             //                      01072022_123751_HID=582240701D7P2021481001056&REV=K.txt
             //////////////////////////////////////////////////////////////////////////////////
-
-
+            
             // Assign files matching regular expression, having txt extension and with size > 0 to new list
             List<string> files = Directory.GetFiles(InputDir, "*.txt")
                      .Where(path => r.IsMatch(path) && new FileInfo(path).Length != 0)
@@ -302,9 +318,7 @@ namespace TestManager
                     YieldLabel.BackColor = Color.Red;
             }
             catch
-            {
-
-            }
+            { }
         }
 
         /// <summary>
@@ -318,6 +332,7 @@ namespace TestManager
             {
                 foreach (var logFile in logFiles)
                 {
+                    // Wait until file is released
                     for (int i = 0; i < 5; i++)
                     {
                         if (!IsFileLocked(new FileInfo(logFile)))
@@ -328,6 +343,7 @@ namespace TestManager
                     LogFile LF = new(logFile);
 
                     // Filter data basing on sending option setting
+                    // Transfer only passed
                     if (sendingOption == 0)
                     {
                         if (LF.BoardStatus != "Passed")
@@ -336,22 +352,19 @@ namespace TestManager
                             continue;
                         }
                     }
+                    // Delete all files and transfer nothing
                     if (sendingOption == 1)
                     {
                         File.Delete(logFile);
                         continue;
                     }
+                    // Transfer all
                     if (sendingOption == 2)
                     {}
 
                     // Add object to list for displaying Details and Pareto forms
                     ProcessedData.Add(LF);
-
-                    var err = LF.SendTo_MySQL_DB(new string[] {"Operator", operatorLoginLabel.Text});
-                    if (err.Length > 2)
-                    {
-                        throw new Exception(err);
-                    }
+                    sqlHandle.InsertTestResult(LF);
 
                     if (CopyDir != String.Empty)
                         File.Copy(logFile, Path.Combine(CopyDir, Path.GetFileName(logFile)));
@@ -397,13 +410,12 @@ namespace TestManager
                 //or does not exist (has already been processed)
                 return true;
             }
-
             //file is not locked
             return false;
         }
 
         /// <summary>
-        /// Sets data logging mode OFF
+        /// Sets data processing mode OFF
         /// </summary>
         private void TurnOffLogging()
         {
@@ -415,7 +427,7 @@ namespace TestManager
         }
 
         /// <summary>
-        /// Sets data logging ON
+        /// Sets data processing ON
         /// </summary>
         private void TurnOnLogging()
         {
@@ -440,7 +452,7 @@ namespace TestManager
                 {
                     for (int i = 0; i < 5; i++)
                     {
-                        if (lF.TestDataPresentInSystem())
+                        if (sqlHandle.TestDataPresentInSystem(lF))
                         {
                             alarm = false;
                             break;
@@ -456,14 +468,12 @@ namespace TestManager
                 if (alarm)
                 {
                     dataLoggingSwitchButton.PerformClick();
-                    SendQueryToDB($"UPDATE teststations SET ProblemFLX = 1, CurrentOperator = '{operatorLoginLabel.Text}' WHERE TesterName = '{stationNameLabel.Text}';");
+                    sqlHandle.UpdateTeststations(problemFLX: "1");
                 }
                 else
                 {
-                    SendQueryToDB($"UPDATE teststations SET ProblemFLX = 0 WHERE TesterName = '{stationNameLabel.Text}';");
+                    sqlHandle.UpdateTeststations(problemFLX: "0");
                 }
-
-
                 return lF;
             }
             catch (Exception ex)
@@ -472,38 +482,6 @@ namespace TestManager
                 return lF;
             }
 
-        }
-
-        /// <summary>
-        /// Connects to MySQL DB, builds insertion command, inserts data into DB
-        /// </summary>
-        /// <param name="sql">SQL query string</param>
-        private void SendQueryToDB(string sql)
-        {
-            try
-            {
-                // Create SQL handle
-                MySqlConnection connection;
-
-                var connStr = ConfigurationManager.ConnectionStrings["KitronDataBase_MySQL"].ConnectionString;
-
-                // Open connection using connection string taken from config file of calling aplication
-                connection = new MySqlConnection(connStr);
-
-                connection.Open();
-
-                // Execute query
-                MySqlCommand command = new MySqlCommand(sql, connection);
-                command.ExecuteNonQuery();
-
-                command.Dispose();
-                connection.Close();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                return;
-            }
         }
 
         #endregion
@@ -530,19 +508,18 @@ namespace TestManager
         }
 
         /// <summary>
-        /// Main loop. Displays time passed from malfunction start, process input data, update UI
+        /// Main loop
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void timer1000ms_Tick(object sender, EventArgs e)
         {
-            // Process log files if data logging is turned on
             if (dataLogging != false)
             {
                 var logFiles = GetLogFiles();
                 ProcessLogFiles(logFiles);
 
-                // Check if data flows to factory system. If no - stop work (dataLogging false)
+                // Check if data flows to factory system. If no - stop work (dataLogging false) and raise alarm.
                 if (logFiles.Count > 0)
                 {
                     Task task = CheckLogInSystem(ProcessedData.Last());
