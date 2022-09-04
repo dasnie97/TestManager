@@ -711,3 +711,4 @@
 /TestManager/bin/Debug/net6.0-windows/MySQLManager.dll
 /TestManager/bin/Debug/net6.0-windows/GenericTestReport.pdb
 /TestManager/bin/Debug/net6.0-windows/GenericTestReport.dll
+*.vsidx
