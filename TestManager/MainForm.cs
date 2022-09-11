@@ -1,6 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using GenericTestReport;
 using System.Diagnostics;
+using System.Configuration;
 
 namespace TestManager
 {
@@ -48,6 +49,11 @@ namespace TestManager
         /// Sql traffic handle
         /// </summary>
         private MySQLManager sqlHandle;
+
+        /// <summary>
+        /// Describes if data should be send to FTP server
+        /// </summary>
+        private bool SendToFTP = false;
 
         #endregion
 
@@ -362,12 +368,26 @@ namespace TestManager
 
                     // Add object to list for displaying Details and Pareto forms
                     ProcessedData.Add(LF);
-                    sqlHandle.InsertTestResult(LF);
+
+                    if (SendToFTP == true)
+                    {
+                        sqlHandle.SendToFTP(LF);
+                    }
+                    else
+                    {
+                        sqlHandle.InsertTestResult(LF);
+                    }
 
                     if (CopyDir != String.Empty)
-                        File.Copy(logFile, Path.Combine(CopyDir, Path.GetFileName(logFile)));
+                    {
+                        var cdir = Path.Combine(CopyDir, $"{DateTime.Now.Year}_{DateTime.Now.Month.ToString("00")}");
+                        Directory.CreateDirectory(cdir);
+                        File.Copy(logFile, Path.Combine(cdir, Path.GetFileName(logFile)));
+                    }
 
-                    File.Move(logFile, Path.Combine(OutputDir, Path.GetFileName(logFile)), true);
+                    var mdir = Path.Combine(OutputDir, $"{DateTime.Now.Year}_{DateTime.Now.Month.ToString("00")}");
+                    Directory.CreateDirectory(mdir);
+                    File.Move(logFile, Path.Combine(mdir, Path.GetFileName(logFile)), true);
 
                     numberOfFilesProcessed++;
                     if (LF.BoardStatus != "Passed")
@@ -499,9 +519,18 @@ namespace TestManager
                 Close();
                 return;
             }
+
+            var ftpOpt = ConfigurationManager.AppSettings.Get("SendToFTP");
+            if (ftpOpt == "1")
+            {
+                SendToFTP = true;
+                ToolStripItem ftpStripItem = new ToolStripMenuItem("FTP");
+                menuStrip1.Items.Add(ftpStripItem);
+            }
             inputToolStripMenuItem.Text = $"Input: {InputDir}";
             outputToolStripMenuItem.Text = $"Output: {OutputDir}";
             copyToolStripMenuItem.Text = $"Copy: {CopyDir}";
+
             timer3000ms.Start();
             this.sqlHandle = new MySQLManager(sName: this.stationNameLabel.Text, oName: this.operatorLoginLabel.Text);
         }
@@ -519,7 +548,7 @@ namespace TestManager
                 ProcessLogFiles(logFiles);
 
                 // Check if data flows to factory system. If no - stop work (dataLogging false) and raise alarm.
-                if (logFiles.Count > 0)
+                if (logFiles.Count > 0 && SendToFTP == false)
                 {
                     Task task = CheckLogInSystem(ProcessedData.Last());
                 }
