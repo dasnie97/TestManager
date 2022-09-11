@@ -526,6 +526,7 @@ namespace TestManager
                 SendToFTP = true;
                 ToolStripItem ftpStripItem = new ToolStripMenuItem("FTP");
                 menuStrip1.Items.Add(ftpStripItem);
+                breakdownButton.Enabled = false;
             }
             inputToolStripMenuItem.Text = $"Input: {InputDir}";
             outputToolStripMenuItem.Text = $"Output: {OutputDir}";
