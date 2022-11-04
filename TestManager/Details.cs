@@ -17,13 +17,13 @@ namespace TestManager
         {
             foreach (var logFile in inputData)
             {
-                TableOfResults.Rows.Add(logFile.BoardStatus, logFile.Path, logFile.BoardSerialNumber, logFile.FailedStep, logFile.Station, logFile.DateAndTimeOfTest);
+                TableOfResults.Rows.Add(logFile.Status, /*logFile.Path,*/ logFile.SerialNumber, logFile.Failure, logFile.Workstation, logFile.TestDateTimeStarted);
 
                 // Get index of last row
                 var lastRowIndex = this.TableOfResults.Rows.GetLastRow(DataGridViewElementStates.Visible);
 
                 // Set last row background color depending on LogFile status property and increment yield variables
-                if (logFile.BoardStatus == "Passed")
+                if (logFile.Status == "Passed")
                 {
                     this.TableOfResults.Rows[lastRowIndex].DefaultCellStyle.BackColor = Color.FromArgb(90, 235, 33);
                 }

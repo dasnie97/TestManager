@@ -89,7 +89,7 @@ namespace TestManager
         private List<ParetoData> getFailedTests(List<LogFile> testData)
         {
             // Pick up only tests that have 'Failed' status
-            var failedTests = testData.Where(status => status.BoardStatus == "Failed" && status.FailedStep != null).ToList();
+            var failedTests = testData.Where(status => status.Status == "Failed" && status.Failure != null).ToList();
 
             // Create new List of strings to handle unique names of failed tests
             var uniqueFailedTests = new List<string>();
@@ -98,11 +98,11 @@ namespace TestManager
             foreach (var test in failedTests)
             {
                 // If failed test name is already present on List, continue looping
-                if (uniqueFailedTests.Contains(test.FailedStep.Split("\n")[0]))
+                if (uniqueFailedTests.Contains(test.Failure.Split("\n")[0]))
                     continue;
 
                 // If failed test name is not present on List yet, add it
-                uniqueFailedTests.Add(test.FailedStep.Split("\n")[0]);
+                uniqueFailedTests.Add(test.Failure.Split("\n")[0]);
             }
 
             // Create new empty list of ParetoData type to be filled with pareto data
@@ -118,7 +118,7 @@ namespace TestManager
                 foreach (var test in failedTests)
                 {
                     // Check how many times unique failed test name is present in filtered input data
-                    if (uniqueFailedTest == test.FailedStep.Split("\n")[0])
+                    if (uniqueFailedTest == test.Failure.Split("\n")[0])
                     {
                         numberOfOccurences++;
                     }
