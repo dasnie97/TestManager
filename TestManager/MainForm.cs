@@ -48,7 +48,7 @@ namespace TestManager
         /// <summary>
         /// Sql traffic handle
         /// </summary>
-        private MySQLManager sqlHandle;
+        private MySQLManager sqlHandle = new();
 
         /// <summary>
         /// Describes if data should be send to FTP server
@@ -345,12 +345,15 @@ namespace TestManager
                     }
 
                     LogFile LF = new(logFile);
+                    LF.Operator = operatorLoginLabel.Text;
+
+                    sqlHandle.HttpPost(LF);
 
                     // Filter data basing on sending option setting
                     // Transfer only passed
                     if (sendingOption == 0)
                     {
-                        if (LF.BoardStatus != "Passed")
+                        if (LF.Status != "Passed")
                         {
                             File.Delete(logFile);
                             continue;
@@ -371,11 +374,11 @@ namespace TestManager
 
                     if (SendToFTP == true)
                     {
-                        sqlHandle.SendToFTP(LF);
+                        //sqlHandle.SendToFTP(logFile);
                     }
                     else
                     {
-                        sqlHandle.InsertTestResult(LF);
+                        //sqlHandle.InsertTestResult(LF);
                     }
 
                     if (CopyDir != String.Empty)
@@ -390,7 +393,7 @@ namespace TestManager
                     File.Move(logFile, Path.Combine(mdir, Path.GetFileName(logFile)), true);
 
                     numberOfFilesProcessed++;
-                    if (LF.BoardStatus != "Passed")
+                    if (LF.Status != "Passed")
                         numberOfFilesFailed++;
 
                     updateUI();
@@ -533,7 +536,7 @@ namespace TestManager
             copyToolStripMenuItem.Text = $"Copy: {CopyDir}";
 
             timer3000ms.Start();
-            this.sqlHandle = new MySQLManager(sName: this.stationNameLabel.Text, oName: this.operatorLoginLabel.Text);
+            sqlHandle = new MySQLManager(sName: this.stationNameLabel.Text, oName: this.operatorLoginLabel.Text);
         }
 
         /// <summary>
@@ -551,7 +554,7 @@ namespace TestManager
                 // Check if data flows to factory system. If no - stop work (dataLogging false) and raise alarm.
                 if (logFiles.Count > 0 && SendToFTP == false)
                 {
-                    Task task = CheckLogInSystem(ProcessedData.Last());
+                    //Task task = CheckLogInSystem(ProcessedData.Last());
                 }
             }     
         }
