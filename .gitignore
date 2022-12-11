@@ -746,3 +746,4 @@
 *.pack
 /TestManager.git/info/exclude
 /TestManager.git/HEAD
+/.vs
