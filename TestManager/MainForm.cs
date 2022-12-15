@@ -2,9 +2,7 @@
 using GenericTestReport;
 using System.Diagnostics;
 using System.Configuration;
-using System.Collections.Specialized;
 using GenericTestReport.Interfaces;
-using System.Net.Http.Json;
 
 namespace TestManager
 {
@@ -32,10 +30,11 @@ namespace TestManager
 
         private int numberOfFilesProcessed = 0;
         private int numberOfFilesFailed = 0;
+        private int previousNumberOfFiles = 0;
 
         private List<LogFile> ProcessedData = new List<LogFile>();
 
-        private HTTPPlugin<LogFile> _httpService = new HTTPPlugin<LogFile>();
+        private HTTPPlugin _httpService = new HTTPPlugin();
         private MESPlugin _mesService = new MESPlugin();
         private FTPPlugin _ftpService = new FTPPlugin();
 
@@ -338,13 +337,12 @@ namespace TestManager
                     if (loggingOption == 2)
                     {}
 
-                    ProcessedData.Add(LF);
-
                     if (SendOverHTTP) await _httpService.HttpPost(LF);
                     if (SendOverFTP) await _ftpService.SendToFTP(logFile);
                     if (CopyDir != String.Empty) CopyFile(logFile);
                     MoveFile(logFile);
 
+                    ProcessedData.Add(LF);
                     numberOfFilesProcessed++;
                     if (LF.Status != "Passed")
                         numberOfFilesFailed++;
@@ -474,12 +472,25 @@ namespace TestManager
                 Close();
                 return;
             }
+            if (!WorkstationExists()) CreateWorkstation();
             TurnOffLogging();
             timer3000ms.Start();
         }
 
+        private void CreateWorkstation()
+        {
+            var workstation = new Workstation(TestStationName);
+            _httpService.HttpPost<Workstation>(workstation);
+        }
+
+        private bool WorkstationExists()
+        {
+            List<Workstation> workstations = _httpService.HttpGet<Workstation>().Result;
+            return workstations.Any(x => x.Name == TestStationName) ? true : false;
+        }
+
         // Main loop
-        private void timer1000ms_Tick(object sender, EventArgs e)
+        private void timer3000ms_Tick(object sender, EventArgs e)
         {
             if (dataLogging != false)
             {
@@ -490,6 +501,13 @@ namespace TestManager
                     Task task = CheckMES(ProcessedData.Last());
                 }
             }     
+        }
+
+        private void timer20min_Tick(object sender, EventArgs e)
+        {
+            var estimatedOutput = TimeSpan.FromSeconds(ProcessedData.Where(x => x.Status == "Passed").Select(x=>x.TestingTime).Average(spans=>spans.TotalSeconds));
+            if (numberOfFilesProcessed > previousNumberOfFiles )
+            previousNumberOfFiles = numberOfFilesProcessed;
         }
 
         /// <summary>
