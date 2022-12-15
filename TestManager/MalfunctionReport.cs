@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using GenericTestReport;
+using System.Text.RegularExpressions;
 
 namespace TestManager
 {
@@ -22,7 +23,7 @@ namespace TestManager
         /// <summary>
         /// Handles all sql traffic.
         /// </summary>
-        private MySQLManager sqlHandle;
+        //private HTTPPlugin<LogFile> _httpService = new();
 
         #endregion
 
@@ -36,10 +37,9 @@ namespace TestManager
         public MalfunctionReport(string OperatorLogin, string StationName)
         {
             InitializeComponent();
-            this.BreakdownStarted = DateTime.Now;
+            BreakdownStarted = DateTime.Now;
             timer1.Start();
-            this.sqlHandle = new MySQLManager(oName: OperatorLogin, sName: StationName);
-            this.sqlHandle.UpdateTeststations(problemOperator: "1");
+            //_httpService.UpdateTeststations(problemOperator: "1");
         }
 
         #endregion
@@ -96,20 +96,20 @@ namespace TestManager
             }
 
             // Decide if malfunction time should be caluclated basing on timer or optional textbox input
-            if (optionalBreakdownTimeInterval == new TimeSpan())
-            {
-                sqlHandle.CrashStarted = BreakdownStarted.ToString("yyyy-MM-dd HH:mm:ss.fff");
-                sqlHandle.CrashTime = (DateTime.Now - BreakdownStarted).ToString("hh\\:mm\\:ss");
-            }
-            else
-            {
-                sqlHandle.CrashStarted = (DateTime.Now - optionalBreakdownTimeInterval).ToString("yyyy-MM-dd HH:mm:ss.fff");
-                sqlHandle.CrashTime = optionalBreakdownTimeInterval.ToString("hh\\:mm\\:ss");
-            }
-            sqlHandle.ProblemDescription = descriptionComboBox.Text + " " + descriptionTextbox.Text;
-            sqlHandle.ActionTaken = actionTakenComboBox.Text + " " + actionTextbox.Text;
-            sqlHandle.Technician = technicianComboBox.Text;
-            sqlHandle.InsertCrashlog();
+            //if (optionalBreakdownTimeInterval == new TimeSpan())
+            //{
+            //    sqlHandle.CrashStarted = BreakdownStarted.ToString("yyyy-MM-dd HH:mm:ss.fff");
+            //    sqlHandle.CrashTime = (DateTime.Now - BreakdownStarted).ToString("hh\\:mm\\:ss");
+            //}
+            //else
+            //{
+            //    sqlHandle.CrashStarted = (DateTime.Now - optionalBreakdownTimeInterval).ToString("yyyy-MM-dd HH:mm:ss.fff");
+            //    sqlHandle.CrashTime = optionalBreakdownTimeInterval.ToString("hh\\:mm\\:ss");
+            //}
+            //sqlHandle.ProblemDescription = descriptionComboBox.Text + " " + descriptionTextbox.Text;
+            //sqlHandle.ActionTaken = actionTakenComboBox.Text + " " + actionTextbox.Text;
+            //sqlHandle.Technician = technicianComboBox.Text;
+            //sqlHandle.InsertCrashlog();
             Close();
         }
 
@@ -140,7 +140,7 @@ namespace TestManager
         /// <param name="e"></param>
         private void MalfunctionReport_FormClosed(object sender, FormClosedEventArgs e)
         {
-            sqlHandle.UpdateTeststations(problemOperator: "0");
+            //sqlHandle.UpdateTeststations(problemOperator: "0");
         }
 
         #endregion

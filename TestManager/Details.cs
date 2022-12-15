@@ -17,7 +17,7 @@ namespace TestManager
         {
             foreach (var logFile in inputData)
             {
-                TableOfResults.Rows.Add(logFile.Status, /*logFile.Path,*/ logFile.SerialNumber, logFile.Failure, logFile.Workstation, logFile.TestDateTimeStarted);
+                TableOfResults.Rows.Add(logFile.Status,logFile.SerialNumber, logFile.Failure, logFile.Workstation, logFile.TestDateTimeStarted);
 
                 // Get index of last row
                 var lastRowIndex = this.TableOfResults.Rows.GetLastRow(DataGridViewElementStates.Visible);

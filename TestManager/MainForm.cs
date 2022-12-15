@@ -2,75 +2,54 @@
 using GenericTestReport;
 using System.Diagnostics;
 using System.Configuration;
+using GenericTestReport.Interfaces;
 
 namespace TestManager
 {
-    /// <summary>
-    /// TestManager main form.
-    /// </summary>
     public partial class MainForm : Form
     {
         #region Private fields
 
-        /// <summary>
-        /// Data transfer setting (process data or not)
-        /// </summary>
         private bool dataLogging = true;
+        private int loggingOption = -1;
 
         /// <summary>
         /// Reference to login form. Necessary to handle logout function
         /// </summary>
         private Form loginForm;
+        private string operatorName;
 
-        /// <summary>
-        /// IO directory paths
-        /// </summary>
         private string InputDir = string.Empty;
         private string OutputDir = string.Empty;
         private string CopyDir = string.Empty;
+        private bool SendOverFTP = false;
+        private bool SendOverHTTP = false;
+        private bool VerifyMES = false;
+        private bool Verify3510 = false;
+        private string TestStationName = string.Empty;
 
-        /// <summary>
-        /// Statistics
-        /// </summary>
         private int numberOfFilesProcessed = 0;
         private int numberOfFilesFailed = 0;
+        private int previousNumberOfFiles = 0;
 
-        /// <summary>
-        /// Processed log files data
-        /// </summary>
         private List<LogFile> ProcessedData = new List<LogFile>();
 
-        /// <summary>
-        /// Data transfer option
-        /// </summary>
-        private int sendingOption = -1;
+        private HTTPPlugin _httpService = new HTTPPlugin();
+        private MESPlugin _mesService = new MESPlugin();
+        private FTPPlugin _ftpService = new FTPPlugin();
 
-        /// <summary>
-        /// Sql traffic handle
-        /// </summary>
-        private MySQLManager sqlHandle = new();
-
-        /// <summary>
-        /// Describes if data should be send to FTP server
-        /// </summary>
-        private bool SendToFTP = false;
+        private Configuration _configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
 
         #endregion
 
         #region Constructor
 
-        /// <summary>
-        /// Retrieves text entered in loginForm and loginForm itself as an object.
-        /// </summary>
-        /// <param name="operatorLogin">Text entered in loginForm.</param>
-        /// <param name="loginForm">loginForm object.</param>
         public MainForm(string operatorLogin, Form LoginForm)
         {
             InitializeComponent();
-
-            // Assign data retrieved from loginForm to private fields
-            operatorLoginLabel.Text = operatorLogin;
+            operatorName = operatorLogin;
             loginForm = LoginForm;
+            operatorLoginLabel.Text = operatorName;
         }
 
         #endregion
@@ -82,11 +61,6 @@ namespace TestManager
             Close();
         }
 
-        /// <summary>
-        /// Sets dataLogging flag. ON = data is transferred, OFF = data is not transferred
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void dataLoggingSwitchButton_Click(object sender, EventArgs e)
         {
             if (dataLogging == true)
@@ -99,16 +73,11 @@ namespace TestManager
             }
         }
 
-        /// <summary>
-        /// Displays new form with chart showing top failures within processed data
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void topFailuresButton_Click(object sender, EventArgs e)
         {
             try
             {
-                Pareto paretoForm = new Pareto(this.ProcessedData);
+                Pareto paretoForm = new Pareto(ProcessedData);
                 paretoForm.ShowDialog();
             }
             catch (Exception ex)
@@ -117,11 +86,6 @@ namespace TestManager
             }
         }
 
-        /// <summary>
-        /// Displays new form with table of results since startup.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void detailsButton_Click(object sender, EventArgs e)
         {
             try
@@ -135,17 +99,12 @@ namespace TestManager
             }
         }
 
-        /// <summary>
-        /// Click this button to alarm technician about malfunction and stop transferring data.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void breakdownButton_Click(object sender, EventArgs e)
         {
             TurnOffLogging();
             try
             {
-                MalfunctionReport malfForm = new MalfunctionReport(operatorLoginLabel.Text, stationNameLabel.Text);
+                MalfunctionReport malfForm = new MalfunctionReport(operatorName, TestStationName);
                 malfForm.ShowDialog();
             }
             catch (Exception ex)
@@ -158,11 +117,6 @@ namespace TestManager
 
         #region MenuStrip
 
-        /// <summary>
-        /// Open directory in file explorer by clicking on menu strip item.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void inputToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo
@@ -173,11 +127,6 @@ namespace TestManager
             Process.Start(startInfo);
         }
 
-        /// <summary>
-        /// Open directory in file explorer by clicking on menu strip item.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void outputToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo
@@ -188,11 +137,6 @@ namespace TestManager
             Process.Start(startInfo);
         }
 
-        /// <summary>
-        /// Open directory in file explorer by clicking on menu strip item.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void copyToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
@@ -207,84 +151,117 @@ namespace TestManager
             catch { }
         }
 
+        private void ftpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _configFile.AppSettings.Settings["SendOverFTP"].Value = Convert.ToString(ftpToolStripMenuItem.Checked);
+            _configFile.Save(ConfigurationSaveMode.Modified);
+            ConfigurationManager.RefreshSection(_configFile.AppSettings.SectionInformation.Name);
+            LoadConfig();
+        }
+
+        private void mesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _configFile.AppSettings.Settings["VerifyMES"].Value = Convert.ToString(mesToolStripMenuItem.Checked);
+            _configFile.Save(ConfigurationSaveMode.Modified);
+            ConfigurationManager.RefreshSection(_configFile.AppSettings.SectionInformation.Name);
+            LoadConfig();
+        }
+
+        private void verify3510ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _configFile.AppSettings.Settings["Verify3510"].Value = Convert.ToString(verify3510ToolStripMenuItem.Checked);
+            _configFile.Save(ConfigurationSaveMode.Modified);
+            ConfigurationManager.RefreshSection(_configFile.AppSettings.SectionInformation.Name);
+            LoadConfig();
+        }
+
+        private void httpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _configFile.AppSettings.Settings["SendOverHTTP"].Value = Convert.ToString(httpToolStripMenuItem.Checked);
+            _configFile.Save(ConfigurationSaveMode.Modified);
+            ConfigurationManager.RefreshSection(_configFile.AppSettings.SectionInformation.Name);
+            LoadConfig();
+        }
+
         #endregion
 
         #region Private methods
 
-        /// <summary>
-        /// Get configuration settings from txt file located in same folder as exe 
-        /// </summary>
         private bool LoadConfig()
         {
             var success = true;
-            var configPath = "config.txt";
 
-            if (!File.Exists(configPath))
+            var _cfg = _configFile.AppSettings.Settings;
+            
+            TestStationName = _cfg["TestStationName"].Value ?? "Not found";
+            stationNameLabel.Text = TestStationName;
+            try
             {
-                MessageBox.Show($"Path {configPath} does not exist!");
-                return false;
+                if (TestStationName == "Not found") throw new Exception("Test station name not found!");
+                SendOverFTP = Convert.ToBoolean(_cfg["SendOverFTP"].Value);
+                SendOverHTTP = Convert.ToBoolean(_cfg["SendOverHTTP"].Value);
+                VerifyMES = Convert.ToBoolean(_cfg["VerifyMES"].Value);
+                Verify3510 = Convert.ToBoolean(_cfg["Verify3510"].Value);
             }
-
-            foreach (var line in File.ReadLines(configPath))
+            catch (Exception e)
             {
-                if (line.StartsWith("TestStation:\t"))
-                {
-                    var value = line.Split("\t")[1].Trim();
-                    stationNameLabel.Text = value;
-                }
-
-                if (line.StartsWith("InputDir:\t"))
-                {
-                    var value = line.Split("\t")[1].Trim();
-                    if (!Directory.Exists(value))
-                    {
-                        MessageBox.Show($"Path {value} does not exist!");
-                        success = false;
-                    }
-                    InputDir = value;
-                }
-
-                if (line.StartsWith("OutputDir:\t"))
-                {
-                    var value = line.Split("\t")[1].Trim();
-                    if (!Directory.Exists(value))
-                    {
-                        MessageBox.Show($"Path {value} does not exist!");
-                        success = false;
-                    }
-                    OutputDir = value;
-                }
-
-                if (line.StartsWith("CopyDir:\t"))
-                {
-                    var value = line.Split("\t")[1].Trim();
-                    if (!Directory.Exists(value))
-                    {
-                        MessageBox.Show($"Path {value} does not exist!");
-                        success = false;
-                    }
-                    CopyDir = value;
-                }
-            }
-
-            if (InputDir == String.Empty)
-            {
-                MessageBox.Show($"Input directory does not exist!");
+                MessageBox.Show($"Error loading config: {e.Message}");
                 success = false;
             }
 
-            if (OutputDir == String.Empty)
+            ftpToolStripMenuItem.Checked = SendOverFTP;
+            httpToolStripMenuItem.Checked = SendOverHTTP;
+            mesToolStripMenuItem.Checked = VerifyMES;
+            verify3510ToolStripMenuItem.Checked = Verify3510;
+
+            var input = _cfg["InputDir"].Value;
+            if (!string.IsNullOrEmpty(input))
             {
-                MessageBox.Show($"Output directory does not exist!");
-                success = false;
+                if (!Directory.Exists(input))
+                {
+                    MessageBox.Show($"Path {input} does not exist!");
+                    success = false;
+                }
+                else
+                {
+                    InputDir = input;
+                    inputToolStripMenuItem.Text = $"Input: {InputDir}";
+                }
             }
+
+            var output = _cfg["OutputDir"].Value;
+            if (!string.IsNullOrEmpty(output))
+            {
+                if (!Directory.Exists(output))
+                {
+                    MessageBox.Show($"Path {output} does not exist!");
+                    success = false;
+                }
+                else
+                {
+                    OutputDir = output;
+                    outputToolStripMenuItem.Text = $"Output: {OutputDir}";
+                }
+            }
+
+            var copy = _cfg["CopyDir"].Value;
+            if (!string.IsNullOrEmpty(copy))
+            {
+                if (!Directory.Exists(copy))
+                {
+                    MessageBox.Show($"Path {copy} does not exist!");
+                    success = false;
+                }
+                else
+                {
+                    CopyDir = copy;
+                    copyToolStripMenuItem.Text = $"Copy: {CopyDir}";
+                }
+            }
+            
             return success;
         }
 
-        /// <summary>
-        /// Filters files in input dir.
-        /// </summary>
-        /// <returns>List of filtered files paths</returns>
         private List<string> GetLogFiles()
         {
             // Create new regular expression: dddddddd_dddddd_  where d - digit
@@ -304,9 +281,6 @@ namespace TestManager
             return files;
         }
 
-        /// <summary>
-        /// Sets statistics on processed data
-        /// </summary>
         private void updateUI()
         {
             TestedQtyLabel.Text = numberOfFilesProcessed.ToString();
@@ -325,13 +299,9 @@ namespace TestManager
             { }
         }
 
-        /// <summary>
-        /// Process test log files basing on sending option setting. Create LogFile object, add it to list of log file objects, send data to data base, move and copy file, 
-        /// calculate statistics and display it in UI.
-        /// </summary>
-        /// <param name="logFiles">List of input data paths</param>
-        private void ProcessLogFiles(List<string> logFiles)
+        private async Task ProcessLogFiles(List<string> logFiles)
         {
+            timer3000ms.Stop();
             try
             {
                 foreach (var logFile in logFiles)
@@ -345,13 +315,11 @@ namespace TestManager
                     }
 
                     LogFile LF = new(logFile);
-                    LF.Operator = operatorLoginLabel.Text;
-
-                    sqlHandle.HttpPost(LF);
+                    LF.Operator = operatorName;
 
                     // Filter data basing on sending option setting
                     // Transfer only passed
-                    if (sendingOption == 0)
+                    if (loggingOption == 0)
                     {
                         if (LF.Status != "Passed")
                         {
@@ -360,60 +328,53 @@ namespace TestManager
                         }
                     }
                     // Delete all files and transfer nothing
-                    if (sendingOption == 1)
+                    if (loggingOption == 1)
                     {
                         File.Delete(logFile);
                         continue;
                     }
                     // Transfer all
-                    if (sendingOption == 2)
+                    if (loggingOption == 2)
                     {}
 
-                    // Add object to list for displaying Details and Pareto forms
+                    if (SendOverHTTP) await _httpService.HttpPost(LF);
+                    if (SendOverFTP) await _ftpService.SendToFTP(logFile);
+                    if (CopyDir != String.Empty) CopyFile(logFile);
+                    MoveFile(logFile);
+
                     ProcessedData.Add(LF);
-
-                    if (SendToFTP == true)
-                    {
-                        //sqlHandle.SendToFTP(logFile);
-                    }
-                    else
-                    {
-                        //sqlHandle.InsertTestResult(LF);
-                    }
-
-                    if (CopyDir != String.Empty)
-                    {
-                        var cdir = Path.Combine(CopyDir, $"{DateTime.Now.Year}_{DateTime.Now.Month.ToString("00")}");
-                        Directory.CreateDirectory(cdir);
-                        File.Copy(logFile, Path.Combine(cdir, Path.GetFileName(logFile)));
-                    }
-
-                    var mdir = Path.Combine(OutputDir, $"{DateTime.Now.Year}_{DateTime.Now.Month.ToString("00")}");
-                    Directory.CreateDirectory(mdir);
-                    File.Move(logFile, Path.Combine(mdir, Path.GetFileName(logFile)), true);
-
                     numberOfFilesProcessed++;
                     if (LF.Status != "Passed")
                         numberOfFilesFailed++;
 
                     updateUI();
                 }
-                if (sendingOption != -1)
-                    sendingOption = -1;
+                if (loggingOption != -1)
+                    loggingOption = -1;
             }
             catch (Exception ex)
             {
-                timer3000ms.Stop();
+                MessageBox.Show(ex.StackTrace);
                 MessageBox.Show(ex.Message);
                 Close();
             }
+            timer3000ms.Start();
         }
 
-        /// <summary>
-        /// Checks if file is ready to process.
-        /// </summary>
-        /// <param name="file">Path to file.</param>
-        /// <returns>True if file is used by another process. False if file is free.</returns>
+        private void CopyFile(string logFile)
+        {
+            var cdir = Path.Combine(CopyDir, $"{DateTime.Now.Year}_{DateTime.Now.Month.ToString("00")}");
+            Directory.CreateDirectory(cdir);
+            File.Copy(logFile, Path.Combine(cdir, Path.GetFileName(logFile)));
+        }
+
+        private void MoveFile(string logFile)
+        {
+            var mdir = Path.Combine(OutputDir, $"{DateTime.Now.Year}_{DateTime.Now.Month.ToString("00")}");
+            Directory.CreateDirectory(mdir);
+            File.Move(logFile, Path.Combine(mdir, Path.GetFileName(logFile)), true);
+        }
+
         private bool IsFileLocked(FileInfo file)
         {
             try
@@ -435,9 +396,6 @@ namespace TestManager
             return false;
         }
 
-        /// <summary>
-        /// Sets data processing mode OFF
-        /// </summary>
         private void TurnOffLogging()
         {
             dataLoggingSwitchButton.Text = "OFF";
@@ -447,24 +405,21 @@ namespace TestManager
             sendOptionCombobox.SelectedIndex = 0;
         }
 
-        /// <summary>
-        /// Sets data processing ON
-        /// </summary>
         private void TurnOnLogging()
         {
             dataLoggingSwitchButton.Text = "ON";
             dataLoggingSwitchButton.BackColor = Color.Green;
             dataLogging = true;
             sendOptionCombobox.Visible = false;
-            sendingOption = sendOptionCombobox.SelectedIndex;
+            loggingOption = sendOptionCombobox.SelectedIndex;
         }
 
         /// <summary>
-        /// Asynchronous method for checking if test data is transferred correctly into factory traceability system.
+        /// Asynchronous method for checking if test data is transferred correctly into MES.
         /// </summary>
         /// <param name="lF">Represents currently processed test data object.</param>
         /// <returns>Returned value is not used.</returns>
-        private async Task<LogFile> CheckLogInSystem(LogFile lF)
+        private async Task<LogFile> CheckMES(LogFile lF)
         {
             try
             {
@@ -473,7 +428,7 @@ namespace TestManager
                 {
                     for (int i = 0; i < 5; i++)
                     {
-                        if (sqlHandle.TestDataPresentInSystem(lF))
+                        if (_mesService.TestDataPresentInSystem(lF))
                         {
                             alarm = false;
                             break;
@@ -489,32 +444,27 @@ namespace TestManager
                 if (alarm)
                 {
                     dataLoggingSwitchButton.PerformClick();
-                    sqlHandle.UpdateTeststations(problemFLX: "1");
+                    //sqlHandle.UpdateTeststations(problemFLX: "1");
                 }
                 else
                 {
-                    sqlHandle.UpdateTeststations(problemFLX: "0");
+                    //sqlHandle.UpdateTeststations(problemFLX: "0");
                 }
                 return lF;
             }
             catch (Exception ex)
             {
+                MessageBox.Show(ex.StackTrace);
                 MessageBox.Show(ex.Message);
                 Close();
                 return lF;
             }
-
         }
 
         #endregion
 
         #region Form events & timer
 
-        /// <summary>
-        /// Load config data, set UI controls, start timer
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void Form1_Load(object sender, EventArgs e)
         {
             if (!LoadConfig())
@@ -522,41 +472,42 @@ namespace TestManager
                 Close();
                 return;
             }
-
-            var ftpOpt = ConfigurationManager.AppSettings.Get("SendToFTP");
-            if (ftpOpt == "1")
-            {
-                SendToFTP = true;
-                ToolStripItem ftpStripItem = new ToolStripMenuItem("FTP");
-                menuStrip1.Items.Add(ftpStripItem);
-                breakdownButton.Enabled = false;
-            }
-            inputToolStripMenuItem.Text = $"Input: {InputDir}";
-            outputToolStripMenuItem.Text = $"Output: {OutputDir}";
-            copyToolStripMenuItem.Text = $"Copy: {CopyDir}";
-
+            if (!WorkstationExists()) CreateWorkstation();
+            TurnOffLogging();
             timer3000ms.Start();
-            sqlHandle = new MySQLManager(sName: this.stationNameLabel.Text, oName: this.operatorLoginLabel.Text);
         }
 
-        /// <summary>
-        /// Main loop
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void timer1000ms_Tick(object sender, EventArgs e)
+        private void CreateWorkstation()
+        {
+            var workstation = new Workstation(TestStationName);
+            _httpService.HttpPost<Workstation>(workstation);
+        }
+
+        private bool WorkstationExists()
+        {
+            List<Workstation> workstations = _httpService.HttpGet<Workstation>().Result;
+            return workstations.Any(x => x.Name == TestStationName) ? true : false;
+        }
+
+        // Main loop
+        private void timer3000ms_Tick(object sender, EventArgs e)
         {
             if (dataLogging != false)
             {
                 var logFiles = GetLogFiles();
                 ProcessLogFiles(logFiles);
-
-                // Check if data flows to factory system. If no - stop work (dataLogging false) and raise alarm.
-                if (logFiles.Count > 0 && SendToFTP == false)
+                if (logFiles.Count > 0 && VerifyMES)
                 {
-                    //Task task = CheckLogInSystem(ProcessedData.Last());
+                    Task task = CheckMES(ProcessedData.Last());
                 }
             }     
+        }
+
+        private void timer20min_Tick(object sender, EventArgs e)
+        {
+            var estimatedOutput = TimeSpan.FromSeconds(ProcessedData.Where(x => x.Status == "Passed").Select(x=>x.TestingTime).Average(spans=>spans.TotalSeconds));
+            if (numberOfFilesProcessed > previousNumberOfFiles )
+            previousNumberOfFiles = numberOfFilesProcessed;
         }
 
         /// <summary>
