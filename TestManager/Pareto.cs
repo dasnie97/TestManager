@@ -1,5 +1,6 @@
-﻿using System.Data;
-using GenericTestReport;
+﻿using ProductTest.Common;
+using ProductTest.Models;
+using System.Data;
 
 namespace TestManager
 {
@@ -9,12 +10,12 @@ namespace TestManager
         /// Takes data from parent form and builds a chart from it.
         /// </summary>
         /// <param name="TestData">List of LogFile objects.</param>
-        public Pareto(object TestData)
+        public Pareto(IEnumerable<TestReportBase> TestData)
         {
             InitializeComponent();
 
             // Analyze failed test data, calculate statistics on how many of particular test steps failed
-            var sortedFailedTestData = getFailedTests((List<LogFile>)TestData);
+            var sortedFailedTestData = getFailedTests(TestData);
             UpdateUI(sortedFailedTestData);
         }
 
@@ -86,7 +87,7 @@ namespace TestManager
         /// </summary>
         /// <param name="testData">List of LogFile objects, represents log files.</param>
         /// <returns>List of ParetoData objects.</returns>
-        private List<ParetoData> getFailedTests(List<LogFile> testData)
+        private List<ParetoData> getFailedTests(IEnumerable<TestReportBase> testData)
         {
             // Pick up only tests that have 'Failed' status
             var failedTests = testData.Where(status => status.Status == "Failed" && status.Failure != null).ToList();
