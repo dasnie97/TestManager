@@ -1,5 +1,4 @@
-﻿using GenericTestReport;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace TestManager
 {
