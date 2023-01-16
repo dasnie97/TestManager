@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using TestManager.Helpers;
-using ProductTest.Models;
 
 namespace TestManager;
 
@@ -10,6 +9,7 @@ public partial class MainForm : Form
     private ConfigHandler _config;
     private FileProcessor _fileProcessor;
     private Statistics _statistics;
+    private WebAdapter _webAdapter;
     private Workstation _workstation;
 
     public MainForm(string operatorLogin, Form loginForm)
@@ -19,6 +19,7 @@ public partial class MainForm : Form
         _statistics = new Statistics();
         _fileProcessor = new FileProcessor(_config, _statistics);
         _workstation = new Workstation(_config.TestStationName, operatorLogin);
+        _webAdapter = new WebAdapter(_workstation);
         _loginForm = loginForm;
     }
 
@@ -71,7 +72,7 @@ public partial class MainForm : Form
         TurnOffTestReportTransfer();
         try
         {
-            MalfunctionReport malfForm = new MalfunctionReport(_workstation.OperatorName, _config.TestStationName);
+            MalfunctionReport malfForm = new MalfunctionReport(_workstation.OperatorName, _workstation.Name);
             malfForm.ShowDialog();
         }
         catch (Exception ex)
@@ -163,7 +164,7 @@ public partial class MainForm : Form
 
     private void LoadConfig()
     {
-        stationNameLabel.Text = _config.TestStationName;
+        stationNameLabel.Text = _workstation.Name;
         operatorLoginLabel.Text = _workstation.OperatorName;
         ftpToolStripMenuItem.Checked = _config.SendOverFTP;
         httpToolStripMenuItem.Checked = _config.SendOverHTTP;
