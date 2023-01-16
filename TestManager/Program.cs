@@ -18,7 +18,7 @@ namespace TestManager
             if (!Convert.ToBoolean(ConfigurationManager.AppSettings.Get("AutoLogIn")))
                 Application.Run(new LogIn());
             else
-                Application.Run(new MainForm("dasnie", new Form()));
+                Application.Run(new MainForm("operat", new Form()));
         }
     }
 }
