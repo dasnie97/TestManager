@@ -17,3 +17,6 @@
 *.Designer.cs
 *.csproj.user
 *.csproj
+/TestManagerTest/bin
+/TestManagerTest/obj
+/TestManagerTest/Usings.cs

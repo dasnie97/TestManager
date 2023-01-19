@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using TestManager.Helpers;
+using TestManager.Other;
 
 namespace TestManager;
 
@@ -7,7 +8,7 @@ public partial class MainForm : Form
 {
     private Form _loginForm;
     private ConfigHandler _config;
-    private FileProcessor _fileProcessor;
+    private FileProcessorDeviation _fileProcessor;
     private Statistics _statistics;
     private WebAdapter _webAdapter;
     private Workstation _workstation;
@@ -17,9 +18,8 @@ public partial class MainForm : Form
         InitializeComponent();
         _config = new ConfigHandler();
         _statistics = new Statistics();
-        _fileProcessor = new FileProcessor(_config, _statistics);
+        _fileProcessor = new FileProcessorDeviation(_config, _statistics);
         _workstation = new Workstation(_config.TestStationName, operatorLogin);
-        _webAdapter = new WebAdapter(_workstation);
         _loginForm = loginForm;
     }
 
@@ -203,7 +203,7 @@ public partial class MainForm : Form
 
     private void DowntimeForm_FormClosed(object sender, FormClosedEventArgs e)
     {
-        // Commented to ommit operator login - feature not released yet
+        // Ommit operator login
         //loginForm.Show();
     }
     #endregion
