@@ -1,9 +1,4 @@
 ﻿using ProductTest.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TestManager.Helpers;
 
@@ -11,4 +6,18 @@ public class TrackedTestReport : TestReportBase
 {
     public bool IsFirstPass { get; set; }
     public bool IsFalseCall { get; set; }
+
+    public TrackedTestReport(TestReportBase testReportBase)
+    {
+        SerialNumber = testReportBase.SerialNumber;
+        Workstation = testReportBase.Workstation;
+        TestSteps = testReportBase.TestSteps;
+        TestDateTimeStarted = testReportBase.TestDateTimeStarted;
+        Status = testReportBase.Status;
+        Failure = testReportBase.Failure;
+        FixtureSocket = testReportBase.FixtureSocket;
+        TestingTime = testReportBase.TestingTime;
+        IsFirstPass = true;
+        IsFalseCall = false;
+    }
 }

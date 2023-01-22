@@ -13,19 +13,17 @@ public partial class Details : Form
     {
         foreach (var testReport in testReports)
         {
-            TableOfResults.Rows.Add(testReport.Status,testReport.SerialNumber, testReport.Failure, testReport.Workstation, testReport.TestDateTimeStarted);
+            TableOfResults.Rows.Add(testReport.Status,testReport.SerialNumber, testReport.Failure, testReport.Workstation.Name, testReport.TestDateTimeStarted);
 
-            // Get index of last row
-            var lastRowIndex = this.TableOfResults.Rows.GetLastRow(DataGridViewElementStates.Visible);
+            var lastRowIndex = TableOfResults.Rows.GetLastRow(DataGridViewElementStates.Visible);
 
-            // Set last row background color depending on LogFile status property and increment yield variables
             if (testReport.Status == "Passed")
             {
-                this.TableOfResults.Rows[lastRowIndex].DefaultCellStyle.BackColor = Color.FromArgb(90, 235, 33);
+                TableOfResults.Rows[lastRowIndex].DefaultCellStyle.BackColor = Color.FromArgb(90, 235, 33);
             }
             else
             {
-                this.TableOfResults.Rows[lastRowIndex].DefaultCellStyle.BackColor = Color.FromArgb(232, 65, 65);
+                TableOfResults.Rows[lastRowIndex].DefaultCellStyle.BackColor = Color.FromArgb(232, 65, 65);
             }
         }
     }

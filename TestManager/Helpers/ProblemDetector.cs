@@ -15,9 +15,6 @@ public class ProblemDetector
         _fileProcessor = fileProcessor;
     }
 
-    /// <summary>
-    /// Checks if production problem exists analyzing processed data. If true - communicates it.
-    /// </summary>
     public void Run()
     {
         if (ThereIsNoTraffic())
