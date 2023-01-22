@@ -1,14 +1,15 @@
 ﻿using System.Diagnostics;
 using TestManager.Helpers;
-using TestManager.Other;
+using TestManager.Transporters;
 
 namespace TestManager;
 
 public partial class MainForm : Form
 {
     private Form _loginForm;
-    private ConfigHandler _config;
-    private FileProcessorDeviation _fileProcessor;
+    private Config _config;
+    //TODO: Finish Transporter factory
+    private TransporterCreator _transporter;
     private Statistics _statistics;
     private WebAdapter _webAdapter;
     private Workstation _workstation;
@@ -16,11 +17,11 @@ public partial class MainForm : Form
     public MainForm(string operatorLogin, Form loginForm)
     {
         InitializeComponent();
-        _config = new ConfigHandler();
+        _config = new Config();
         _statistics = new Statistics();
-        _fileProcessor = new FileProcessorDeviation(_config, _statistics);
-        _workstation = new Workstation(_config.TestStationName, operatorLogin);
+        _transporter = new TransporterCreator(_statistics, _config);
         _loginForm = loginForm;
+        _workstation = new Workstation(_config.TestStationName, operatorLogin);
     }
 
     #region Buttons
@@ -31,7 +32,7 @@ public partial class MainForm : Form
 
     private void testReportTransferSwitchButton_Click(object sender, EventArgs e)
     {
-        if (_fileProcessor.IsDataTransferEnabled)
+        if (_transporter.FileProcessor.IsDataTransferEnabled)
         {
             TurnOffTestReportTransfer();
         }
@@ -45,7 +46,7 @@ public partial class MainForm : Form
     {
         try
         {
-            Pareto paretoForm = new Pareto(_fileProcessor.ProcessedData);
+            Pareto paretoForm = new Pareto(_transporter.FileProcessor.ProcessedData);
             paretoForm.ShowDialog();
         }
         catch (Exception ex)
@@ -58,7 +59,7 @@ public partial class MainForm : Form
     {
         try
         {
-            Details detailsForm = new Details(_fileProcessor.ProcessedData);
+            Details detailsForm = new Details(_transporter.FileProcessor.ProcessedData);
             detailsForm.ShowDialog();
         }
         catch (Exception ex)
@@ -148,7 +149,7 @@ public partial class MainForm : Form
     {
         testReportTransferSwitchButton.Text = "OFF";
         testReportTransferSwitchButton.BackColor = Color.Red;
-        _fileProcessor.IsDataTransferEnabled = false;
+        _transporter.FileProcessor.IsDataTransferEnabled = false;
         transferOptionCombobox.Visible = true;
         transferOptionCombobox.SelectedIndex = 0;
     }
@@ -157,9 +158,9 @@ public partial class MainForm : Form
     {
         testReportTransferSwitchButton.Text = "ON";
         testReportTransferSwitchButton.BackColor = Color.Green;
-        _fileProcessor.IsDataTransferEnabled = true;
+        _transporter.FileProcessor.IsDataTransferEnabled = true;
         transferOptionCombobox.Visible = false;
-        _fileProcessor.TransferOption = transferOptionCombobox.SelectedIndex;
+        _transporter.FileProcessor.TransferOption = transferOptionCombobox.SelectedIndex;
     }
 
     private void LoadConfig()
@@ -192,8 +193,13 @@ public partial class MainForm : Form
 
     private void timer3000ms_Tick(object sender, EventArgs e)
     {
-        _fileProcessor.ProcessFiles();
+        timer3000ms.Stop();
+
+        var concreteTransporter = _transporter.FactoryMethod();
+        concreteTransporter.TransportTestReports();
         statisticsControl.UpdateStatistics(_statistics);
+
+        timer3000ms.Start();
     }
 
     private void timer20min_Tick(object sender, EventArgs e)
