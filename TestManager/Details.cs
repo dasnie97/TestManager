@@ -1,36 +1,29 @@
-﻿using GenericTestReport;
+﻿using ProductTest.Common;
 
-namespace TestManager
+namespace TestManager;
+public partial class Details : Form
 {
-    /// <summary>
-    /// Show summary of processed data in form of table.
-    /// </summary>
-    public partial class Details : Form
+    public Details(IEnumerable<TestReportBase> testReports)
     {
-        public Details(List<LogFile> InputData)
-        {
-            InitializeComponent();
-            ShowDetails(InputData);
-        }
+        InitializeComponent();
+        ShowDetails(testReports);
+    }
 
-        private void ShowDetails(List<LogFile> inputData)
+    private void ShowDetails(IEnumerable<TestReportBase> testReports)
+    {
+        foreach (var testReport in testReports)
         {
-            foreach (var logFile in inputData)
+            TableOfResults.Rows.Add(testReport.Status,testReport.SerialNumber, testReport.Failure, testReport.Workstation.Name, testReport.TestDateTimeStarted);
+
+            var lastRowIndex = TableOfResults.Rows.GetLastRow(DataGridViewElementStates.Visible);
+
+            if (testReport.Status == "Passed")
             {
-                TableOfResults.Rows.Add(logFile.Status,logFile.SerialNumber, logFile.Failure, logFile.Workstation, logFile.TestDateTimeStarted);
-
-                // Get index of last row
-                var lastRowIndex = this.TableOfResults.Rows.GetLastRow(DataGridViewElementStates.Visible);
-
-                // Set last row background color depending on LogFile status property and increment yield variables
-                if (logFile.Status == "Passed")
-                {
-                    this.TableOfResults.Rows[lastRowIndex].DefaultCellStyle.BackColor = Color.FromArgb(90, 235, 33);
-                }
-                else
-                {
-                    this.TableOfResults.Rows[lastRowIndex].DefaultCellStyle.BackColor = Color.FromArgb(232, 65, 65);
-                }
+                TableOfResults.Rows[lastRowIndex].DefaultCellStyle.BackColor = Color.FromArgb(90, 235, 33);
+            }
+            else
+            {
+                TableOfResults.Rows[lastRowIndex].DefaultCellStyle.BackColor = Color.FromArgb(232, 65, 65);
             }
         }
     }
