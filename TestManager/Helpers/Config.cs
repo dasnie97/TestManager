@@ -3,12 +3,15 @@ using TestManager.Common;
 
 namespace TestManager.Helpers;
 
-public class ConfigHandler : CommonSettings
+public class Config : ConfigSettings
 {
+    public string DateNamedCopyDirectory { get; private set; }
+    public bool IsCopyingEnabled { get; private set; } = false;
     public Configuration ConfigFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-    public ConfigHandler()
+    public Config()
     {
         ReadConfig();
+        Setup();
     }
 
     public void WriteConfig(string key, string value)
@@ -29,5 +32,16 @@ public class ConfigHandler : CommonSettings
         InputDir = _cfg["InputDir"].Value;
         OutputDir = _cfg["OutputDir"].Value;
         CopyDir = _cfg["CopyDir"].Value;
+    }
+
+    private void Setup()
+    {
+        if (Directory.Exists(CopyDir))
+        {
+            IsCopyingEnabled = true;
+            var dateNamedDirectory = Path.Combine(CopyDir, $"{DateTime.Now.Year}_{DateTime.Now.Month.ToString("00")}");
+            Directory.CreateDirectory(dateNamedDirectory);
+            DateNamedCopyDirectory = dateNamedDirectory;
+        }
     }
 }

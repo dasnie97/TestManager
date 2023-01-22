@@ -1,6 +1,6 @@
 ﻿namespace TestManager.Common;
 
-public abstract class CommonSettings
+public abstract class ConfigSettings
 {
     public string TestStationName { get; protected set; }
     public bool SendOverFTP { get; protected set; }
