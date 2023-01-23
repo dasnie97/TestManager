@@ -196,7 +196,7 @@
             this.outputToolStripMenuItem,
             this.copyToolStripMenuItem});
             this.iodirsToolStripMenuItem.Name = "iodirsToolStripMenuItem";
-            this.iodirsToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.iodirsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.iodirsToolStripMenuItem.Text = "I/O Directories";
             // 
             // inputToolStripMenuItem
@@ -223,32 +223,36 @@
             // mesToolStripMenuItem
             // 
             this.mesToolStripMenuItem.CheckOnClick = true;
+            this.mesToolStripMenuItem.Enabled = false;
             this.mesToolStripMenuItem.Name = "mesToolStripMenuItem";
-            this.mesToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.mesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.mesToolStripMenuItem.Text = "Verify MES";
             this.mesToolStripMenuItem.Click += new System.EventHandler(this.mesToolStripMenuItem_Click);
             // 
             // verify3510ToolStripMenuItem
             // 
             this.verify3510ToolStripMenuItem.CheckOnClick = true;
+            this.verify3510ToolStripMenuItem.Enabled = false;
             this.verify3510ToolStripMenuItem.Name = "verify3510ToolStripMenuItem";
-            this.verify3510ToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.verify3510ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.verify3510ToolStripMenuItem.Text = "Verify 3-5-10";
             this.verify3510ToolStripMenuItem.Click += new System.EventHandler(this.verify3510ToolStripMenuItem_Click);
             // 
             // httpToolStripMenuItem
             // 
             this.httpToolStripMenuItem.CheckOnClick = true;
+            this.httpToolStripMenuItem.Enabled = false;
             this.httpToolStripMenuItem.Name = "httpToolStripMenuItem";
-            this.httpToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.httpToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.httpToolStripMenuItem.Text = "Send over HTTP";
             this.httpToolStripMenuItem.Click += new System.EventHandler(this.httpToolStripMenuItem_Click);
             // 
             // ftpToolStripMenuItem
             // 
             this.ftpToolStripMenuItem.CheckOnClick = true;
+            this.ftpToolStripMenuItem.Enabled = false;
             this.ftpToolStripMenuItem.Name = "ftpToolStripMenuItem";
-            this.ftpToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.ftpToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.ftpToolStripMenuItem.Text = "Send over FTP";
             this.ftpToolStripMenuItem.Click += new System.EventHandler(this.ftpToolStripMenuItem_Click);
             // 
@@ -351,10 +355,10 @@
             this.timer20min.Enabled = true;
             this.timer20min.Interval = 10000;
             // 
-            // statisticsControl1
+            // statisticsControl
             // 
             this.statisticsControl.Location = new System.Drawing.Point(3, 175);
-            this.statisticsControl.Name = "statisticsControl1";
+            this.statisticsControl.Name = "statisticsControl";
             this.statisticsControl.Size = new System.Drawing.Size(111, 125);
             this.statisticsControl.TabIndex = 22;
             // 
