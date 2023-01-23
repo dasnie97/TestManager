@@ -2,10 +2,8 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/TestManager.sln
 /TestManager/Properties
 /TestManager/obj
-/TestManager/User controls
 /TestManager/Img
 /TestManager/bin
 /TestManager/App.config
@@ -13,10 +11,6 @@
 /.vs
 /TestManager.git
 /.git.bfg-report
-*.resx
-*.Designer.cs
-*.csproj.user
-*.csproj
 /TestManagerTest/bin
 /TestManagerTest/obj
 /TestManagerTest/Usings.cs
