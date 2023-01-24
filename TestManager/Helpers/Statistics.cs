@@ -8,8 +8,13 @@ namespace TestManager.Helpers
 {
     public class Statistics
     {
-        public int numberOfFilesPassed { get; set; } = 0;
-        public int numberOfFilesFailed { get; set; } = 0;
-        public int numberOfFilesProcessed { get; set; } = 0;
+        public static Statistics Instance { get { return lazy.Value; } }
+        public int NumberOfFilesPassed { get; set; } = 0;
+        public int NumberOfFilesFailed { get; set; } = 0;
+        public int NumberOfFilesProcessed { get; set; } = 0;
+
+        private static readonly Lazy<Statistics> lazy = new Lazy<Statistics>(() => new Statistics());
+
+        private Statistics() { }
     }
 }

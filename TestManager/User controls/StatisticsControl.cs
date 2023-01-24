@@ -18,21 +18,20 @@ namespace TestManager
             InitializeComponent();
         }
 
-        public Statistics UpdateStatistics(Statistics _statistics)
+        public void UpdateStatistics()
         {
-            TestedQtyLabel.Text = _statistics.numberOfFilesProcessed.ToString();
-            FailedQtyLabel.Text = _statistics.numberOfFilesFailed.ToString();
+            TestedQtyLabel.Text = Statistics.Instance.NumberOfFilesProcessed.ToString();
+            FailedQtyLabel.Text = Statistics.Instance.NumberOfFilesFailed.ToString();
 
-            if (_statistics.numberOfFilesProcessed != 0)
+            if (Statistics.Instance.NumberOfFilesProcessed != 0)
             {
-                var yield = (_statistics.numberOfFilesProcessed - _statistics.numberOfFilesFailed) * 100.0 / _statistics.numberOfFilesProcessed;
+                var yield = (Statistics.Instance.NumberOfFilesProcessed - Statistics.Instance.NumberOfFilesFailed) * 100.0 / Statistics.Instance.NumberOfFilesProcessed;
                 YieldLabel.Text = $"{(yield).ToString("F")}";
                 if (yield >= 96)
                     YieldLabel.BackColor = Color.Green;
                 else
                     YieldLabel.BackColor = Color.Red;
             }
-            return _statistics;
         }
     }
 }

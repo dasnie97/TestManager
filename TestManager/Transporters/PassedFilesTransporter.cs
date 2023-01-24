@@ -7,10 +7,9 @@ namespace TestManager.Transporters;
 
 public class PassedFilesTransporter : TransporterBase, ITransporter
 {
-    private readonly Statistics _statistics;
-    public PassedFilesTransporter(Statistics statistics)
+    public PassedFilesTransporter()
     {
-        _statistics = statistics;
+        
     }
     public void TransportTestReports()
     {
@@ -22,7 +21,7 @@ public class PassedFilesTransporter : TransporterBase, ITransporter
                 FileProcessor.Instance.CopyFile(file);
                 FileProcessor.Instance.MoveFile(file);
                 FileProcessor.Instance.ProcessedData.Add(new TrackedTestReport(file));
-                _statistics.numberOfFilesProcessed++;
+                Statistics.Instance.NumberOfFilesProcessed++;
             }
             else
             {

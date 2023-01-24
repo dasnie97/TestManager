@@ -10,10 +10,9 @@ namespace TestManager.Transporters;
 
 public class TransporterFactory
 {
-    private readonly Statistics _statistics;
-    public TransporterFactory(Statistics statistics)
+    public TransporterFactory()
     {
-        _statistics = statistics;
+
     }
     public ITransporter GetTransporter()
     {
@@ -23,11 +22,11 @@ public class TransporterFactory
         {
             if (FileProcessor.Instance.TransferOption == -1 || FileProcessor.Instance.TransferOption == 2)
             {
-                concreteTransporter = new AllFilesTransporter(_statistics);
+                concreteTransporter = new AllFilesTransporter();
             }
             else if (FileProcessor.Instance.TransferOption == 0)
             {
-                concreteTransporter = new PassedFilesTransporter(_statistics);
+                concreteTransporter = new PassedFilesTransporter();
             }
             else if (FileProcessor.Instance.TransferOption == 1)
             {

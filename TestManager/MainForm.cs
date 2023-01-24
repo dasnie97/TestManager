@@ -7,16 +7,14 @@ namespace TestManager;
 public partial class MainForm : Form
 {
     private Form _loginForm;
-    private TransporterFactory _transporter;
-    private Statistics _statistics;
+    private TransporterFactory _transporterFactory;
     private WebAdapter _webAdapter;
     private Workstation _workstation;
 
     public MainForm(string operatorLogin, Form loginForm)
     {
         InitializeComponent();
-        _statistics = new Statistics();
-        _transporter = new TransporterFactory(_statistics);
+        _transporterFactory = new TransporterFactory();
         _loginForm = loginForm;
         _workstation = new Workstation(Config.Instance.TestStationName, operatorLogin);
     }
@@ -192,9 +190,9 @@ public partial class MainForm : Form
     {
         timer3000ms.Stop();
 
-        var concreteTransporter = _transporter.GetTransporter();
+        var concreteTransporter = _transporterFactory.GetTransporter();
         concreteTransporter.TransportTestReports();
-        statisticsControl.UpdateStatistics(_statistics);
+        statisticsControl.UpdateStatistics();
 
         timer3000ms.Start();
     }

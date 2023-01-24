@@ -13,10 +13,9 @@ namespace TestManager.Transporters;
 
 public class AllFilesTransporter : TransporterBase, ITransporter
 {
-    private readonly Statistics _statistics;
-    public AllFilesTransporter(Statistics statistics)
+    public AllFilesTransporter()
     {
-        _statistics = statistics;
+
     }
     public void TransportTestReports()
     {
@@ -26,9 +25,9 @@ public class AllFilesTransporter : TransporterBase, ITransporter
             FileProcessor.Instance.CopyFile(file);
             FileProcessor.Instance.MoveFile(file);
             FileProcessor.Instance.ProcessedData.Add(new TrackedTestReport(file));
-            _statistics.numberOfFilesProcessed++;
+            Statistics.Instance.NumberOfFilesProcessed++;
             if (file.Status != TestStatus.Passed)
-                _statistics.numberOfFilesFailed++;
+                Statistics.Instance.NumberOfFilesFailed++;
 
         }
     }
