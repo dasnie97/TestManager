@@ -10,7 +10,7 @@ using TestManager.Interfaces;
 
 namespace TestManager.Transporters;
 
-public class NoFilesTransporter : IFileTestReportsTransporter
+public class NoFilesTransporter : ITransporter
 {
     public NoFilesTransporter()
     {

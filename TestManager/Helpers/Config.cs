@@ -1,18 +1,22 @@
 ﻿using System.Configuration;
+using System.Reflection.Metadata.Ecma335;
 using TestManager.Common;
 
 namespace TestManager.Helpers;
 
-public class Config : ConfigSettings
+public sealed class Config : ConfigSettings
 {
+    public static Config Instance { get { return lazy.Value; } }
     public string DateNamedCopyDirectory { get; private set; }
     public bool IsCopyingEnabled { get; private set; } = false;
     public Configuration ConfigFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-    public Config()
+    private Config()
     {
         ReadConfig();
         Setup();
     }
+
+    private static readonly Lazy<Config> lazy = new Lazy<Config>(() => new Config());
 
     public void WriteConfig(string key, string value)
     {

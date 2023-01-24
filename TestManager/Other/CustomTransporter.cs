@@ -13,10 +13,10 @@ namespace TestManager.Other;
 
 public class CustomTransporter : TransporterBase
 {
-    protected override IEnumerable<FileTestReport> LoadTestReports(Config config)
+    protected override IEnumerable<FileTestReport> LoadTestReports()
     {
         IFileLoader fileLoader = new FileLoader();
-        IEnumerable<FileTestReport> loaded = fileLoader.GetTestReportFiles(config.InputDir);
+        IEnumerable<FileTestReport> loaded = fileLoader.GetTestReportFiles(Config.Instance.InputDir);
         List<FileTestReport> modified = new List<FileTestReport>();
 
         foreach (var testReport in loaded)
@@ -44,7 +44,7 @@ public class CustomTransporter : TransporterBase
             }
             var newTestReport = FileTestReport.Create(testReport.SerialNumber, testReport.Workstation.Name, testStepsListed, testReport.FilePath);
             //TODO: invalid characters in Serial Number. Windows prevents from saving file.
-            newTestReport.SaveReport(config.InputDir);
+            newTestReport.SaveReport(Config.Instance.InputDir);
             modified.Add(newTestReport);
         }
         return modified;
