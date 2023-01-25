@@ -43,7 +43,8 @@ public class CustomTransporter : TransporterBase
                 }
             }
             var newTestReport = FileTestReport.Create(testReport.SerialNumber, testReport.Workstation.Name, testStepsListed, testReport.FilePath);
-            //TODO: invalid characters in Serial Number. Windows prevents from saving file.
+            //TODO: creating new files may change file name leading to exceptions. Solve this by reading file name and content, replace content and save
+            // with same name.
             newTestReport.SaveReport(Config.Instance.InputDir);
             modified.Add(newTestReport);
         }

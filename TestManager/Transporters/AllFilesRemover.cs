@@ -7,12 +7,12 @@ using System.Text;
 using System.Threading.Tasks;
 using TestManager.Helpers;
 using TestManager.Interfaces;
+using TestManager.Other;
 
 namespace TestManager.Transporters;
 
-public class AllFilesRemover : TransporterBase, ITransporter
+public class AllFilesRemover : CustomTransporter, ITransporter
 {
-    private readonly Config _config;
     public AllFilesRemover()
     {
 

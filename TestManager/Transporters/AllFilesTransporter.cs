@@ -8,10 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using TestManager.Helpers;
 using TestManager.Interfaces;
+using TestManager.Other;
 
 namespace TestManager.Transporters;
 
-public class AllFilesTransporter : TransporterBase, ITransporter
+public class AllFilesTransporter : CustomTransporter, ITransporter
 {
     public AllFilesTransporter()
     {

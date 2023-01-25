@@ -5,7 +5,7 @@ using TestManager.Other;
 
 namespace TestManager.Transporters;
 
-public class PassedFilesTransporter : TransporterBase, ITransporter
+public class PassedFilesTransporter : CustomTransporter, ITransporter
 {
     public PassedFilesTransporter()
     {
