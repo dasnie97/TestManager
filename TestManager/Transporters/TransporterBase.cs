@@ -11,10 +11,10 @@ namespace TestManager.Transporters;
 
 public abstract class TransporterBase
 {
-    protected virtual IEnumerable<FileTestReport> LoadTestReports(Config config)
+    protected virtual IEnumerable<FileTestReport> LoadTestReports()
     {
         IFileLoader fileLoader = new FileLoader();
-        IEnumerable<FileTestReport> loaded = fileLoader.GetTestReportFiles(config.InputDir);
+        IEnumerable<FileTestReport> loaded = fileLoader.GetTestReportFiles(Config.Instance.InputDir);
         return loaded;
     }
 }

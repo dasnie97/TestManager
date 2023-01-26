@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace TestManager.Interfaces;
 
-public interface IFileTestReportsTransporter
+public interface ITransporter
 {
     public void TransportTestReports();
 }

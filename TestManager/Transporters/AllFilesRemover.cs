@@ -7,24 +7,22 @@ using System.Text;
 using System.Threading.Tasks;
 using TestManager.Helpers;
 using TestManager.Interfaces;
+using TestManager.Other;
 
 namespace TestManager.Transporters;
 
-public class AllFilesRemover : TransporterBase, IFileTestReportsTransporter
+public class AllFilesRemover : CustomTransporter, ITransporter
 {
-    private readonly FileProcessor _fileProcessor;
-    private readonly Config _config;
-    public AllFilesRemover(FileProcessor fileProcessor, Config config)
+    public AllFilesRemover()
     {
-        _fileProcessor = fileProcessor;
-        _config = config;
+
     }
     public void TransportTestReports()
     {
-        var fileTestReports = LoadTestReports(_config);
+        var fileTestReports = LoadTestReports();
         foreach (var file in fileTestReports)
         {
-            _fileProcessor.DeleteFile(file);
+            FileProcessor.Instance.DeleteFile(file);
         }
     }
 }

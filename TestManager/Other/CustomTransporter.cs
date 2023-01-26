@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TestManager.Helpers;
 using TestManager.Interfaces;
@@ -13,40 +14,24 @@ namespace TestManager.Other;
 
 public class CustomTransporter : TransporterBase
 {
-    protected override IEnumerable<FileTestReport> LoadTestReports(Config config)
+    protected override IEnumerable<FileTestReport> LoadTestReports()
     {
         IFileLoader fileLoader = new FileLoader();
-        IEnumerable<FileTestReport> loaded = fileLoader.GetTestReportFiles(config.InputDir);
-        List<FileTestReport> modified = new List<FileTestReport>();
+        IEnumerable<FileTestReport> loaded = fileLoader.GetTestReportFiles(Config.Instance.InputDir);
 
         foreach (var testReport in loaded)
         {
-            var testStepsListed = testReport.TestSteps.ToList();
-
-            foreach (var testStep in testStepsListed)
-            {
-                if (testStep.Name == "3.1 Setup_iot:psk:remote:encryptedsecret")
-                {
-                    var index = testStepsListed.IndexOf(testStep);
-                    var newTestStep = TestStep.Create("iot:psk:remote:encryptedsecret",
-                                                        testStep.DateTimeFinish,
-                                                        testStep.Status,
-                                                        testStep.Type,
-                                                        testStep.Value,
-                                                        testStep.Unit,
-                                                        testStep.LowerLimit,
-                                                        testStep.UpperLimit,
-                                                        testStep.Failure);
-
-                    testStepsListed[index] = newTestStep;
-                    break;
-                }
-            }
-            var newTestReport = FileTestReport.Create(testReport.SerialNumber, testReport.Workstation.Name, testStepsListed, testReport.FilePath);
-            //TODO: invalid characters in Serial Number. Windows prevents from saving file.
-            newTestReport.SaveReport(config.InputDir);
-            modified.Add(newTestReport);
+            ReplaceFileContent(testReport.FilePath);
         }
-        return modified;
+
+        return fileLoader.GetTestReportFiles(Config.Instance.InputDir);
+    }
+
+    private void ReplaceFileContent(string filePath)
+    {
+        Regex regex = new Regex("TestName.*?iot:psk:remote:encryptedsecret");
+        var originalFileContent = File.ReadAllText(filePath);
+        var newFileContent = regex.Replace(originalFileContent, "TestName:\tiot:psk:remote:encryptedsecret");
+        File.WriteAllText(filePath, newFileContent);
     }
 }
