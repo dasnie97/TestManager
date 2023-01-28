@@ -1,28 +1,46 @@
 ﻿using System.Configuration;
-using System.Reflection.Metadata.Ecma335;
-using TestManager.Common;
 
-namespace TestManager.Helpers;
+namespace TestManager.ConfigHelpers;
 
-public sealed class Config : ConfigSettings
+public sealed class Config : IDirectoryConfig, IWorkstationConfig, IWebConfig
 {
-    public static Config Instance { get { return lazy.Value; } }
+    public string TestStationName { get; private set; }
+    public bool SendOverFTP { get; private set; }
+    public bool SendOverHTTP { get; private set; }
+    public bool VerifyMES { get; private set; }
+    public bool Verify3510 { get; private set; }
+    public string InputDir { get; private set; }
+    public string OutputDir { get; private set; }
+    public string CopyDir { get; private set; }
     public string DateNamedCopyDirectory { get; private set; }
     public bool IsCopyingEnabled { get; private set; } = false;
-    public Configuration ConfigFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-    private Config()
+
+    private Configuration ConfigFile;
+    private Config(Configuration configuration)
     {
+        ConfigFile = configuration;
         ReadConfig();
-        Setup();
+        CreateDateNamedCopyDir();
     }
 
-    private static readonly Lazy<Config> lazy = new Lazy<Config>(() => new Config());
+    public static Config GetInstance()
+    {
+        var defaultConfiguration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+        return new Lazy<Config>(() => new Config(defaultConfiguration)).Value;
+    }
+
+    public static Config GetInstance(Configuration configuration)
+    {
+        return new Lazy<Config>(() => new Config(configuration)).Value;
+    }
 
     public void WriteConfig(string key, string value)
     {
         ConfigFile.AppSettings.Settings[key].Value = value;
         ConfigFile.Save(ConfigurationSaveMode.Modified);
         ConfigurationManager.RefreshSection(ConfigFile.AppSettings.SectionInformation.Name);
+        ReadConfig();
+        CreateDateNamedCopyDir();
     }
 
     private void ReadConfig()
@@ -38,7 +56,7 @@ public sealed class Config : ConfigSettings
         CopyDir = _cfg["CopyDir"].Value;
     }
 
-    private void Setup()
+    private void CreateDateNamedCopyDir()
     {
         if (Directory.Exists(CopyDir))
         {
