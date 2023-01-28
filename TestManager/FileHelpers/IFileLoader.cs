@@ -1,7 +1,7 @@
 ﻿using ProductTest.Common;
 using ProductTest.Models;
 
-namespace TestManager.Interfaces;
+namespace TestManager.FileHelpers;
 
 public interface IFileLoader
 {

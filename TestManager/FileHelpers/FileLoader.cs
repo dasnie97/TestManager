@@ -1,8 +1,7 @@
 ﻿using ProductTest.Models;
 using System.Text.RegularExpressions;
-using TestManager.Interfaces;
 
-namespace TestManager.Helpers;
+namespace TestManager.FileHelpers;
 
 public class FileLoader : IFileLoader
 {
