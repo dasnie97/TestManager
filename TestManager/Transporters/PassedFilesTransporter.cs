@@ -1,15 +1,15 @@
 ﻿using ProductTest.Models;
+using TestManager.FileHelpers;
 using TestManager.Helpers;
-using TestManager.Interfaces;
-using TestManager.Other;
 
 namespace TestManager.Transporters;
 
 public class PassedFilesTransporter : CustomTransporter, ITransporter
 {
-    public PassedFilesTransporter()
+    private readonly IFileProcessor _fileProcessor;
+    public PassedFilesTransporter(IFileProcessor fileProcessor)
     {
-        
+        _fileProcessor = fileProcessor;
     }
     public void TransportTestReports()
     {
@@ -18,14 +18,14 @@ public class PassedFilesTransporter : CustomTransporter, ITransporter
         {
             if (file.Status == TestStatus.Passed)
             {
-                FileProcessor.Instance.CopyFile(file);
-                FileProcessor.Instance.MoveFile(file);
-                FileProcessor.Instance.ProcessedData.Add(new TrackedTestReport(file));
+                _fileProcessor.CopyFile(file);
+                _fileProcessor.MoveFile(file);
+                _fileProcessor.ProcessedData.Add(new TrackedTestReport(file));
                 Statistics.Instance.NumberOfFilesProcessed++;
             }
             else
             {
-                FileProcessor.Instance.DeleteFile(file);
+                _fileProcessor.DeleteFile(file);
             }
         }
     }

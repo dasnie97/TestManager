@@ -3,34 +3,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TestManager.Helpers;
-using TestManager.Interfaces;
+using TestManager.FileHelpers;
 
 namespace TestManager.Transporters;
 
 public class TransporterFactory
 {
-    public TransporterFactory()
+    private readonly IFileProcessor _fileProcessor;
+    public TransporterFactory(IFileProcessor fileProcessor)
     {
-
+        _fileProcessor = fileProcessor;
     }
     public ITransporter GetTransporter()
     {
         ITransporter concreteTransporter;
 
-        if (FileProcessor.Instance.IsDataTransferEnabled)
+        if (_fileProcessor.IsDataTransferEnabled)
         {
-            if (FileProcessor.Instance.TransferOption == -1 || FileProcessor.Instance.TransferOption == 2)
+            if (_fileProcessor.TransferOption == -1 || _fileProcessor.TransferOption == 2)
             {
-                concreteTransporter = new AllFilesTransporter();
+                concreteTransporter = new AllFilesTransporter(_fileProcessor);
             }
-            else if (FileProcessor.Instance.TransferOption == 0)
+            else if (_fileProcessor.TransferOption == 0)
             {
-                concreteTransporter = new PassedFilesTransporter();
+                concreteTransporter = new PassedFilesTransporter(_fileProcessor);
             }
-            else if (FileProcessor.Instance.TransferOption == 1)
+            else if (_fileProcessor.TransferOption == 1)
             {
-                concreteTransporter = new AllFilesRemover();
+                concreteTransporter = new AllFilesRemover(_fileProcessor);
             }
             else
             {
@@ -42,7 +42,7 @@ public class TransporterFactory
             concreteTransporter = new NoFilesTransporter();
         }
 
-        FileProcessor.Instance.TransferOption = -1;
+        _fileProcessor.TransferOption = -1;
         return concreteTransporter;
     }
 }

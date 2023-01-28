@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics;
+using TestManager.ConfigHelpers;
+using TestManager.FileHelpers;
 using TestManager.Helpers;
 using TestManager.Transporters;
 
@@ -10,13 +12,21 @@ public partial class MainForm : Form
     private TransporterFactory _transporterFactory;
     private WebAdapter _webAdapter;
     private Workstation _workstation;
+    private IDirectoryConfig _directoryConfig;
+    private IWorkstationConfig _workstationConfig;
+    private IWebConfig _webConfig;
+    private IFileProcessor _fileProcessor;
 
     public MainForm(string operatorLogin, Form loginForm)
     {
         InitializeComponent();
-        _transporterFactory = new TransporterFactory();
         _loginForm = loginForm;
-        _workstation = new Workstation(Config.Instance.TestStationName, operatorLogin);
+        _workstationConfig = Config.GetInstance();
+        _directoryConfig = Config.GetInstance();
+        _webConfig = Config.GetInstance();
+        _fileProcessor = FileProcessor.GetInstance(_directoryConfig);
+        _transporterFactory = new TransporterFactory(_fileProcessor);
+        _workstation = new Workstation(_workstationConfig.TestStationName, operatorLogin);
     }
 
     #region Buttons
@@ -27,7 +37,7 @@ public partial class MainForm : Form
 
     private void testReportTransferSwitchButton_Click(object sender, EventArgs e)
     {
-        if (FileProcessor.Instance.IsDataTransferEnabled)
+        if (_fileProcessor.IsDataTransferEnabled)
         {
             TurnOffTestReportTransfer();
         }
@@ -41,7 +51,7 @@ public partial class MainForm : Form
     {
         try
         {
-            Pareto paretoForm = new Pareto(FileProcessor.Instance.ProcessedData);
+            Pareto paretoForm = new Pareto(_fileProcessor.ProcessedData);
             paretoForm.ShowDialog();
         }
         catch (Exception ex)
@@ -54,7 +64,7 @@ public partial class MainForm : Form
     {
         try
         {
-            Details detailsForm = new Details(FileProcessor.Instance.ProcessedData);
+            Details detailsForm = new Details(_fileProcessor.ProcessedData);
             detailsForm.ShowDialog();
         }
         catch (Exception ex)
@@ -83,7 +93,7 @@ public partial class MainForm : Form
     {
         ProcessStartInfo startInfo = new ProcessStartInfo
         {
-            Arguments = Config.Instance.InputDir,
+            Arguments = _directoryConfig.InputDir,
             FileName = "explorer.exe"
         };
         Process.Start(startInfo);
@@ -93,7 +103,7 @@ public partial class MainForm : Form
     {
         ProcessStartInfo startInfo = new ProcessStartInfo
         {
-            Arguments = Config.Instance.OutputDir,
+            Arguments = _directoryConfig.OutputDir,
             FileName = "explorer.exe"
         };
         Process.Start(startInfo);
@@ -105,7 +115,7 @@ public partial class MainForm : Form
         {
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
-                Arguments = Config.Instance.CopyDir,
+                Arguments = _directoryConfig.CopyDir,
                 FileName = "explorer.exe"
             };
             Process.Start(startInfo);
@@ -116,25 +126,25 @@ public partial class MainForm : Form
     private void ftpToolStripMenuItem_Click(object sender, EventArgs e)
     {
         var newValue = Convert.ToString(ftpToolStripMenuItem.Checked);
-        Config.Instance.WriteConfig("SendOverFTP", newValue);
+        _webConfig.WriteConfig("SendOverFTP", newValue);
     }
 
     private void mesToolStripMenuItem_Click(object sender, EventArgs e)
     {
         var newValue = Convert.ToString(mesToolStripMenuItem.Checked);
-        Config.Instance.WriteConfig("VerifyMES", newValue);
+        _webConfig.WriteConfig("VerifyMES", newValue);
     }
 
     private void verify3510ToolStripMenuItem_Click(object sender, EventArgs e)
     {
         var newValue = Convert.ToString(verify3510ToolStripMenuItem.Checked);
-        Config.Instance.WriteConfig("Verify3510", newValue);
+        _webConfig.WriteConfig("Verify3510", newValue);
     }
 
     private void httpToolStripMenuItem_Click(object sender, EventArgs e)
     {
         var newValue = Convert.ToString(httpToolStripMenuItem.Checked);
-        Config.Instance.WriteConfig("SendOverHTTP", newValue);
+        _webConfig.WriteConfig("SendOverHTTP", newValue);
     }
 
     #endregion
@@ -144,7 +154,7 @@ public partial class MainForm : Form
     {
         testReportTransferSwitchButton.Text = "OFF";
         testReportTransferSwitchButton.BackColor = Color.Red;
-        FileProcessor.Instance.IsDataTransferEnabled = false;
+        _fileProcessor.IsDataTransferEnabled = false;
         transferOptionCombobox.Visible = true;
         transferOptionCombobox.SelectedIndex = 0;
     }
@@ -153,22 +163,22 @@ public partial class MainForm : Form
     {
         testReportTransferSwitchButton.Text = "ON";
         testReportTransferSwitchButton.BackColor = Color.Green;
-        FileProcessor.Instance.IsDataTransferEnabled = true;
+        _fileProcessor.IsDataTransferEnabled = true;
         transferOptionCombobox.Visible = false;
-        FileProcessor.Instance.TransferOption = transferOptionCombobox.SelectedIndex;
+        _fileProcessor.TransferOption = transferOptionCombobox.SelectedIndex;
     }
 
     private void LoadConfig()
     {
         stationNameLabel.Text = _workstation.Name;
         operatorLoginLabel.Text = _workstation.OperatorName;
-        ftpToolStripMenuItem.Checked = Config.Instance.SendOverFTP;
-        httpToolStripMenuItem.Checked = Config.Instance.SendOverHTTP;
-        mesToolStripMenuItem.Checked = Config.Instance.VerifyMES;
-        verify3510ToolStripMenuItem.Checked = Config.Instance.Verify3510;
-        inputToolStripMenuItem.Text = $"Input: {Config.Instance.InputDir}";
-        outputToolStripMenuItem.Text = $"Output: {Config.Instance.OutputDir}";
-        copyToolStripMenuItem.Text = $"Copy: {Config.Instance.CopyDir}";
+        ftpToolStripMenuItem.Checked = _webConfig.SendOverFTP;
+        httpToolStripMenuItem.Checked = _webConfig.SendOverHTTP;
+        mesToolStripMenuItem.Checked = _webConfig.VerifyMES;
+        verify3510ToolStripMenuItem.Checked = _webConfig.Verify3510;
+        inputToolStripMenuItem.Text = $"Input: {_directoryConfig.InputDir}";
+        outputToolStripMenuItem.Text = $"Output: {_directoryConfig.OutputDir}";
+        copyToolStripMenuItem.Text = $"Copy: {_directoryConfig.CopyDir}";
     }
     #endregion
 

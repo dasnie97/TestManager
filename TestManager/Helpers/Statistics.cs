@@ -16,5 +16,12 @@ namespace TestManager.Helpers
         private static readonly Lazy<Statistics> lazy = new Lazy<Statistics>(() => new Statistics());
 
         private Statistics() { }
+
+        public void Reset()
+        {
+            NumberOfFilesPassed = 0;
+            NumberOfFilesFailed = 0;
+            NumberOfFilesProcessed = 0;
+        }
     }
 }

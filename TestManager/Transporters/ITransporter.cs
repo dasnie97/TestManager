@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TestManager.Interfaces;
+namespace TestManager.Transporters;
 
 public interface ITransporter
 {

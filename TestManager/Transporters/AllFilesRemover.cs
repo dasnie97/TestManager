@@ -5,24 +5,23 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using TestManager.Helpers;
-using TestManager.Interfaces;
-using TestManager.Other;
+using TestManager.FileHelpers;
 
 namespace TestManager.Transporters;
 
 public class AllFilesRemover : CustomTransporter, ITransporter
 {
-    public AllFilesRemover()
+    private readonly IFileProcessor _fileProcessor;
+    public AllFilesRemover(IFileProcessor fileProcessor)
     {
-
+        _fileProcessor = fileProcessor;
     }
     public void TransportTestReports()
     {
         var fileTestReports = LoadTestReports();
         foreach (var file in fileTestReports)
         {
-            FileProcessor.Instance.DeleteFile(file);
+            _fileProcessor.DeleteFile(file);
         }
     }
 }
