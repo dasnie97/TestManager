@@ -34,7 +34,7 @@ public class TransporterFactory
             }
             else
             {
-                throw new Exception("Invalid transfer option!");
+                throw new InvalidOperationException("Invalid transfer option!");
             }
         }
         else
