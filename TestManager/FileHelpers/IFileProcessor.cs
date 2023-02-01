@@ -12,7 +12,6 @@ public interface IFileProcessor
 {
     public bool IsDataTransferEnabled { get; set; }
     public int TransferOption { get; set; }
-    public List<TrackedTestReport> ProcessedData { get; set; }
     public void MoveFile(FileTestReport testReport);
     public void CopyFile(FileTestReport testReport);
     public void DeleteFile(FileTestReport testReport);

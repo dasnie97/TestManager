@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TestManager.ConfigHelpers;
 using TestManager.FileHelpers;
+using TestManager.Helpers;
 using TestManager.Transporters;
 
 namespace TestManagerTest;
@@ -22,6 +23,7 @@ public class TransporterTest : IDisposable
     private string dateNamedCopyDir;
     IFileLoader fileLoader;
     IFileProcessor fileProcessor;
+    IStatistics statistics;
 
     public TransporterTest()
     {
@@ -41,6 +43,7 @@ public class TransporterTest : IDisposable
 
         fileProcessor = FileProcessor.GetInstance(dirConfig);
         fileLoader = new FileLoader();
+        statistics = Statistics.GetInstance();
     }
 
     public void Dispose()
@@ -56,7 +59,7 @@ public class TransporterTest : IDisposable
         RecreateDirectories();
         CreateFileTestReports();
 
-        var transporter = new TransporterFactory(fileProcessor).GetTransporter();
+        var transporter = new TransporterFactory(fileProcessor, statistics).GetTransporter();
         transporter.TransportTestReports();
         var foundOutputTestReports = fileLoader.GetTestReportFiles(outputDir);
         var foundCopyTestReports = fileLoader.GetTestReportFiles(dateNamedCopyDir);
@@ -76,7 +79,7 @@ public class TransporterTest : IDisposable
         RecreateDirectories();
         CreateFileTestReports();
 
-        var transporter = new TransporterFactory(fileProcessor).GetTransporter();
+        var transporter = new TransporterFactory(fileProcessor, statistics).GetTransporter();
         transporter.TransportTestReports();
 
         Assert.Empty(Directory.GetFiles(inputDir));
@@ -92,7 +95,7 @@ public class TransporterTest : IDisposable
         RecreateDirectories();
         CreateFileTestReports();
 
-        var transporter = new TransporterFactory(fileProcessor).GetTransporter();
+        var transporter = new TransporterFactory(fileProcessor, statistics).GetTransporter();
         transporter.TransportTestReports();
         var foundOutputTestReports = fileLoader.GetTestReportFiles(outputDir);
         var foundCopyTestReports = fileLoader.GetTestReportFiles(dateNamedCopyDir);
@@ -114,7 +117,7 @@ public class TransporterTest : IDisposable
         RecreateDirectories();
         CreateFileTestReports();
 
-        Assert.Throws<InvalidOperationException>(() => new TransporterFactory(fileProcessor).GetTransporter());
+        Assert.Throws<InvalidOperationException>(() => new TransporterFactory(fileProcessor, statistics).GetTransporter());
     }
 
     [Fact]
@@ -125,7 +128,7 @@ public class TransporterTest : IDisposable
         RecreateDirectories();
         CreateFileTestReports();
 
-        var transporter = new TransporterFactory(fileProcessor).GetTransporter();
+        var transporter = new TransporterFactory(fileProcessor, statistics).GetTransporter();
         transporter.TransportTestReports();
 
         Assert.Empty(Directory.GetFiles(outputDir));

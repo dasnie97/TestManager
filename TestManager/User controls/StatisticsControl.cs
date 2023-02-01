@@ -13,6 +13,7 @@ namespace TestManager
 {
     public partial class StatisticsControl : UserControl
     {
+        public  IStatistics Statistics { get; set; }
         public StatisticsControl()
         {
             InitializeComponent();
@@ -20,12 +21,12 @@ namespace TestManager
 
         public void UpdateStatistics()
         {
-            TestedQtyLabel.Text = Statistics.Instance.NumberOfFilesProcessed.ToString();
-            FailedQtyLabel.Text = Statistics.Instance.NumberOfFilesFailed.ToString();
+            TestedQtyLabel.Text = Statistics.NumberOfFilesProcessed.ToString();
+            FailedQtyLabel.Text = Statistics.NumberOfFilesFailed.ToString();
 
-            if (Statistics.Instance.NumberOfFilesProcessed != 0)
+            if (Statistics.NumberOfFilesProcessed != 0)
             {
-                var yield = (Statistics.Instance.NumberOfFilesProcessed - Statistics.Instance.NumberOfFilesFailed) * 100.0 / Statistics.Instance.NumberOfFilesProcessed;
+                var yield = (Statistics.NumberOfFilesProcessed - Statistics.NumberOfFilesFailed) * 100.0 / Statistics.NumberOfFilesProcessed;
                 YieldLabel.Text = $"{(yield).ToString("F")}";
                 if (yield >= 96)
                     YieldLabel.BackColor = Color.Green;

@@ -16,6 +16,7 @@ public partial class MainForm : Form
     private IWorkstationConfig _workstationConfig;
     private IWebConfig _webConfig;
     private IFileProcessor _fileProcessor;
+    private IStatistics _statistics;
 
     public MainForm(string operatorLogin, Form loginForm)
     {
@@ -24,9 +25,11 @@ public partial class MainForm : Form
         _workstationConfig = Config.GetInstance();
         _directoryConfig = Config.GetInstance();
         _webConfig = Config.GetInstance();
+        _statistics = Statistics.GetInstance();
         _fileProcessor = FileProcessor.GetInstance(_directoryConfig);
-        _transporterFactory = new TransporterFactory(_fileProcessor);
+        _transporterFactory = new TransporterFactory(_fileProcessor, _statistics);
         _workstation = new Workstation(_workstationConfig.TestStationName, operatorLogin);
+        statisticsControl.Statistics = _statistics;
     }
 
     #region Buttons
@@ -51,7 +54,7 @@ public partial class MainForm : Form
     {
         try
         {
-            Pareto paretoForm = new Pareto(_fileProcessor.ProcessedData);
+            Pareto paretoForm = new Pareto(_statistics.ProcessedData);
             paretoForm.ShowDialog();
         }
         catch (Exception ex)
@@ -64,7 +67,7 @@ public partial class MainForm : Form
     {
         try
         {
-            Details detailsForm = new Details(_fileProcessor.ProcessedData);
+            Details detailsForm = new Details(_statistics.ProcessedData);
             detailsForm.ShowDialog();
         }
         catch (Exception ex)

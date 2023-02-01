@@ -9,7 +9,6 @@ public sealed class FileProcessor : IFileProcessor
 {
     public bool IsDataTransferEnabled { get; set; } = true;
     public int TransferOption { get; set; }
-    public List<TrackedTestReport> ProcessedData { get; set; } = new List<TrackedTestReport>();
     private readonly IDirectoryConfig _config;
     private FileProcessor(IDirectoryConfig config)
     {

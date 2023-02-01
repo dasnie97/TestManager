@@ -11,9 +11,11 @@ namespace TestManager.Helpers;
 public class ProblemDetector
 {
     private readonly FileProcessor _fileProcessor;
-    public ProblemDetector(FileProcessor fileProcessor)
+    private readonly IStatistics _statistics;
+    public ProblemDetector(FileProcessor fileProcessor, IStatistics statistics)
     {
         _fileProcessor = fileProcessor;
+        _statistics = statistics;
     }
 
     public void Run()
@@ -30,14 +32,14 @@ public class ProblemDetector
 
     private bool ThereIsNoTraffic()
     {
-        var latestResults = _fileProcessor.ProcessedData.Where(logFile => logFile.TestDateTimeStarted >= DateTime.Now.AddMinutes(-20));
+        var latestResults = _statistics.ProcessedData.Where(logFile => logFile.TestDateTimeStarted >= DateTime.Now.AddMinutes(-20));
         if (latestResults.Count() == 0) return true;
         else return false;
     }
 
     private TrackedTestReport CheckFor3510RuleViolation(TrackedTestReport LF)
     {
-        var sameSNs = _fileProcessor.ProcessedData.Where(logFile => logFile.SerialNumber == LF.SerialNumber);
+        var sameSNs = _statistics.ProcessedData.Where(logFile => logFile.SerialNumber == LF.SerialNumber);
         if (sameSNs.Any()) LF.IsFirstPass = false;
         else LF.IsFirstPass = true;
 
@@ -45,7 +47,7 @@ public class ProblemDetector
         if (failedSameSNs.Any() && LF.Status == "Passed") LF.IsFalseCall = true;
         else LF.IsFalseCall = false;
 
-        var firstPass = _fileProcessor.ProcessedData.
+        var firstPass = _statistics.ProcessedData.
             Where((logFile) => logFile.IsFirstPass == true);
 
         var rule3Check = firstPass.Skip(Math.Max(0, firstPass.Count() - 3));
@@ -74,7 +76,7 @@ public class ProblemDetector
 
     private async Task<string> Check3510(string state)
     {
-        var firstPassData = _fileProcessor.ProcessedData.Where(logFile => logFile.IsFirstPass);
+        var firstPassData = _statistics.ProcessedData.Where(logFile => logFile.IsFirstPass);
         if (firstPassData.Count() < 3) return state;
 
         for (int i = firstPassData.Count(); i > 0; i--)
