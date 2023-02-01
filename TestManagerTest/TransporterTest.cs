@@ -68,6 +68,72 @@ public class TransporterTest : IDisposable
         Assert.True(foundCopyTestReports.First().Status == TestStatus.Passed);
     }
 
+    [Fact]
+    public void AllFilesRemoverTest()
+    {
+        fileProcessor.IsDataTransferEnabled = true;
+        fileProcessor.TransferOption = 1;
+        RecreateDirectories();
+        CreateFileTestReports();
+
+        var transporter = new TransporterFactory(fileProcessor).GetTransporter();
+        transporter.TransportTestReports();
+
+        Assert.Empty(Directory.GetFiles(inputDir));
+        Assert.Empty(Directory.GetFiles(outputDir));
+        Assert.Empty(Directory.GetFiles(dateNamedCopyDir));
+    }
+
+    [Fact]
+    public void AllFilesTransporterTest()
+    {
+        fileProcessor.IsDataTransferEnabled = true;
+        fileProcessor.TransferOption = 2;
+        RecreateDirectories();
+        CreateFileTestReports();
+
+        var transporter = new TransporterFactory(fileProcessor).GetTransporter();
+        transporter.TransportTestReports();
+        var foundOutputTestReports = fileLoader.GetTestReportFiles(outputDir);
+        var foundCopyTestReports = fileLoader.GetTestReportFiles(dateNamedCopyDir);
+
+        Assert.Empty(Directory.GetFiles(inputDir));
+        Assert.True(Directory.GetFiles(outputDir).Count() == 2);
+        Assert.True(Directory.GetFiles(dateNamedCopyDir).Count() == 2);
+        Assert.True(foundOutputTestReports.Where(testReport => testReport.Status == TestStatus.Failed).Count() == 1);
+        Assert.True(foundOutputTestReports.Where(testReport => testReport.Status == TestStatus.Passed).Count() == 1);
+        Assert.True(foundCopyTestReports.Where(testReport => testReport.Status == TestStatus.Failed).Count() == 1);
+        Assert.True(foundCopyTestReports.Where(testReport => testReport.Status == TestStatus.Passed).Count() == 1);
+    }
+
+    [Fact]
+    public void BadTransferOptionTest()
+    {
+        fileProcessor.IsDataTransferEnabled = true;
+        fileProcessor.TransferOption = 3;
+        RecreateDirectories();
+        CreateFileTestReports();
+
+        Assert.Throws<InvalidOperationException>(() => new TransporterFactory(fileProcessor).GetTransporter());
+    }
+
+    [Fact]
+    public void NoFilesTransporterTest()
+    {
+        fileProcessor.IsDataTransferEnabled = false;
+        fileProcessor.TransferOption = 2;
+        RecreateDirectories();
+        CreateFileTestReports();
+
+        var transporter = new TransporterFactory(fileProcessor).GetTransporter();
+        transporter.TransportTestReports();
+
+        Assert.Empty(Directory.GetFiles(outputDir));
+        Assert.Empty(Directory.GetFiles(copyDir));
+        Assert.False(Directory.Exists(dateNamedCopyDir));
+        Assert.True(Directory.GetFiles(inputDir).Count() == 2);
+    }
+
     private void CreateFileTestReports()
     {
         var passedTestReport = FileTestReport.Create("123123123", 
