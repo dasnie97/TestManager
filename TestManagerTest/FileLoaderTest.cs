@@ -2,7 +2,6 @@ using ProductTest.Common;
 using ProductTest.Models;
 using ProductTestTest;
 using TestManager.FileHelpers;
-using TestManager.Helpers;
 
 namespace TestManagerTest;
 
@@ -16,7 +15,8 @@ public class FileLoaderTest : IDisposable
         tempDir = Path.Combine(Directory.GetCurrentDirectory(), "tempDir");
         Directory.CreateDirectory(tempDir);
 
-        var okFile = RandomTestReport.ArrangeTestReportWithDefaultAndRandomData();
+        FileTestReportCreator creator = new FileTestReportCreator();
+        FileTestReport okFile = creator.Create();
         okFile.SaveReport(tempDir);
         okFilePath = okFile.FilePath;
 

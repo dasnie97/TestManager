@@ -1,5 +1,6 @@
 ﻿using ProductTest.Common;
 using ProductTest.Models;
+using ProductTestTest;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -139,19 +140,16 @@ public class TransporterTest : IDisposable
 
     private void CreateFileTestReports()
     {
-        var passedTestReport = FileTestReport.Create("123123123", 
-                                                     "TestW", 
-                                                     new List<TestStepBase>() 
-                                                     {
-                                                         TestStep.Create("Test1", DateTime.Now, TestStatus.Passed)
-                                                     });
+        FileTestReportCreator creator = new FileTestReportCreator();
+
+        creator.Status= TestStatus.Passed;
+        creator.SerialNumber= Guid.NewGuid().ToString();
+        var passedTestReport = creator.Create();
         passedTestReport.SaveReport(inputDir);
-        var failedTestReport = FileTestReport.Create("456456456",
-                                                     "TestW",
-                                                     new List<TestStepBase>()
-                                                     {
-                                                         TestStep.Create("Test1", DateTime.Now, TestStatus.Failed)
-                                                     });
+
+        creator.Status = TestStatus.Failed;
+        creator.SerialNumber = Guid.NewGuid().ToString();
+        var failedTestReport = creator.Create();
         failedTestReport.SaveReport(inputDir);
     }
 
