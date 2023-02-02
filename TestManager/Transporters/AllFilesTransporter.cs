@@ -27,11 +27,7 @@ public class AllFilesTransporter : CustomTransporter, ITransporter
         {
             _fileProcessor.CopyFile(file);
             _fileProcessor.MoveFile(file);
-            _statistics.ProcessedData.Add(new TrackedTestReport(file));
-            _statistics.NumberOfFilesProcessed++;
-            if (file.Status != TestStatus.Passed)
-                _statistics.NumberOfFilesFailed++;
-
+            _statistics.Add(new TrackedTestReport(file));
         }
     }
 }

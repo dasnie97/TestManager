@@ -54,7 +54,7 @@ public partial class MainForm : Form
     {
         try
         {
-            Pareto paretoForm = new Pareto(_statistics.ProcessedData);
+            Pareto paretoForm = new Pareto(_statistics.GetProcessedData());
             paretoForm.ShowDialog();
         }
         catch (Exception ex)
@@ -67,7 +67,7 @@ public partial class MainForm : Form
     {
         try
         {
-            Details detailsForm = new Details(_statistics.ProcessedData);
+            Details detailsForm = new Details(_statistics.GetProcessedData());
             detailsForm.ShowDialog();
         }
         catch (Exception ex)

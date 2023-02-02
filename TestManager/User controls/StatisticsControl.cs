@@ -24,15 +24,11 @@ namespace TestManager
             TestedQtyLabel.Text = Statistics.NumberOfFilesProcessed.ToString();
             FailedQtyLabel.Text = Statistics.NumberOfFilesFailed.ToString();
 
-            if (Statistics.NumberOfFilesProcessed != 0)
-            {
-                var yield = (Statistics.NumberOfFilesProcessed - Statistics.NumberOfFilesFailed) * 100.0 / Statistics.NumberOfFilesProcessed;
-                YieldLabel.Text = $"{(yield).ToString("F")}";
-                if (yield >= 96)
-                    YieldLabel.BackColor = Color.Green;
-                else
-                    YieldLabel.BackColor = Color.Red;
-            }
+            YieldLabel.Text = $"{(Statistics.Yield).ToString("F")}";
+            if (Statistics.Yield >= 96)
+                YieldLabel.BackColor = Color.Green;
+            else
+                YieldLabel.BackColor = Color.Red;
         }
     }
 }

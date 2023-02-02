@@ -22,8 +22,7 @@ public class PassedFilesTransporter : CustomTransporter, ITransporter
             {
                 _fileProcessor.CopyFile(file);
                 _fileProcessor.MoveFile(file);
-                _statistics.ProcessedData.Add(new TrackedTestReport(file));
-                _statistics.NumberOfFilesProcessed++;
+                _statistics.Add(new TrackedTestReport(file));
             }
             else
             {
