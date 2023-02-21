@@ -8,10 +8,9 @@ namespace TestManager.ConfigHelpers;
 
 public interface IDirectoryConfig
 {
-    public string InputDir { get; }
-    public string OutputDir { get; }
-    public string CopyDir { get; }
-    public bool IsCopyingEnabled { get; }
-    public string DateNamedCopyDirectory { get; }
-    public void WriteConfig(string key, string value);
+    public string InputDir { get; set; }
+    public string OutputDir { get; set; }
+    public string CopyDir { get; set; }
+    public bool IsCopyingEnabled { get; set; }
+    public string DateNamedCopyDirectory { get; set; }
 }

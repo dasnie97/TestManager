@@ -12,5 +12,4 @@ public interface IWebConfig
     public bool SendOverHTTP { get; }
     public bool VerifyMES { get; }
     public bool Verify3510 { get; }
-    public void WriteConfig(string key, string value);
 }
