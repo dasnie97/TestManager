@@ -12,7 +12,9 @@ public interface IFileProcessor
 {
     public bool IsDataTransferEnabled { get; set; }
     public int TransferOption { get; set; }
-    public void MoveFile(FileTestReport testReport);
-    public void CopyFile(FileTestReport testReport);
+    public IEnumerable<FileTestReport> LoadFiles();
+    public string MoveFile(FileTestReport testReport);
+    public string CopyFile(FileTestReport testReport);
     public void DeleteFile(FileTestReport testReport);
+    public void Reset();
 }
