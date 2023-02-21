@@ -1,4 +1,5 @@
-﻿using ProductTest.Interfaces;
+﻿using Microsoft.Extensions.Configuration;
+using ProductTest.Interfaces;
 using ProductTest.Models;
 using System;
 using System.Collections.Generic;
@@ -12,20 +13,26 @@ using TestManager.FileHelpers;
 
 namespace TestManager.Transporters;
 
-public class CustomTransporter : TransporterBase
+// NOT USED
+public class CustomTransporter
 {
-    protected override IEnumerable<FileTestReport> LoadTestReports()
+    private readonly IDirectoryConfig _config;
+
+    public CustomTransporter(IDirectoryConfig config)
+    {
+        _config = config;
+    }
+    protected IEnumerable<FileTestReport> LoadTestReports()
     {
         IFileLoader fileLoader = new FileLoader();
-        IDirectoryConfig config = Config.GetInstance(ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None));
-        IEnumerable<FileTestReport> loaded = fileLoader.GetTestReportFiles(config.InputDir);
+        IEnumerable<FileTestReport> loaded = fileLoader.GetTestReportFiles(_config.InputDir);
 
         foreach (var testReport in loaded)
         {
             ReplaceFileContent(testReport.FilePath);
         }
 
-        return fileLoader.GetTestReportFiles(config.InputDir);
+        return fileLoader.GetTestReportFiles(_config.InputDir);
     }
 
     private void ReplaceFileContent(string filePath)

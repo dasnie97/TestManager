@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TestManager.ConfigHelpers;
 using TestManager.FileHelpers;
 using TestManager.Helpers;
 
@@ -12,6 +13,7 @@ public class TransporterFactory
 {
     private readonly IFileProcessor _fileProcessor;
     private readonly IStatistics _statistics;
+
     public TransporterFactory(IFileProcessor fileProcessor, IStatistics statistics)
     {
         _statistics = statistics;
@@ -45,7 +47,6 @@ public class TransporterFactory
             concreteTransporter = new NoFilesTransporter();
         }
 
-        _fileProcessor.TransferOption = 2;
         return concreteTransporter;
     }
 }

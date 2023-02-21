@@ -6,12 +6,13 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using TestManager.ConfigHelpers;
 using TestManager.FileHelpers;
 using TestManager.Helpers;
 
 namespace TestManager.Transporters;
 
-public class AllFilesTransporter : CustomTransporter, ITransporter
+public class AllFilesTransporter : ITransporter
 {
     private readonly IFileProcessor _fileProcessor;
     private readonly IStatistics _statistics;
@@ -22,12 +23,15 @@ public class AllFilesTransporter : CustomTransporter, ITransporter
     }
     public void TransportTestReports()
     {
-        var fileTestReports = LoadTestReports();
+        var fileTestReports = _fileProcessor.LoadFiles();
+
         foreach (var file in fileTestReports)
         {
             _fileProcessor.CopyFile(file);
             _fileProcessor.MoveFile(file);
             _statistics.Add(new TrackedTestReport(file));
         }
+
+        _fileProcessor.Reset();
     }
 }

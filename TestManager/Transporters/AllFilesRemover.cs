@@ -5,11 +5,12 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using TestManager.ConfigHelpers;
 using TestManager.FileHelpers;
 
 namespace TestManager.Transporters;
 
-public class AllFilesRemover : CustomTransporter, ITransporter
+public class AllFilesRemover : ITransporter
 {
     private readonly IFileProcessor _fileProcessor;
     public AllFilesRemover(IFileProcessor fileProcessor)
@@ -18,10 +19,13 @@ public class AllFilesRemover : CustomTransporter, ITransporter
     }
     public void TransportTestReports()
     {
-        var fileTestReports = LoadTestReports();
+        var fileTestReports = _fileProcessor.LoadFiles();
+
         foreach (var file in fileTestReports)
         {
             _fileProcessor.DeleteFile(file);
         }
+
+        _fileProcessor.Reset();
     }
 }
