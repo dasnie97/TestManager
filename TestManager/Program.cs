@@ -1,38 +1,61 @@
-using System.Text.RegularExpressions;
-using System.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using TestManager.Helpers;
+using Microsoft.Extensions.Configuration;
+using Serilog;
+using TestManager.ConfigHelpers;
 
-namespace TestManager
+namespace TestManager;
+
+internal static class Program
 {
-    internal static class Program
+    public static IServiceProvider ServiceProvider { get; private set; }
+
+    [STAThread]
+    static void Main()
     {
-        /// <summary>
-        ///  The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        static void Main()
+        try
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            if (ConfigFileIsPresent())
-            {
-                if (!Convert.ToBoolean(ConfigurationManager.AppSettings.Get("AutoLogIn")))
-                    //Application.Run(new LogIn());
-                    Application.Run(new MainForm("operat", new Form()));
-                else
-                    Application.Run(new MainForm("operat", new Form()));
-            }
-            else
-            {
-                MessageBox.Show("Cannot find config file!");
-                Environment.Exit(0);
-            }
-            
+
+            var host = CreateHostBuilder().Build();
+            ServiceProvider = host.Services;
+            Application.Run(ServiceProvider.GetRequiredService<MainForm>());
+            host.Dispose();
         }
-        public static bool ConfigFileIsPresent()
+        catch (Exception ex)
         {
-            var pathToAppConfig = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, "TestManager.dll.config");
-            return File.Exists(pathToAppConfig);
+            Log.Logger.Error(ex, ex.ToString());
+            Environment.Exit(Environment.ExitCode);
         }
+    }
+
+    private static IHostBuilder CreateHostBuilder()
+    {
+        return Host.CreateDefaultBuilder()
+        .UseSerilog((hostingContext, services, loggerConfiguration) =>
+            BuildLogger(loggerConfiguration, hostingContext)
+        )
+        .ConfigureServices((context, services) =>
+        {
+            services.ConfigureWritable<Config>(context.Configuration.GetSection(nameof(Config)));
+            services.AddSingleton<IStatistics, Statistics>();
+            services.AddTransient<MainForm>();
+        });
+    }
+
+    private static void BuildConfig(IConfigurationBuilder builder)
+    {
+        builder.SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Prodction"}.json", optional: true);
+    }
+
+    private static void BuildLogger(LoggerConfiguration loggerConfiguration, HostBuilderContext hostingContext)
+    {
+        loggerConfiguration
+        .ReadFrom.Configuration(hostingContext.Configuration)
+        .Enrich.FromLogContext()
+        .WriteTo.File("logs/log.txt");
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 using TestManager.ConfigHelpers;
 using TestManager.FileHelpers;
 using TestManager.Helpers;
@@ -8,27 +10,29 @@ namespace TestManager;
 
 public partial class MainForm : Form
 {
-    private Form _loginForm;
     private TransporterFactory _transporterFactory;
     private WebAdapter _webAdapter;
     private Workstation _workstation;
+    private IWritableOptions<Config> _writableConfig;
     private IDirectoryConfig _directoryConfig;
     private IWorkstationConfig _workstationConfig;
     private IWebConfig _webConfig;
     private IFileProcessor _fileProcessor;
     private IStatistics _statistics;
+    private ILogger<MainForm> _logger;
 
-    public MainForm(string operatorLogin, Form loginForm)
+    public MainForm(ILogger<MainForm> logger, IStatistics statistics, IWritableOptions<Config> config)
     {
         InitializeComponent();
-        _loginForm = loginForm;
-        _workstationConfig = Config.GetInstance();
-        _directoryConfig = Config.GetInstance();
-        _webConfig = Config.GetInstance();
-        _statistics = Statistics.GetInstance();
-        _fileProcessor = FileProcessor.GetInstance(_directoryConfig);
+        _logger = logger;
+        _statistics = statistics;
+        _directoryConfig = config.Value;
+        _webConfig = config.Value;
+        _workstationConfig = config.Value;
+        _writableConfig = config;
+        _fileProcessor = new FileProcessor(_directoryConfig);
         _transporterFactory = new TransporterFactory(_fileProcessor, _statistics);
-        _workstation = new Workstation(_workstationConfig.TestStationName, operatorLogin);
+        _workstation = new Workstation(_workstationConfig.TestStationName);
         statisticsControl.Statistics = _statistics;
     }
 
@@ -128,26 +132,26 @@ public partial class MainForm : Form
 
     private void ftpToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        var newValue = Convert.ToString(ftpToolStripMenuItem.Checked);
-        _webConfig.WriteConfig("SendOverFTP", newValue);
+        var newValue = ftpToolStripMenuItem.Checked;
+        _writableConfig.Update(cfg => cfg.SendOverFTP = newValue);
     }
 
     private void mesToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        var newValue = Convert.ToString(mesToolStripMenuItem.Checked);
-        _webConfig.WriteConfig("VerifyMES", newValue);
+        var newValue = mesToolStripMenuItem.Checked;
+        _writableConfig.Update(cfg => cfg.VerifyMES= newValue);
     }
 
     private void verify3510ToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        var newValue = Convert.ToString(verify3510ToolStripMenuItem.Checked);
-        _webConfig.WriteConfig("Verify3510", newValue);
+        var newValue = verify3510ToolStripMenuItem.Checked;
+        _writableConfig.Update(cfg => cfg.Verify3510= newValue);
     }
 
     private void httpToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        var newValue = Convert.ToString(httpToolStripMenuItem.Checked);
-        _webConfig.WriteConfig("SendOverHTTP", newValue);
+        var newValue = httpToolStripMenuItem.Checked;
+        _writableConfig.Update(cfg => cfg.SendOverHTTP= newValue);
     }
 
     #endregion
@@ -194,7 +198,7 @@ public partial class MainForm : Form
         }
         catch (Exception ex)
         {
-            MessageBox.Show(ex.Message);
+            _logger.LogError(ex, ex.ToString());
             Close();
         }
     }
@@ -203,9 +207,17 @@ public partial class MainForm : Form
     {
         timer3000ms.Stop();
 
-        var concreteTransporter = _transporterFactory.GetTransporter();
-        concreteTransporter.TransportTestReports();
-        statisticsControl.UpdateStatistics();
+        try
+        {
+            var concreteTransporter = _transporterFactory.GetTransporter();
+            concreteTransporter.TransportTestReports();
+            statisticsControl.UpdateStatistics();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.ToString());
+            Close();
+        }
 
         timer3000ms.Start();
     }
@@ -217,8 +229,7 @@ public partial class MainForm : Form
 
     private void DowntimeForm_FormClosed(object sender, FormClosedEventArgs e)
     {
-        // Ommit operator login
-        //loginForm.Show();
+        
     }
     #endregion
 }

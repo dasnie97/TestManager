@@ -15,7 +15,7 @@ public partial class LogIn : Form
     {
         if (e.KeyChar == (char)Keys.Enter)
         {
-            this.acceptButton.PerformClick();
+            acceptButton.PerformClick();
         }
     }
 
@@ -48,7 +48,7 @@ public partial class LogIn : Form
 
         loginTextbox.Clear();
         Hide();
-        mainForm = new MainForm(operatorLogin, FindForm());
+        //mainForm = new MainForm(operatorLogin, FindForm());
         mainForm.Show();
     }
 }
