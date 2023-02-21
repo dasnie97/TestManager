@@ -16,11 +16,9 @@ namespace TestManager.Helpers
         public double Yield { get; private set; } = 0;
         private List<TrackedTestReport> _processedData = new List<TrackedTestReport>();
 
-        private Statistics() { }
-
-        public static Statistics GetInstance()
+        public Statistics()
         {
-            return new Lazy<Statistics>(() => new Statistics()).Value;
+            
         }
 
         public List<TrackedTestReport> GetProcessedData()
@@ -43,14 +41,6 @@ namespace TestManager.Helpers
             CalculateYield();
         }
 
-        private void CalculateYield()
-        {
-            if (NumberOfFilesProcessed != 0)
-            {
-                Yield = (NumberOfFilesProcessed - NumberOfFilesFailed) * 100.0 / NumberOfFilesProcessed;
-            }
-        }
-
         public void Reset()
         {
             NumberOfFilesPassed = 0;
@@ -58,6 +48,14 @@ namespace TestManager.Helpers
             NumberOfFilesProcessed = 0;
             Yield = 0;
             _processedData.Clear();
+        }
+
+        private void CalculateYield()
+        {
+            if (NumberOfFilesProcessed != 0)
+            {
+                Yield = (NumberOfFilesProcessed - NumberOfFilesFailed) * 100.0 / NumberOfFilesProcessed;
+            }
         }
     }
 }

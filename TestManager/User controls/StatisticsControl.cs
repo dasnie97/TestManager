@@ -21,14 +21,17 @@ namespace TestManager
 
         public void UpdateStatistics()
         {
-            TestedQtyLabel.Text = Statistics.NumberOfFilesProcessed.ToString();
-            FailedQtyLabel.Text = Statistics.NumberOfFilesFailed.ToString();
+            if (Statistics.NumberOfFilesProcessed != 0)
+            {
+                TestedQtyLabel.Text = Statistics.NumberOfFilesProcessed.ToString();
+                FailedQtyLabel.Text = Statistics.NumberOfFilesFailed.ToString();
 
-            YieldLabel.Text = $"{(Statistics.Yield).ToString("F")}";
-            if (Statistics.Yield >= 96)
-                YieldLabel.BackColor = Color.Green;
-            else
-                YieldLabel.BackColor = Color.Red;
+                YieldLabel.Text = $"{(Statistics.Yield).ToString("F")}";
+                if (Statistics.Yield >= 96)
+                    YieldLabel.BackColor = Color.Green;
+                else
+                    YieldLabel.BackColor = Color.Red;
+            }
         }
     }
 }

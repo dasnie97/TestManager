@@ -15,7 +15,7 @@ public class StatisticsTest
 
 	public StatisticsTest()
 	{
-		_statistics = Statistics.GetInstance();
+		_statistics = new Statistics();
 	}
 
 	[Fact]
