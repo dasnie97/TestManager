@@ -1,4 +1,5 @@
-﻿using ProductTest.Common;
+﻿using Moq;
+using ProductTest.Common;
 using ProductTest.Models;
 using ProductTestTest;
 using System;
@@ -15,152 +16,176 @@ using TestManager.Transporters;
 
 namespace TestManagerTest;
 
-public class TransporterTest : IDisposable
+public class TransporterTest
 {
-    private string tempDir;
-    private string inputDir;
-    private string outputDir;
-    private string copyDir;
-    private string dateNamedCopyDir;
-    IFileLoader fileLoader;
-    IFileProcessor fileProcessor;
-    IStatistics statistics;
-
-    public TransporterTest()
+    public class TransporterFactoryTests
     {
-        tempDir = Path.Combine(Directory.GetCurrentDirectory(), "tempTest");
+        private readonly TransporterFactory _sut;
+        private readonly Mock<IFileProcessor> _fileProcessorMock = new Mock<IFileProcessor>();
+        private readonly Mock<IStatistics> _statisticsMock = new Mock<IStatistics>();
 
-        inputDir = Path.Combine(tempDir, "input");
-        outputDir = Path.Combine(tempDir, "output");
-        copyDir = Path.Combine(tempDir, "copy");
-        RecreateDirectories();
+        public TransporterFactoryTests()
+        {
+            _sut = new TransporterFactory(_fileProcessorMock.Object, _statisticsMock.Object);
+        }
 
-        var configuration = ConfigurationManager.OpenExeConfiguration("testhost.dll");
-        IDirectoryConfig dirConfig = Config.GetInstance(configuration);
-        dirConfig.WriteConfig("InputDir", inputDir);
-        dirConfig.WriteConfig("OutputDir", outputDir);
-        dirConfig.WriteConfig("CopyDir", copyDir);
-        dateNamedCopyDir = dirConfig.DateNamedCopyDirectory;
+        [Theory]
+        [InlineData(true, 0, nameof(PassedFilesTransporter))]
+        [InlineData(true, 1, nameof(AllFilesRemover))]
+        [InlineData(true, 2, nameof(AllFilesTransporter))]
+        [InlineData(false, 2, nameof(NoFilesTransporter))]
+        public void GetTransporter_ShouldReturnCorrectTransporterDependingOnTransferOption(bool dataTransferEnabled, int transferOption, string expectedTransporter)
+        {
+            _fileProcessorMock.Setup(fileProcessor => fileProcessor.IsDataTransferEnabled).Returns(dataTransferEnabled);
+            _fileProcessorMock.Setup(fileProcessor => fileProcessor.TransferOption).Returns(transferOption);
 
-        fileProcessor = FileProcessor.GetInstance(dirConfig);
-        fileLoader = new FileLoader();
-        statistics = Statistics.GetInstance();
+            var transporter = _sut.GetTransporter();
+
+            Assert.Equal(expectedTransporter, transporter.GetType().Name);
+        }
+
+        [Fact]
+        public void GetTransporter_ShouldThrowAnExceptionWhenInvalidTransferOption()
+        {
+            _fileProcessorMock.Setup(fileProcessor => fileProcessor.IsDataTransferEnabled).Returns(true);
+            _fileProcessorMock.Setup(fileProcessor => fileProcessor.TransferOption).Returns(-1);
+
+            Action getTransporter = () => _sut.GetTransporter();
+
+            Assert.Throws<InvalidOperationException>(getTransporter);
+        }
     }
 
-    public void Dispose()
+    public class PassedFilesTransporterTests
     {
-        Directory.Delete(tempDir, true);
+        private readonly PassedFilesTransporter _sut;
+        private readonly Mock<IFileProcessor> _fileProcessorMock = new Mock<IFileProcessor>();
+        private readonly Mock<IStatistics> _statisticsMock = new Mock<IStatistics>();
+
+        public PassedFilesTransporterTests()
+        {
+            _sut = new PassedFilesTransporter(_fileProcessorMock.Object, _statisticsMock.Object);
+        }
+
+        [Fact]
+        public void TransportTestReports_ShouldMoveAndCopyOnlyPassedTestReportsAndDeleteFailedOnes()
+        {
+            var testReports = CreateTestReports();
+            _fileProcessorMock.Setup(fileProcessor => fileProcessor.LoadFiles()).Returns(testReports);
+
+            _sut.TransportTestReports();
+
+            _fileProcessorMock.Verify(fileProcessor => fileProcessor.DeleteFile(It.IsAny<FileTestReport>()), Times.Once);
+            _fileProcessorMock.Verify(fileProcessor => fileProcessor.CopyFile(It.IsAny<FileTestReport>()), Times.Once);
+            _fileProcessorMock.Verify(fileProcessor => fileProcessor.MoveFile(It.IsAny<FileTestReport>()), Times.Once);
+            _fileProcessorMock.Verify(fileProcessor => fileProcessor.LoadFiles(), Times.Once);
+            _fileProcessorMock.Verify(fileProcessor => fileProcessor.Reset(), Times.Once);
+            _fileProcessorMock.VerifyNoOtherCalls();
+            _statisticsMock.Verify(statistics => statistics.Add(It.IsAny<TrackedTestReport>()), Times.Once);
+            _statisticsMock.VerifyNoOtherCalls();
+        }
     }
 
-    [Fact]
-    public void PassedFilesTransporterTest()
+    public class AllFilesRemoverTests
     {
-        fileProcessor.IsDataTransferEnabled = true;
-        fileProcessor.TransferOption = 0;
-        RecreateDirectories();
-        CreateFileTestReports();
+        private readonly AllFilesRemover _sut;
+        private readonly Mock<IFileProcessor> _fileProcessorMock = new Mock<IFileProcessor>();
 
-        var transporter = new TransporterFactory(fileProcessor, statistics).GetTransporter();
-        transporter.TransportTestReports();
-        var foundOutputTestReports = fileLoader.GetTestReportFiles(outputDir);
-        var foundCopyTestReports = fileLoader.GetTestReportFiles(dateNamedCopyDir);
+        public AllFilesRemoverTests()
+        {
+            _sut = new AllFilesRemover(_fileProcessorMock.Object);
+        }
 
-        Assert.Empty(Directory.GetFiles(inputDir));
-        Assert.True(Directory.GetFiles(outputDir).Count() == 1);
-        Assert.True(Directory.GetFiles(dateNamedCopyDir).Count() == 1);
-        Assert.True(foundOutputTestReports.First().Status == TestStatus.Passed);
-        Assert.True(foundCopyTestReports.First().Status == TestStatus.Passed);
+        [Fact]
+        public void TransportTestReports_ShouldDeleteAllFiles()
+        {
+            var testReports = CreateTestReports();
+            _fileProcessorMock.Setup(fileProcessor => fileProcessor.LoadFiles()).Returns(testReports);
+
+            _sut.TransportTestReports();
+
+            _fileProcessorMock.Verify(fileProcessor => fileProcessor.DeleteFile(It.IsAny<FileTestReport>()), Times.Exactly(2));
+            _fileProcessorMock.Verify(fileProcessor => fileProcessor.LoadFiles(), Times.Once);
+            _fileProcessorMock.Verify(fileProcessor => fileProcessor.Reset(), Times.Once);
+            _fileProcessorMock.VerifyNoOtherCalls();
+        }
     }
 
-    [Fact]
-    public void AllFilesRemoverTest()
+    public class AllFilesTransporterTests
     {
-        fileProcessor.IsDataTransferEnabled = true;
-        fileProcessor.TransferOption = 1;
-        RecreateDirectories();
-        CreateFileTestReports();
+        private readonly AllFilesTransporter _sut;
+        private readonly Mock<IFileProcessor> _fileProcessorMock = new Mock<IFileProcessor>();
+        private readonly Mock<IStatistics> _statisticsMock = new Mock<IStatistics>();
 
-        var transporter = new TransporterFactory(fileProcessor, statistics).GetTransporter();
-        transporter.TransportTestReports();
+        public AllFilesTransporterTests()
+        {
+            _sut = new AllFilesTransporter(_fileProcessorMock.Object, _statisticsMock.Object);
+        }
 
-        Assert.Empty(Directory.GetFiles(inputDir));
-        Assert.Empty(Directory.GetFiles(outputDir));
-        Assert.Empty(Directory.GetFiles(dateNamedCopyDir));
+        [Fact]
+        public void TransportTestReports_ShouldMoveAndCopyAllTestReports()
+        {
+            var testReports = CreateTestReports();
+            _fileProcessorMock.Setup(fileProcessor => fileProcessor.LoadFiles()).Returns(testReports);
+
+            _sut.TransportTestReports();
+
+            _fileProcessorMock.Verify(fileProcessor => fileProcessor.DeleteFile(It.IsAny<FileTestReport>()), Times.Never);
+            _fileProcessorMock.Verify(fileProcessor => fileProcessor.CopyFile(It.IsAny<FileTestReport>()), Times.Exactly(2));
+            _fileProcessorMock.Verify(fileProcessor => fileProcessor.MoveFile(It.IsAny<FileTestReport>()), Times.Exactly(2));
+            _fileProcessorMock.Verify(fileProcessor => fileProcessor.LoadFiles(), Times.Once);
+            _fileProcessorMock.Verify(fileProcessor => fileProcessor.Reset(), Times.Once);
+            _fileProcessorMock.VerifyNoOtherCalls();
+            _statisticsMock.Verify(statistics => statistics.Add(It.IsAny<TrackedTestReport>()), Times.Exactly(2));
+            _statisticsMock.VerifyNoOtherCalls();
+        }
+    }
+    
+    public class NoFilesTransporterTests
+    {
+        private readonly NoFilesTransporter _sut;
+        private readonly Mock<IFileProcessor> _fileProcessorMock = new Mock<IFileProcessor>();
+        private readonly Mock<IStatistics> _statisticsMock = new Mock<IStatistics>();
+
+        public NoFilesTransporterTests()
+        {
+            _sut = new NoFilesTransporter();
+        }
+
+        [Fact]
+        public void TransportTestReports_ShouldNotTransportAnything()
+        {
+            var testReports = CreateTestReports();
+            _fileProcessorMock.Setup(fileProcessor => fileProcessor.LoadFiles()).Returns(testReports);
+
+            _sut.TransportTestReports();
+
+            _fileProcessorMock.Verify(fileProcessor => fileProcessor.DeleteFile(It.IsAny<FileTestReport>()), Times.Never);
+            _fileProcessorMock.Verify(fileProcessor => fileProcessor.CopyFile(It.IsAny<FileTestReport>()), Times.Never);
+            _fileProcessorMock.Verify(fileProcessor => fileProcessor.MoveFile(It.IsAny<FileTestReport>()), Times.Never);
+            _fileProcessorMock.Verify(fileProcessor => fileProcessor.LoadFiles(), Times.Never);
+            _fileProcessorMock.Verify(fileProcessor => fileProcessor.Reset(), Times.Never);
+            _fileProcessorMock.VerifyNoOtherCalls();
+            _statisticsMock.Verify(statistics => statistics.Add(It.IsAny<TrackedTestReport>()), Times.Never);
+            _statisticsMock.VerifyNoOtherCalls();
+        }
     }
 
-    [Fact]
-    public void AllFilesTransporterTest()
+    private static List<FileTestReport> CreateTestReports()
     {
-        fileProcessor.IsDataTransferEnabled = true;
-        fileProcessor.TransferOption = 2;
-        RecreateDirectories();
-        CreateFileTestReports();
+        var serialNumber = Guid.NewGuid().ToString();
+        var workstation = Guid.NewGuid().ToString();
+        var passedTestSteps = new List<TestStepBase>()
+            {
+                TestStep.Create("Test1", DateTime.Now, TestStatus.Passed)
+            };
+        var failedTestSteps = new List<TestStepBase>()
+            {
+                TestStep.Create("Test2", DateTime.Now, TestStatus.Failed)
+            };
+        FileTestReport failedFileTestReport = FileTestReport.Create(serialNumber, workstation, failedTestSteps);
+        FileTestReport passedFileTestReport = FileTestReport.Create(serialNumber, workstation, passedTestSteps);
 
-        var transporter = new TransporterFactory(fileProcessor, statistics).GetTransporter();
-        transporter.TransportTestReports();
-        var foundOutputTestReports = fileLoader.GetTestReportFiles(outputDir);
-        var foundCopyTestReports = fileLoader.GetTestReportFiles(dateNamedCopyDir);
-
-        Assert.Empty(Directory.GetFiles(inputDir));
-        Assert.True(Directory.GetFiles(outputDir).Count() == 2);
-        Assert.True(Directory.GetFiles(dateNamedCopyDir).Count() == 2);
-        Assert.True(foundOutputTestReports.Where(testReport => testReport.Status == TestStatus.Failed).Count() == 1);
-        Assert.True(foundOutputTestReports.Where(testReport => testReport.Status == TestStatus.Passed).Count() == 1);
-        Assert.True(foundCopyTestReports.Where(testReport => testReport.Status == TestStatus.Failed).Count() == 1);
-        Assert.True(foundCopyTestReports.Where(testReport => testReport.Status == TestStatus.Passed).Count() == 1);
-    }
-
-    [Fact]
-    public void BadTransferOptionTest()
-    {
-        fileProcessor.IsDataTransferEnabled = true;
-        fileProcessor.TransferOption = 3;
-        RecreateDirectories();
-        CreateFileTestReports();
-
-        Assert.Throws<InvalidOperationException>(() => new TransporterFactory(fileProcessor, statistics).GetTransporter());
-    }
-
-    [Fact]
-    public void NoFilesTransporterTest()
-    {
-        fileProcessor.IsDataTransferEnabled = false;
-        fileProcessor.TransferOption = 2;
-        RecreateDirectories();
-        CreateFileTestReports();
-
-        var transporter = new TransporterFactory(fileProcessor, statistics).GetTransporter();
-        transporter.TransportTestReports();
-
-        Assert.Empty(Directory.GetFiles(outputDir));
-        Assert.Empty(Directory.GetFiles(copyDir));
-        Assert.False(Directory.Exists(dateNamedCopyDir));
-        Assert.True(Directory.GetFiles(inputDir).Count() == 2);
-    }
-
-    private void CreateFileTestReports()
-    {
-        FileTestReportCreator creator = new FileTestReportCreator();
-
-        creator.Status= TestStatus.Passed;
-        creator.SerialNumber= Guid.NewGuid().ToString();
-        var passedTestReport = creator.Create();
-        passedTestReport.SaveReport(inputDir);
-
-        creator.Status = TestStatus.Failed;
-        creator.SerialNumber = Guid.NewGuid().ToString();
-        var failedTestReport = creator.Create();
-        failedTestReport.SaveReport(inputDir);
-    }
-
-    private void RecreateDirectories()
-    {
-        if (Directory.Exists(inputDir)) Directory.Delete(inputDir, true);
-        if (Directory.Exists(outputDir)) Directory.Delete(outputDir, true);
-        if (Directory.Exists(copyDir)) Directory.Delete(copyDir, true);
-
-        Directory.CreateDirectory(inputDir);
-        Directory.CreateDirectory(outputDir);
-        Directory.CreateDirectory(copyDir);
+        return new List<FileTestReport>() { passedFileTestReport, failedFileTestReport };
     }
 }
