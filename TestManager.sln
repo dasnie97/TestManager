@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductTest", "..\ProductTe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductTestTest", "..\ProductTest\ProductTestTest\ProductTestTest.csproj", "{C2DA6506-56F8-4D75-ADE0-7D7893A9BAB6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestManagerTest", "TestManagerTest\TestManagerTest.csproj", "{22AC2F7A-7856-4DF0-B070-6BD9A6B29BCB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestManagerTest", "TestManagerTest\TestManagerTest.csproj", "{22AC2F7A-7856-4DF0-B070-6BD9A6B29BCB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomJSONConfigurationProvider", "..\Configuration\CustomJSONConfigurationProvider\CustomJSONConfigurationProvider.csproj", "{9F6425A6-BEDC-49B5-BBA4-949B821EBAEC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{22AC2F7A-7856-4DF0-B070-6BD9A6B29BCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22AC2F7A-7856-4DF0-B070-6BD9A6B29BCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22AC2F7A-7856-4DF0-B070-6BD9A6B29BCB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F6425A6-BEDC-49B5-BBA4-949B821EBAEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F6425A6-BEDC-49B5-BBA4-949B821EBAEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F6425A6-BEDC-49B5-BBA4-949B821EBAEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F6425A6-BEDC-49B5-BBA4-949B821EBAEC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
