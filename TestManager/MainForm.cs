@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using TestManager.ConfigHelpers;
 using TestManager.FileHelpers;
@@ -10,29 +9,31 @@ namespace TestManager;
 
 public partial class MainForm : Form
 {
-    private TransporterFactory _transporterFactory;
-    private WebAdapter _webAdapter;
-    private Workstation _workstation;
     private IWritableOptions<Config> _writableConfig;
     private IDirectoryConfig _directoryConfig;
     private IWorkstationConfig _workstationConfig;
     private IWebConfig _webConfig;
-    private IFileProcessor _fileProcessor;
-    private IStatistics _statistics;
+
     private ILogger<MainForm> _logger;
+    private IStatistics _statistics;
+    private ITransporterFactory _transporterFactory;
+    private IWorkstation _workstation;
 
     public MainForm(ILogger<MainForm> logger, IStatistics statistics, IWritableOptions<Config> config)
     {
         InitializeComponent();
+
+        _writableConfig = config;
+        _directoryConfig = config.Value;
+        _workstationConfig = config.Value;
+        _webConfig = config.Value;
+
         _logger = logger;
         _statistics = statistics;
-        _directoryConfig = config.Value;
-        _webConfig = config.Value;
-        _workstationConfig = config.Value;
-        _writableConfig = config;
-        _fileProcessor = new FileProcessor(_directoryConfig);
-        _transporterFactory = new TransporterFactory(_fileProcessor, _statistics);
+        var fileProcessor = new FileProcessor(_directoryConfig);
+        _transporterFactory = new TransporterFactory(fileProcessor, _statistics);
         _workstation = new Workstation(_workstationConfig.TestStationName);
+
         statisticsControl.Statistics = _statistics;
     }
 
@@ -44,7 +45,7 @@ public partial class MainForm : Form
 
     private void testReportTransferSwitchButton_Click(object sender, EventArgs e)
     {
-        if (_fileProcessor.IsDataTransferEnabled)
+        if (_transporterFactory.IsDataTransferEnabled)
         {
             TurnOffTestReportTransfer();
         }
@@ -56,42 +57,21 @@ public partial class MainForm : Form
 
     private void topFailuresButton_Click(object sender, EventArgs e)
     {
-        try
-        {
-            Pareto paretoForm = new Pareto(_statistics.GetProcessedData());
-            paretoForm.ShowDialog();
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show(ex.Message);
-        }
+        Pareto paretoForm = new Pareto(_statistics.GetProcessedData());
+        paretoForm.ShowDialog();
     }
 
     private void detailsButton_Click(object sender, EventArgs e)
     {
-        try
-        {
-            Details detailsForm = new Details(_statistics.GetProcessedData());
-            detailsForm.ShowDialog();
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show(ex.Message);
-        }
+        Details detailsForm = new Details(_statistics.GetProcessedData());
+        detailsForm.ShowDialog();
     }
 
     private void breakdownButton_Click(object sender, EventArgs e)
     {
         TurnOffTestReportTransfer();
-        try
-        {
-            MalfunctionReport malfForm = new MalfunctionReport(_workstation.OperatorName, _workstation.Name);
-            malfForm.ShowDialog();
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show(ex.Message);
-        }
+        MalfunctionReport malfForm = new MalfunctionReport(_workstation.OperatorName, _workstation.Name);
+        malfForm.ShowDialog();
     }
     #endregion
 
@@ -118,16 +98,12 @@ public partial class MainForm : Form
 
     private void copyToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        try
+        ProcessStartInfo startInfo = new ProcessStartInfo
         {
-            ProcessStartInfo startInfo = new ProcessStartInfo
-            {
-                Arguments = _directoryConfig.CopyDir,
-                FileName = "explorer.exe"
-            };
-            Process.Start(startInfo);
-        }
-        catch { }
+            Arguments = _directoryConfig.CopyDir,
+            FileName = "explorer.exe"
+        };
+        Process.Start(startInfo);
     }
 
     private void ftpToolStripMenuItem_Click(object sender, EventArgs e)
@@ -161,7 +137,7 @@ public partial class MainForm : Form
     {
         testReportTransferSwitchButton.Text = "OFF";
         testReportTransferSwitchButton.BackColor = Color.Red;
-        _fileProcessor.IsDataTransferEnabled = false;
+        _transporterFactory.IsDataTransferEnabled = false;
         transferOptionCombobox.Visible = true;
         transferOptionCombobox.SelectedIndex = 0;
     }
@@ -170,9 +146,9 @@ public partial class MainForm : Form
     {
         testReportTransferSwitchButton.Text = "ON";
         testReportTransferSwitchButton.BackColor = Color.Green;
-        _fileProcessor.IsDataTransferEnabled = true;
+        _transporterFactory.IsDataTransferEnabled = true;
         transferOptionCombobox.Visible = false;
-        _fileProcessor.TransferOption = transferOptionCombobox.SelectedIndex;
+        _transporterFactory.TransferOption = transferOptionCombobox.SelectedIndex;
     }
 
     private void LoadConfig()

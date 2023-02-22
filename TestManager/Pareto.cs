@@ -6,12 +6,49 @@ namespace TestManager;
 
 public partial class Pareto : Form
 {
-    public Pareto(IEnumerable<TestReportBase> TestData)
+    //TODO: Refactor this
+    public Pareto(IEnumerable<TestReportBase> testData)
     {
         InitializeComponent();
 
-        var sortedFailedTestData = getFailedTests(TestData);
+        var sortedFailedTestData = GetFailedTests(testData);
         UpdateUI(sortedFailedTestData);
+    }
+
+    private List<ParetoData> GetFailedTests(IEnumerable<TestReportBase> testData)
+    {
+        var failedTests = testData.Where(testReport => testReport.Status == "Failed" && testReport.Failure != null).ToList();
+        List<string> uniqueFailedTests = GetUniqueStepNames(failedTests);
+
+        var pareto = new List<ParetoData>();
+        foreach (var uniqueFailedTest in uniqueFailedTests)
+        {
+            var numberOfOccurences = 0;
+            foreach (var test in failedTests)
+            {
+                if (uniqueFailedTest == test.Failure.Split("\n")[0])
+                {
+                    numberOfOccurences++;
+                }
+            }
+            pareto.Add(new ParetoData(uniqueFailedTest, numberOfOccurences));
+        }
+        return pareto.OrderByDescending(x => x.Quantity).ToList();
+    }
+
+    private static List<string> GetUniqueStepNames(List<TestReportBase> failedTests)
+    {
+        var uniqueFailedTests = new List<string>();
+
+        foreach (var test in failedTests)
+        {
+            var failedStepName = test.Failure.Split("\n")[0];
+            if (uniqueFailedTests.Contains(failedStepName))
+                continue;
+            uniqueFailedTests.Add(failedStepName);
+        }
+
+        return uniqueFailedTests;
     }
 
     private void UpdateUI(List<ParetoData> sortedFailedTestData)
@@ -55,34 +92,5 @@ public partial class Pareto : Form
 
             chart1.Series["Series1"].Points.Add(other);
         }
-    }
-
-    private List<ParetoData> getFailedTests(IEnumerable<TestReportBase> testData)
-    {
-        var failedTests = testData.Where(testReport => testReport.Status == "Failed" && testReport.Failure != null).ToList();
-        var uniqueFailedTests = new List<string>();
-
-        foreach (var test in failedTests)
-        {
-            if (uniqueFailedTests.Contains(test.Failure.Split("\n")[0]))
-                continue;
-
-            uniqueFailedTests.Add(test.Failure.Split("\n")[0]);
-        }
-
-        var pareto = new List<ParetoData>();
-        foreach (var uniqueFailedTest in uniqueFailedTests)
-        {
-            var numberOfOccurences = 0;
-            foreach (var test in failedTests)
-            {
-                if (uniqueFailedTest == test.Failure.Split("\n")[0])
-                {
-                    numberOfOccurences++;
-                }
-            }
-            pareto.Add(new ParetoData(uniqueFailedTest, numberOfOccurences));
-        }
-        return pareto.OrderByDescending(x => x.Quantity).ToList();
     }
 }
