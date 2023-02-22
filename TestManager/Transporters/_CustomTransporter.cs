@@ -14,11 +14,11 @@ using TestManager.FileHelpers;
 namespace TestManager.Transporters;
 
 // NOT USED
-public class CustomTransporter
+public class _CustomTransporter
 {
     private readonly IDirectoryConfig _config;
 
-    public CustomTransporter(IDirectoryConfig config)
+    public _CustomTransporter(IDirectoryConfig config)
     {
         _config = config;
     }
