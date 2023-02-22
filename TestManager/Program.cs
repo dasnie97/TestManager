@@ -20,7 +20,10 @@ internal static class Program
 
             var host = CreateHostBuilder().Build();
             ServiceProvider = host.Services;
+            Log.Logger.Information("Starting up application in {environment} environment...", Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT"));
             Application.Run(ServiceProvider.GetRequiredService<MainForm>());
+            Log.Logger.Information("Closing application...");
+            Log.CloseAndFlush();
             host.Dispose();
         }
         catch (Exception ex)
@@ -48,14 +51,14 @@ internal static class Program
     {
         builder.SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-            .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Prodction"}.json", optional: true);
+            .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Prodction"}.json", optional: true);
     }
 
     private static void BuildLogger(LoggerConfiguration loggerConfiguration, HostBuilderContext hostingContext)
     {
         loggerConfiguration
-        .ReadFrom.Configuration(hostingContext.Configuration)
-        .Enrich.FromLogContext()
-        .WriteTo.File("logs/log.txt");
+            .ReadFrom.Configuration(hostingContext.Configuration)
+            .Enrich.FromLogContext()
+            .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day);
     }
 }
