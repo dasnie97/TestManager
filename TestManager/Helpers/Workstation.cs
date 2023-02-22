@@ -7,10 +7,15 @@ using System.Threading.Tasks;
 
 namespace TestManager.Helpers;
 
-public class Workstation : WorkstationBase
+public class Workstation : IWorkstation
 {
-	public Workstation(string name="", string operatorName="") :base(name, operatorName)
-	{
 
+	public string Name { get ; set; }
+	public string OperatorName { get ; set; }
+
+	public Workstation(string name = "", string operatorName = "")
+	{
+		Name = name;
+		OperatorName = operatorName;
 	}
 }

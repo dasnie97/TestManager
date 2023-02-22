@@ -46,7 +46,7 @@ public class WebAdapter
         }
     }
 
-    private WorkstationBase PostWorkstation()
+    private IWorkstation PostWorkstation()
     {
         return _httpService.HttpPost(_workstation).Result.ReadFromJsonAsync<Workstation>().Result;
     }
