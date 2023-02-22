@@ -9,8 +9,11 @@ using TestManager.Helpers;
 
 namespace TestManager.Transporters;
 
-public class TransporterFactory
+public class TransporterFactory : ITransporterFactory
 {
+    public bool IsDataTransferEnabled { get; set; } = true;
+    public int TransferOption { get; set; }
+
     private readonly IFileProcessor _fileProcessor;
     private readonly IStatistics _statistics;
 
@@ -23,17 +26,17 @@ public class TransporterFactory
     {
         ITransporter concreteTransporter;
 
-        if (_fileProcessor.IsDataTransferEnabled)
+        if (IsDataTransferEnabled)
         {
-            if (_fileProcessor.TransferOption == 0)
+            if (TransferOption == 0)
             {
                 concreteTransporter = new PassedFilesTransporter(_fileProcessor, _statistics);
             }
-            else if (_fileProcessor.TransferOption == 1)
+            else if (TransferOption == 1)
             {
                 concreteTransporter = new AllFilesRemover(_fileProcessor);
             }
-            else if (_fileProcessor.TransferOption == 2)
+            else if (TransferOption == 2)
             {
                 concreteTransporter = new AllFilesTransporter(_fileProcessor, _statistics);
             }
@@ -41,6 +44,8 @@ public class TransporterFactory
             {
                 throw new InvalidOperationException("Invalid transfer option!");
             }
+
+            Reset();
         }
         else
         {
@@ -48,5 +53,11 @@ public class TransporterFactory
         }
 
         return concreteTransporter;
+    }
+
+    private void Reset()
+    {
+        IsDataTransferEnabled = true;
+        TransferOption = 2;
     }
 }

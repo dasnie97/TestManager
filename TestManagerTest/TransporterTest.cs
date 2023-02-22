@@ -20,7 +20,7 @@ public class TransporterTest
 {
     public class TransporterFactoryTests
     {
-        private readonly TransporterFactory _sut;
+        private readonly ITransporterFactory _sut;
         private readonly Mock<IFileProcessor> _fileProcessorMock = new Mock<IFileProcessor>();
         private readonly Mock<IStatistics> _statisticsMock = new Mock<IStatistics>();
 
@@ -36,19 +36,50 @@ public class TransporterTest
         [InlineData(false, 2, nameof(NoFilesTransporter))]
         public void GetTransporter_ShouldReturnCorrectTransporterDependingOnTransferOption(bool dataTransferEnabled, int transferOption, string expectedTransporter)
         {
-            _fileProcessorMock.Setup(fileProcessor => fileProcessor.IsDataTransferEnabled).Returns(dataTransferEnabled);
-            _fileProcessorMock.Setup(fileProcessor => fileProcessor.TransferOption).Returns(transferOption);
+            _sut.IsDataTransferEnabled = dataTransferEnabled;
+            _sut.TransferOption = transferOption;
 
             var transporter = _sut.GetTransporter();
 
             Assert.Equal(expectedTransporter, transporter.GetType().Name);
         }
 
+        [Theory]
+        [InlineData(true, 0, nameof(PassedFilesTransporter))]
+        [InlineData(true, 1, nameof(AllFilesRemover))]
+        [InlineData(true, 2, nameof(AllFilesTransporter))]
+        public void GetTransporter_ShouldResetTransferOptionAndDataTransferFlag(bool dataTransferEnabled, int transferOption, string expectedTransporter)
+        {
+            _sut.IsDataTransferEnabled = dataTransferEnabled;
+            _sut.TransferOption = transferOption;
+            var expectedTransferOption = 2;
+            var expectedTransferFlagValue = true;
+
+            _sut.GetTransporter();
+
+            Assert.Equal(expectedTransferOption, _sut.TransferOption);
+            Assert.Equal(expectedTransferFlagValue, _sut.IsDataTransferEnabled);
+        }
+
+        [Fact]
+        public void GetTransporter_ShouldNotResetWhenNoFilesTransporterIsReturned()
+        {
+            _sut.TransferOption = 2;
+            _sut.IsDataTransferEnabled = false;
+            var expectedTransferOption = 2;
+            var expectedTransferFlagValue = false;
+
+            _sut.GetTransporter();
+
+            Assert.Equal(expectedTransferOption, _sut.TransferOption);
+            Assert.Equal(expectedTransferFlagValue, _sut.IsDataTransferEnabled);
+        }
+
         [Fact]
         public void GetTransporter_ShouldThrowAnExceptionWhenInvalidTransferOption()
         {
-            _fileProcessorMock.Setup(fileProcessor => fileProcessor.IsDataTransferEnabled).Returns(true);
-            _fileProcessorMock.Setup(fileProcessor => fileProcessor.TransferOption).Returns(-1);
+            _sut.IsDataTransferEnabled = true;
+            _sut.TransferOption = -1;
 
             Action getTransporter = () => _sut.GetTransporter();
 
@@ -79,7 +110,6 @@ public class TransporterTest
             _fileProcessorMock.Verify(fileProcessor => fileProcessor.CopyFile(It.IsAny<FileTestReport>()), Times.Once);
             _fileProcessorMock.Verify(fileProcessor => fileProcessor.MoveFile(It.IsAny<FileTestReport>()), Times.Once);
             _fileProcessorMock.Verify(fileProcessor => fileProcessor.LoadFiles(), Times.Once);
-            _fileProcessorMock.Verify(fileProcessor => fileProcessor.Reset(), Times.Once);
             _fileProcessorMock.VerifyNoOtherCalls();
             _statisticsMock.Verify(statistics => statistics.Add(It.IsAny<TrackedTestReport>()), Times.Once);
             _statisticsMock.VerifyNoOtherCalls();
@@ -106,7 +136,6 @@ public class TransporterTest
 
             _fileProcessorMock.Verify(fileProcessor => fileProcessor.DeleteFile(It.IsAny<FileTestReport>()), Times.Exactly(2));
             _fileProcessorMock.Verify(fileProcessor => fileProcessor.LoadFiles(), Times.Once);
-            _fileProcessorMock.Verify(fileProcessor => fileProcessor.Reset(), Times.Once);
             _fileProcessorMock.VerifyNoOtherCalls();
         }
     }
@@ -134,7 +163,6 @@ public class TransporterTest
             _fileProcessorMock.Verify(fileProcessor => fileProcessor.CopyFile(It.IsAny<FileTestReport>()), Times.Exactly(2));
             _fileProcessorMock.Verify(fileProcessor => fileProcessor.MoveFile(It.IsAny<FileTestReport>()), Times.Exactly(2));
             _fileProcessorMock.Verify(fileProcessor => fileProcessor.LoadFiles(), Times.Once);
-            _fileProcessorMock.Verify(fileProcessor => fileProcessor.Reset(), Times.Once);
             _fileProcessorMock.VerifyNoOtherCalls();
             _statisticsMock.Verify(statistics => statistics.Add(It.IsAny<TrackedTestReport>()), Times.Exactly(2));
             _statisticsMock.VerifyNoOtherCalls();
@@ -164,7 +192,6 @@ public class TransporterTest
             _fileProcessorMock.Verify(fileProcessor => fileProcessor.CopyFile(It.IsAny<FileTestReport>()), Times.Never);
             _fileProcessorMock.Verify(fileProcessor => fileProcessor.MoveFile(It.IsAny<FileTestReport>()), Times.Never);
             _fileProcessorMock.Verify(fileProcessor => fileProcessor.LoadFiles(), Times.Never);
-            _fileProcessorMock.Verify(fileProcessor => fileProcessor.Reset(), Times.Never);
             _fileProcessorMock.VerifyNoOtherCalls();
             _statisticsMock.Verify(statistics => statistics.Add(It.IsAny<TrackedTestReport>()), Times.Never);
             _statisticsMock.VerifyNoOtherCalls();

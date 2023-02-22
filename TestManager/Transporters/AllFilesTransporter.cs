@@ -1,13 +1,4 @@
-﻿using ProductTest.Interfaces;
-using ProductTest.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using TestManager.ConfigHelpers;
-using TestManager.FileHelpers;
+﻿using TestManager.FileHelpers;
 using TestManager.Helpers;
 
 namespace TestManager.Transporters;
@@ -31,7 +22,5 @@ public class AllFilesTransporter : ITransporter
             _fileProcessor.MoveFile(file);
             _statistics.Add(new TrackedTestReport(file));
         }
-
-        _fileProcessor.Reset();
     }
 }

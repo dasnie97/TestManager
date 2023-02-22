@@ -1,12 +1,4 @@
-﻿using ProductTest.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using TestManager.ConfigHelpers;
-using TestManager.FileHelpers;
+﻿using TestManager.FileHelpers;
 
 namespace TestManager.Transporters;
 
@@ -25,7 +17,5 @@ public class AllFilesRemover : ITransporter
         {
             _fileProcessor.DeleteFile(file);
         }
-
-        _fileProcessor.Reset();
     }
 }
