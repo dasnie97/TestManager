@@ -1,8 +1,9 @@
 ﻿using ProductTest.Models;
+using TestManager.Features.ProductionSupervision;
 using TestManager.FileHelpers;
-using TestManager.Helpers;
+using TestManager.Features.Analysis;
 
-namespace TestManager.Transporters;
+namespace TestManager.Features.Transporters;
 
 public class PassedFilesTransporter : ITransporter
 {

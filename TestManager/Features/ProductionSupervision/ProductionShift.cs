@@ -1,4 +1,4 @@
-﻿namespace TestManager.Helpers;
+﻿namespace TestManager.Features.ProductionSupervision;
 
 public struct ProductionShift
 {
@@ -9,15 +9,15 @@ public struct ProductionShift
     public ProductionShift()
     {
         Description = string.Empty;
-        ShiftStart= DateTime.MinValue;
-        ShiftEnd= DateTime.MinValue;
+        ShiftStart = DateTime.MinValue;
+        ShiftEnd = DateTime.MinValue;
     }
 
     public ProductionShift(string shift, DateTime shiftStart, DateTime shiftEnd)
     {
         Description = shift;
-        ShiftStart= shiftStart;
-        ShiftEnd= shiftEnd; 
+        ShiftStart = shiftStart;
+        ShiftEnd = shiftEnd;
     }
 
     public static ProductionShift CurrentShift

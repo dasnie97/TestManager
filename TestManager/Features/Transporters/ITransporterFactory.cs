@@ -1,4 +1,4 @@
-﻿namespace TestManager.Transporters;
+﻿namespace TestManager.Features.Transporters;
 
 public interface ITransporterFactory
 {

@@ -4,6 +4,7 @@ namespace TestManager;
 
 public partial class MalfunctionReport : Form
 {
+    //TODO: Refactor this
     public DateTime BreakdownStarted;
     public TimeSpan optionalBreakdownTimeInterval;
     //private HTTPPlugin<LogFile> _httpService = new();

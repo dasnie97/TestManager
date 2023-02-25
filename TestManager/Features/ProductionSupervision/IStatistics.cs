@@ -1,4 +1,6 @@
-﻿namespace TestManager.Helpers;
+﻿using TestManager.Features.Analysis;
+
+namespace TestManager.Features.ProductionSupervision;
 
 public interface IStatistics
 {

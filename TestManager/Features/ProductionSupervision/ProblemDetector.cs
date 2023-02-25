@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TestManager.Features.Analysis;
 using TestManager.FileHelpers;
 
-namespace TestManager.Helpers;
+namespace TestManager.Features.ProductionSupervision;
 
 public class ProblemDetector
 {

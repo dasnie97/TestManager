@@ -2,7 +2,7 @@
 using ProductTest.Models;
 using System.Data;
 using System.Windows.Forms.DataVisualization.Charting;
-using TestManager.Helpers;
+using TestManager.Features.Analysis;
 
 namespace TestManager;
 

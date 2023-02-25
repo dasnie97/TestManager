@@ -5,7 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TestManager.Helpers;
+using TestManager.Features.ProductionSupervision;
+using TestManager.Features.Analysis;
 
 namespace TestManagerTest;
 

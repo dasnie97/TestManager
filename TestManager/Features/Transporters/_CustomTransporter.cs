@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using TestManager.ConfigHelpers;
 using TestManager.FileHelpers;
 
-namespace TestManager.Transporters;
+namespace TestManager.Features.Transporters;
 
 // NOT USED
 public class _CustomTransporter

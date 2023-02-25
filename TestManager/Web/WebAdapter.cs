@@ -1,4 +1,5 @@
 ﻿using ProductTest.Common;
+using ProductTest.Interfaces;
 using ProductTest.Models;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TestManager.Helpers;
+namespace TestManager.Web;
 
 public class WebAdapter
 {
@@ -30,7 +31,7 @@ public class WebAdapter
 
     private bool WorkstationExists()
     {
-        var workstationsFound = _httpService.HttpGet<WorkstationBase>().Result.Where(x => x.Name == _workstation.Name).ToList();
+        var workstationsFound = _httpService.HttpGet<Workstation>().Result.Where(x => x.Name == _workstation.Name).ToList();
 
         if (workstationsFound.Count == 0)
         {

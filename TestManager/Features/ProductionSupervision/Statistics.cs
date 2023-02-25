@@ -5,8 +5,9 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TestManager.Features.Analysis;
 
-namespace TestManager.Helpers
+namespace TestManager.Features.ProductionSupervision
 {
     public class Statistics : IStatistics
     {
@@ -18,7 +19,7 @@ namespace TestManager.Helpers
 
         public Statistics()
         {
-            
+
         }
 
         public List<TrackedTestReport> GetProcessedData()

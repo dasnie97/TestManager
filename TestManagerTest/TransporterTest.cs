@@ -1,18 +1,10 @@
 ﻿using Moq;
 using ProductTest.Common;
 using ProductTest.Models;
-using ProductTestTest;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TestManager.ConfigHelpers;
+using TestManager.Features.Analysis;
+using TestManager.Features.ProductionSupervision;
+using TestManager.Features.Transporters;
 using TestManager.FileHelpers;
-using TestManager.Helpers;
-using TestManager.Transporters;
 
 namespace TestManagerTest;
 

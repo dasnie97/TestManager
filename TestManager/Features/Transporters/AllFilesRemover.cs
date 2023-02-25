@@ -1,6 +1,6 @@
 ﻿using TestManager.FileHelpers;
 
-namespace TestManager.Transporters;
+namespace TestManager.Features.Transporters;
 
 public class AllFilesRemover : ITransporter
 {

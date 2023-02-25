@@ -1,6 +1,6 @@
 ﻿using ProductTest.Common;
 
-namespace TestManager.Helpers;
+namespace TestManager.Features.Analysis;
 
 public class TrackedTestReport : TestReportBase
 {
