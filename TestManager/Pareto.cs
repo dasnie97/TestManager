@@ -1,96 +1,82 @@
 ﻿using ProductTest.Common;
+using ProductTest.Models;
 using System.Data;
+using System.Windows.Forms.DataVisualization.Charting;
 using TestManager.Helpers;
 
 namespace TestManager;
 
 public partial class Pareto : Form
 {
-    //TODO: Refactor this
     public Pareto(IEnumerable<TestReportBase> testData)
     {
         InitializeComponent();
+        ChartPoints = chart1.Series["Series1"].Points;
 
-        var sortedFailedTestData = GetFailedTests(testData);
-        UpdateUI(sortedFailedTestData);
+        var paretoData = GetParetoData(testData);
+        BuildChart(paretoData);
     }
 
-    private List<ParetoData> GetFailedTests(IEnumerable<TestReportBase> testData)
-    {
-        var failedTests = testData.Where(testReport => testReport.Status == "Failed" && testReport.Failure != null).ToList();
-        List<string> uniqueFailedTests = GetUniqueStepNames(failedTests);
+    private DataPointCollection ChartPoints { get; }
 
-        var pareto = new List<ParetoData>();
+    private int MAX_NUMBER_OF_DISTINCT_FAILURES_SHOWN = 5;
+
+    private List<ParetoData> GetParetoData(IEnumerable<TestReportBase> testData)
+    {
+        var failedTests = testData.Where(testReport => 
+            testReport.Status == TestStatus.Failed && !string.IsNullOrEmpty(testReport.Failure)
+            ).ToList();
+
+        var uniqueFailedTests = failedTests.Select(test => GetFailedStepName(test.Failure)).Distinct().ToList();
+        var paretoData = new List<ParetoData>();
+
         foreach (var uniqueFailedTest in uniqueFailedTests)
         {
-            var numberOfOccurences = 0;
-            foreach (var test in failedTests)
-            {
-                if (uniqueFailedTest == test.Failure.Split("\n")[0])
-                {
-                    numberOfOccurences++;
-                }
-            }
-            pareto.Add(new ParetoData(uniqueFailedTest, numberOfOccurences));
-        }
-        return pareto.OrderByDescending(x => x.Quantity).ToList();
-    }
-
-    private static List<string> GetUniqueStepNames(List<TestReportBase> failedTests)
-    {
-        var uniqueFailedTests = new List<string>();
-
-        foreach (var test in failedTests)
-        {
-            var failedStepName = test.Failure.Split("\n")[0];
-            if (uniqueFailedTests.Contains(failedStepName))
-                continue;
-            uniqueFailedTests.Add(failedStepName);
+            var count = failedTests.Where(test => GetFailedStepName(test.Failure) == uniqueFailedTest).Count();
+            paretoData.Add(new ParetoData(uniqueFailedTest, count));
         }
 
-        return uniqueFailedTests;
+        return paretoData.OrderByDescending(x => x.Quantity).ToList();
     }
 
-    private void UpdateUI(List<ParetoData> sortedFailedTestData)
+    private string GetFailedStepName(string failureString)
     {
-        chart1.Series["Series1"].Points.Clear();
+        return failureString.Split("\n")[0];
+    }
 
-        int maxNumberOfFailsShowed = 4;
-        if (sortedFailedTestData.Count <= maxNumberOfFailsShowed)
-            maxNumberOfFailsShowed = sortedFailedTestData.Count - 1;
-        int currentNumberOfFailsShowed = 0;
+    private void BuildChart(List<ParetoData> paretoData)
+    {
+        if (paretoData.Count < MAX_NUMBER_OF_DISTINCT_FAILURES_SHOWN)
+            MAX_NUMBER_OF_DISTINCT_FAILURES_SHOWN = paretoData.Count;
         int numberOfOtherStepsFailed = 0;
 
-        foreach (var failedStep in sortedFailedTestData)
+        foreach (var failedStep in paretoData)
         {
-            if (currentNumberOfFailsShowed <= maxNumberOfFailsShowed)
+            if (ChartPoints.Count < MAX_NUMBER_OF_DISTINCT_FAILURES_SHOWN)
             {
-                System.Windows.Forms.DataVisualization.Charting.DataPoint dP = new System.Windows.Forms.DataVisualization.Charting.DataPoint();
-
-                dP.AxisLabel = failedStep.TestStepName;
-                dP.SetValueY(failedStep.Quantity);
-                dP.Font = new Font("Microsoft Sans Serif", 15, FontStyle.Bold);
-                dP.IsValueShownAsLabel = true;
-
-                chart1.Series["Series1"].Points.Add(dP);
+                AddDataPoint(failedStep.TestStepName, failedStep.Quantity);
             }
             else
             {
                 numberOfOtherStepsFailed += failedStep.Quantity;
             }
-            currentNumberOfFailsShowed++;
         }
 
         if (numberOfOtherStepsFailed > 0)
         {
-            System.Windows.Forms.DataVisualization.Charting.DataPoint other = new System.Windows.Forms.DataVisualization.Charting.DataPoint();
-
-            other.AxisLabel = "Other";
-            other.SetValueY(numberOfOtherStepsFailed);
-            other.Font = new Font("Microsoft Sans Serif", 15, FontStyle.Bold);
-            other.IsValueShownAsLabel = true;
-
-            chart1.Series["Series1"].Points.Add(other);
+            AddDataPoint("other", numberOfOtherStepsFailed);
         }
+    }
+
+    private void AddDataPoint(string name, int value)
+    {
+        DataPoint dP = new DataPoint();
+
+        dP.AxisLabel = name;
+        dP.SetValueY(value);
+        dP.Font = new Font("Microsoft Sans Serif", 15, FontStyle.Bold);
+        dP.IsValueShownAsLabel = true;
+
+        ChartPoints.Add(dP);
     }
 }

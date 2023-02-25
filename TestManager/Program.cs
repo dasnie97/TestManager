@@ -20,7 +20,7 @@ internal static class Program
 
             var host = CreateHostBuilder().Build();
             ServiceProvider = host.Services;
-            Log.Logger.Information("Starting up application in {environment} environment...", Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT"));
+            Log.Logger.Information("Starting up application...");
             Application.Run(ServiceProvider.GetRequiredService<MainForm>());
             Log.Logger.Information("Closing application...");
             Log.CloseAndFlush();
