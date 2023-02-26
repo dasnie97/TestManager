@@ -1,62 +1,50 @@
 ﻿using ProductTest.Models;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TestManager.Features.Analysis;
 
-namespace TestManager.Features.ProductionSupervision
+namespace TestManager.Features.ProductionSupervision;
+
+public class Statistics : IStatistics
 {
-    public class Statistics : IStatistics
+    public int NumberOfFilesPassed { get; private set; } = 0;
+    public int NumberOfFilesFailed { get; private set; } = 0;
+    public int NumberOfFilesProcessed { get; private set; } = 0;
+    public double Yield { get; private set; } = 0;
+    private List<TrackedTestReport> _processedData = new List<TrackedTestReport>();
+
+    public List<TrackedTestReport> GetProcessedData()
     {
-        public int NumberOfFilesPassed { get; private set; } = 0;
-        public int NumberOfFilesFailed { get; private set; } = 0;
-        public int NumberOfFilesProcessed { get; private set; } = 0;
-        public double Yield { get; private set; } = 0;
-        private List<TrackedTestReport> _processedData = new List<TrackedTestReport>();
+        return _processedData;
+    }
 
-        public Statistics()
+    public void Add(TrackedTestReport testReport)
+    {
+        _processedData.Add(testReport);
+        NumberOfFilesProcessed++;
+        if (testReport.Status == TestStatus.Passed)
         {
-
+            NumberOfFilesPassed++;
         }
-
-        public List<TrackedTestReport> GetProcessedData()
+        else
         {
-            return _processedData;
+            NumberOfFilesFailed++;
         }
+        CalculateYield();
+    }
 
-        public void Add(TrackedTestReport testReport)
-        {
-            _processedData.Add(testReport);
-            NumberOfFilesProcessed++;
-            if (testReport.Status == TestStatus.Passed)
-            {
-                NumberOfFilesPassed++;
-            }
-            else
-            {
-                NumberOfFilesFailed++;
-            }
-            CalculateYield();
-        }
+    public void Reset()
+    {
+        NumberOfFilesPassed = 0;
+        NumberOfFilesFailed = 0;
+        NumberOfFilesProcessed = 0;
+        Yield = 0;
+        _processedData.Clear();
+    }
 
-        public void Reset()
+    private void CalculateYield()
+    {
+        if (NumberOfFilesProcessed != 0)
         {
-            NumberOfFilesPassed = 0;
-            NumberOfFilesFailed = 0;
-            NumberOfFilesProcessed = 0;
-            Yield = 0;
-            _processedData.Clear();
-        }
-
-        private void CalculateYield()
-        {
-            if (NumberOfFilesProcessed != 0)
-            {
-                Yield = (NumberOfFilesProcessed - NumberOfFilesFailed) * 100.0 / NumberOfFilesProcessed;
-            }
+            Yield = (NumberOfFilesProcessed - NumberOfFilesFailed) * 100.0 / NumberOfFilesProcessed;
         }
     }
 }

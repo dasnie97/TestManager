@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentFTP" Version="45.2.0" />
     <PackageReference Include="Maikebing.System.Windows.Forms.DataVisualization" Version="5.0.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
     <PackageReference Include="MySql.Data" Version="8.0.32" />
@@ -28,9 +29,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Configuration\CustomJSONConfigurationProvider\CustomJSONConfigurationProvider.csproj" />
-    <ProjectReference Include="..\..\FTPPlugin\FTPPlugin\FTPPlugin.csproj" />
-    <ProjectReference Include="..\..\HTTPPlugin\HTTPPlugin\HTTPPlugin.csproj" />
-    <ProjectReference Include="..\..\MESPlugin\MESPlugin\MESPlugin.csproj" />
+    <ProjectReference Include="..\..\ProductTest\ProductTest\ProductTest.csproj" />
   </ItemGroup>
 
   <ItemGroup>

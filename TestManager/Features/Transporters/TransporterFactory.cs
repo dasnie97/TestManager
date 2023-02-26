@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TestManager.ConfigHelpers;
-using TestManager.Features.ProductionSupervision;
-using TestManager.FileHelpers;
+﻿using TestManager.Features.ProductionSupervision;
+using TestManager.FileManagement;
+using TestManager.Web;
 
 namespace TestManager.Features.Transporters;
 
@@ -16,11 +11,13 @@ public class TransporterFactory : ITransporterFactory
 
     private readonly IFileProcessor _fileProcessor;
     private readonly IStatistics _statistics;
+    private readonly IWebAdapter _webAdapter;
 
-    public TransporterFactory(IFileProcessor fileProcessor, IStatistics statistics)
+    public TransporterFactory(IFileProcessor fileProcessor, IStatistics statistics, IWebAdapter webAdapter)
     {
         _statistics = statistics;
         _fileProcessor = fileProcessor;
+        _webAdapter = webAdapter;
     }
     public ITransporter GetTransporter()
     {
@@ -30,7 +27,7 @@ public class TransporterFactory : ITransporterFactory
         {
             if (TransferOption == 0)
             {
-                concreteTransporter = new PassedFilesTransporter(_fileProcessor, _statistics);
+                concreteTransporter = new PassedFilesTransporter(_fileProcessor, _statistics, _webAdapter);
             }
             else if (TransferOption == 1)
             {
@@ -38,7 +35,7 @@ public class TransporterFactory : ITransporterFactory
             }
             else if (TransferOption == 2)
             {
-                concreteTransporter = new AllFilesTransporter(_fileProcessor, _statistics);
+                concreteTransporter = new AllFilesTransporter(_fileProcessor, _statistics, _webAdapter);
             }
             else
             {

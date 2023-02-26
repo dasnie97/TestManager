@@ -1,7 +1,7 @@
 ﻿using ProductTest.Models;
-using TestManager.ConfigHelpers;
+using TestManager.Configuration;
 
-namespace TestManager.FileHelpers;
+namespace TestManager.FileManagement;
 
 public class FileProcessor : IFileProcessor
 {

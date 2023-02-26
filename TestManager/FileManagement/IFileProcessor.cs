@@ -1,6 +1,6 @@
 ﻿using ProductTest.Models;
 
-namespace TestManager.FileHelpers;
+namespace TestManager.FileManagement;
 
 public interface IFileProcessor
 {

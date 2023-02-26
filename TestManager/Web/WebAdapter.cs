@@ -1,4 +1,6 @@
-﻿using ProductTest.Common;
+﻿using FTPPlugin;
+using Microsoft.Extensions.Configuration;
+using ProductTest.Common;
 using ProductTest.Interfaces;
 using ProductTest.Models;
 using System;
@@ -10,16 +12,25 @@ using System.Threading.Tasks;
 
 namespace TestManager.Web;
 
-public class WebAdapter
+//TODO: When to use FTP service in transportation?
+public class WebAdapter : IWebAdapter
 {
-    private readonly Workstation _workstation;
-    public WebAdapter(Workstation workstation)
+    private readonly IConfiguration _config;
+    private readonly IFTPService _ftpService;
+    private readonly IHTTPService _httpService;
+    private readonly IWorkstation _workstation;
+
+    public WebAdapter(IConfiguration config, IWorkstation workstation)
     {
+        _config = config;
+        _ftpService = new FTPService(_config);
         _workstation = workstation;
-        Initialize();
     }
 
-    private HTTPPlugin _httpService = new HTTPPlugin();
+    public void FTPUpload(string filePath)
+    {
+         _ftpService.Upload(filePath);
+    }
 
     private void Initialize()
     {

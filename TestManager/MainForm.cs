@@ -1,11 +1,13 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using ProductTest.Interfaces;
 using ProductTest.Models;
 using System.Diagnostics;
-using TestManager.ConfigHelpers;
+using TestManager.Configuration;
 using TestManager.Features.ProductionSupervision;
 using TestManager.Features.Transporters;
-using TestManager.FileHelpers;
+using TestManager.FileManagement;
+using TestManager.Web;
 
 namespace TestManager;
 
@@ -20,21 +22,23 @@ public partial class MainForm : Form
     private IStatistics _statistics;
     private ITransporterFactory _transporterFactory;
     private IWorkstation _workstation;
+    private IWebAdapter _webAdapter;
 
-    public MainForm(ILogger<MainForm> logger, IStatistics statistics, IWritableOptions<Config> config)
+    public MainForm(ILogger<MainForm> logger, IStatistics statistics, IWritableOptions<Config> writableConfig, IConfiguration config)
     {
         InitializeComponent();
 
-        _writableConfig = config;
-        _directoryConfig = config.Value;
-        _workstationConfig = config.Value;
-        _webConfig = config.Value;
+        _writableConfig = writableConfig;
+        _directoryConfig = writableConfig.Value;
+        _workstationConfig = writableConfig.Value;
+        _webConfig = writableConfig.Value;
 
         _logger = logger;
         _statistics = statistics;
-        var fileProcessor = new FileProcessor(_directoryConfig);
-        _transporterFactory = new TransporterFactory(fileProcessor, _statistics);
         _workstation = new Workstation(_workstationConfig.TestStationName);
+        _webAdapter = new WebAdapter(config, _workstation);
+        var fileProcessor = new FileProcessor(_directoryConfig);
+        _transporterFactory = new TransporterFactory(fileProcessor, _statistics, _webAdapter);
 
         statisticsControl.Statistics = _statistics;
     }

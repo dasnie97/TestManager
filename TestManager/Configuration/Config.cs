@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
-using System.Configuration;
 
-namespace TestManager.ConfigHelpers;
+namespace TestManager.Configuration;
 
 public class Config : IDirectoryConfig, IWorkstationConfig, IWebConfig
 {

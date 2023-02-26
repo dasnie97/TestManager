@@ -2,8 +2,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Serilog;
-using TestManager.ConfigHelpers;
 using TestManager.Features.ProductionSupervision;
+using TestManager.Configuration;
 
 namespace TestManager;
 
