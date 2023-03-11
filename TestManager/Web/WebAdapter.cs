@@ -1,7 +1,4 @@
-﻿using FTPPlugin;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using ProductTest.Interfaces;
+﻿using ProductTest.Interfaces;
 using System.Net.Http.Json;
 using TestManager.Configuration;
 

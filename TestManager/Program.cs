@@ -1,6 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Configuration;
 using Serilog;
 using TestManager.Features.ProductionSupervision;
 using TestManager.Configuration;
@@ -8,8 +7,6 @@ using TestManager.Web;
 using TestManager.Features.Transporters;
 using TestManager.FileManagement;
 using ProductTest.Interfaces;
-using ProductTest.Models;
-using FTPPlugin;
 
 namespace TestManager;
 

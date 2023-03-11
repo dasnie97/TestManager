@@ -1,7 +1,7 @@
 ﻿using FluentFTP;
 using Microsoft.Extensions.Configuration;
 
-namespace FTPPlugin;
+namespace TestManager.Web;
 
 public class FTPService : IFTPService, IDisposable
 {

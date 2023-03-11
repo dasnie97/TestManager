@@ -1,4 +1,4 @@
-﻿namespace FTPPlugin;
+﻿namespace TestManager.Web;
 
 public interface IFTPService
 {
