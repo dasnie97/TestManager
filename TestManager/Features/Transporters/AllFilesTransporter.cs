@@ -2,6 +2,7 @@
 using TestManager.FileManagement;
 using TestManager.Features.Analysis;
 using TestManager.Web;
+using ProductTest.Models;
 
 namespace TestManager.Features.Transporters;
 
@@ -17,16 +18,22 @@ public class AllFilesTransporter : ITransporter
         _statistics = statistics;
         _webAdapter = webAdapter;
     }
+
     public void TransportTestReports()
     {
         var fileTestReports = _fileProcessor.LoadFiles();
 
         foreach (var file in fileTestReports)
         {
-            _webAdapter.FTPUpload(file.FilePath);
-            _statistics.Add(new TrackedTestReport(file));
-            _fileProcessor.CopyFile(file);
-            _fileProcessor.MoveFile(file);
+            ProcessFiles(file);
         }
+    }
+
+    private void ProcessFiles(FileTestReport file)
+    {
+        _webAdapter.FTPUpload(file.FilePath);
+        _statistics.Add(new TrackedTestReport(file));
+        _fileProcessor.CopyFile(file);
+        _fileProcessor.MoveFile(file);
     }
 }
