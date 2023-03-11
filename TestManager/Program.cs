@@ -4,6 +4,12 @@ using Microsoft.Extensions.Configuration;
 using Serilog;
 using TestManager.Features.ProductionSupervision;
 using TestManager.Configuration;
+using TestManager.Web;
+using TestManager.Features.Transporters;
+using TestManager.FileManagement;
+using ProductTest.Interfaces;
+using ProductTest.Models;
+using FTPPlugin;
 
 namespace TestManager;
 
@@ -42,16 +48,17 @@ internal static class Program
         .ConfigureServices((context, services) =>
         {
             services.ConfigureWritable<Config>(context.Configuration.GetSection(nameof(Config)));
+            services.AddSingleton<IDirectoryConfig, Config>();
+            services.AddSingleton<IWebConfig, Config>();
+            services.AddSingleton<IWorkstationConfig, Config>();
+            services.AddSingleton<IWorkstation, Web.Workstation>();
             services.AddSingleton<IStatistics, Statistics>();
-            services.AddTransient<MainForm>();
+            services.AddSingleton<IWebAdapter, WebAdapter>();
+            services.AddSingleton<IFTPService, FTPService>();
+            services.AddSingleton<IFileProcessor, FileProcessor>();
+            services.AddSingleton<ITransporterFactory, TransporterFactory>();
+            services.AddSingleton<MainForm>();
         });
-    }
-
-    private static void BuildConfig(IConfigurationBuilder builder)
-    {
-        builder.SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-            .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Prodction"}.json", optional: true);
     }
 
     private static void BuildLogger(LoggerConfiguration loggerConfiguration, HostBuilderContext hostingContext)
