@@ -4,7 +4,8 @@ using ProductTest.Models;
 using TestManager.Features.Analysis;
 using TestManager.Features.ProductionSupervision;
 using TestManager.Features.Transporters;
-using TestManager.FileHelpers;
+using TestManager.FileManagement;
+using TestManager.Web;
 
 namespace TestManagerTest;
 
@@ -15,10 +16,12 @@ public class TransporterTest
         private readonly ITransporterFactory _sut;
         private readonly Mock<IFileProcessor> _fileProcessorMock = new Mock<IFileProcessor>();
         private readonly Mock<IStatistics> _statisticsMock = new Mock<IStatistics>();
+        private readonly Mock<IWebAdapter> _webMock = new Mock<IWebAdapter>();
+
 
         public TransporterFactoryTests()
         {
-            _sut = new TransporterFactory(_fileProcessorMock.Object, _statisticsMock.Object);
+            _sut = new TransporterFactory(_fileProcessorMock.Object, _statisticsMock.Object, _webMock.Object);
         }
 
         [Theory]
@@ -84,10 +87,11 @@ public class TransporterTest
         private readonly PassedFilesTransporter _sut;
         private readonly Mock<IFileProcessor> _fileProcessorMock = new Mock<IFileProcessor>();
         private readonly Mock<IStatistics> _statisticsMock = new Mock<IStatistics>();
+        private readonly Mock<IWebAdapter> _webMock = new Mock<IWebAdapter>();
 
         public PassedFilesTransporterTests()
         {
-            _sut = new PassedFilesTransporter(_fileProcessorMock.Object, _statisticsMock.Object);
+            _sut = new PassedFilesTransporter(_fileProcessorMock.Object, _statisticsMock.Object, _webMock.Object);
         }
 
         [Fact]
@@ -137,10 +141,11 @@ public class TransporterTest
         private readonly AllFilesTransporter _sut;
         private readonly Mock<IFileProcessor> _fileProcessorMock = new Mock<IFileProcessor>();
         private readonly Mock<IStatistics> _statisticsMock = new Mock<IStatistics>();
+        private readonly Mock<IWebAdapter> _webMock = new Mock<IWebAdapter>();
 
         public AllFilesTransporterTests()
         {
-            _sut = new AllFilesTransporter(_fileProcessorMock.Object, _statisticsMock.Object);
+            _sut = new AllFilesTransporter(_fileProcessorMock.Object, _statisticsMock.Object, _webMock.Object);
         }
 
         [Fact]
