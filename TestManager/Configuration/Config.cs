@@ -24,7 +24,9 @@ public class Config : IDirectoryConfig, IWorkstationConfig, IWebConfig
     private void ReadConfig()
     {
         var config = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Prodction"}.json", optional: true)
                 .Build();
 
         IConfigurationSection section = config.GetSection(this.GetType().Name);
