@@ -1,13 +1,9 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using ProductTest.Interfaces;
-using ProductTest.Models;
 using System.Diagnostics;
 using TestManager.Configuration;
 using TestManager.Features.ProductionSupervision;
 using TestManager.Features.Transporters;
-using TestManager.FileManagement;
-using TestManager.Web;
 
 namespace TestManager;
 
@@ -15,30 +11,31 @@ public partial class MainForm : Form
 {
     private IWritableOptions<Config> _writableConfig;
     private IDirectoryConfig _directoryConfig;
-    private IWorkstationConfig _workstationConfig;
     private IWebConfig _webConfig;
 
     private ILogger<MainForm> _logger;
     private IStatistics _statistics;
     private ITransporterFactory _transporterFactory;
     private IWorkstation _workstation;
-    private IWebAdapter _webAdapter;
 
-    public MainForm(ILogger<MainForm> logger, IStatistics statistics, IWritableOptions<Config> writableConfig, IConfiguration config)
+    public MainForm(IWritableOptions<Config> writableConfig, 
+                    IDirectoryConfig directoryConfig,
+                    IWebConfig webConfig,
+                    ILogger<MainForm> logger,
+                    IStatistics statistics,
+                    ITransporterFactory transporterFactory,
+                    IWorkstation workstation)
     {
         InitializeComponent();
 
         _writableConfig = writableConfig;
-        _directoryConfig = writableConfig.Value;
-        _workstationConfig = writableConfig.Value;
-        _webConfig = writableConfig.Value;
+        _directoryConfig = directoryConfig;
+        _webConfig = webConfig;
 
         _logger = logger;
         _statistics = statistics;
-        _workstation = new Workstation(_workstationConfig.TestStationName);
-        _webAdapter = new WebAdapter(config, _workstation);
-        var fileProcessor = new FileProcessor(_directoryConfig);
-        _transporterFactory = new TransporterFactory(fileProcessor, _statistics, _webAdapter);
+        _transporterFactory = transporterFactory;
+        _workstation = workstation;
 
         statisticsControl.Statistics = _statistics;
     }
@@ -138,6 +135,42 @@ public partial class MainForm : Form
 
     #endregion
 
+    #region Form events & timers
+    private void MainForm_Load(object sender, EventArgs e)
+    {
+        try
+        {
+            LoadConfig();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.ToString());
+            Close();
+        }
+    }
+
+    private void timer3000ms_Tick(object sender, EventArgs e)
+    {
+        timer3000ms.Stop();
+
+        var concreteTransporter = _transporterFactory.GetTransporter();
+        concreteTransporter.TransportTestReports();
+        statisticsControl.UpdateStatistics();
+
+        timer3000ms.Start();
+    }
+
+    private void timer20min_Tick(object sender, EventArgs e)
+    {
+        
+    }
+
+    private void DowntimeForm_FormClosed(object sender, FormClosedEventArgs e)
+    {
+        
+    }
+    #endregion
+
     #region Private methods
     private void TurnOffTestReportTransfer()
     {
@@ -168,50 +201,6 @@ public partial class MainForm : Form
         inputToolStripMenuItem.Text = $"Input: {_directoryConfig.InputDir}";
         outputToolStripMenuItem.Text = $"Output: {_directoryConfig.OutputDir}";
         copyToolStripMenuItem.Text = $"Copy: {_directoryConfig.CopyDir}";
-    }
-    #endregion
-
-    #region Form events & timers
-    private void MainForm_Load(object sender, EventArgs e)
-    {
-        try
-        {
-            LoadConfig();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, ex.ToString());
-            Close();
-        }
-    }
-
-    private void timer3000ms_Tick(object sender, EventArgs e)
-    {
-        timer3000ms.Stop();
-
-        try
-        {
-            var concreteTransporter = _transporterFactory.GetTransporter();
-            concreteTransporter.TransportTestReports();
-            statisticsControl.UpdateStatistics();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, ex.ToString());
-            Close();
-        }
-
-        timer3000ms.Start();
-    }
-
-    private void timer20min_Tick(object sender, EventArgs e)
-    {
-        
-    }
-
-    private void DowntimeForm_FormClosed(object sender, FormClosedEventArgs e)
-    {
-        
     }
     #endregion
 }
