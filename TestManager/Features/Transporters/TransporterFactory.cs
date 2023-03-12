@@ -21,21 +21,21 @@ public class TransporterFactory : ITransporterFactory
     }
     public ITransporter GetTransporter()
     {
-        ITransporter concreteTransporter;
+        ITransporter transporter;
 
         if (IsDataTransferEnabled)
         {
             if (TransferOption == 0)
             {
-                concreteTransporter = new PassedFilesTransporter(_fileProcessor, _statistics, _webAdapter);
+                transporter = new PassedFilesTransporter(_fileProcessor, _statistics, _webAdapter);
             }
             else if (TransferOption == 1)
             {
-                concreteTransporter = new AllFilesRemover(_fileProcessor);
+                transporter = new AllFilesRemover(_fileProcessor);
             }
             else if (TransferOption == 2)
             {
-                concreteTransporter = new AllFilesTransporter(_fileProcessor, _statistics, _webAdapter);
+                transporter = new AllFilesTransporter(_fileProcessor, _statistics, _webAdapter);
             }
             else
             {
@@ -46,10 +46,10 @@ public class TransporterFactory : ITransporterFactory
         }
         else
         {
-            concreteTransporter = new NoFilesTransporter();
+            transporter = new NoFilesTransporter();
         }
 
-        return concreteTransporter;
+        return transporter;
     }
 
     private void Reset()

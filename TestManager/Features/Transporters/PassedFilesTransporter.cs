@@ -19,6 +19,8 @@ public class PassedFilesTransporter : ITransporter
         _webAdapter = webAdapter;
     }
 
+    public event EventHandler FileTransported;
+
     public void TransportTestReports()
     {
         var _fileTestReports = _fileProcessor.LoadFiles();
@@ -28,6 +30,7 @@ public class PassedFilesTransporter : ITransporter
             if (file.Status == TestStatus.Passed)
             {
                 ProcessFile(file);
+                FileTransported?.Invoke(this, EventArgs.Empty);
             }
             else
             {

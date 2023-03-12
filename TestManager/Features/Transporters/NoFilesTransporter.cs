@@ -6,6 +6,9 @@ public class NoFilesTransporter : ITransporter
     {
 
     }
+
+    public event EventHandler FileTransported;
+
     public void TransportTestReports()
     {
         // No files are transported

@@ -38,6 +38,7 @@ public partial class MainForm : Form
         _workstation = workstation;
 
         statisticsControl.Statistics = _statistics;
+        ConfigureFileWatcher();
     }
 
     #region Buttons
@@ -135,43 +136,46 @@ public partial class MainForm : Form
 
     #endregion
 
-    #region Form events & timers
+    #region Events
+
     private void MainForm_Load(object sender, EventArgs e)
     {
-        try
-        {
-            LoadConfig();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, ex.ToString());
-            Close();
-        }
+        LoadConfig();
     }
 
-    private void timer3000ms_Tick(object sender, EventArgs e)
+    private void Transporter_FileTransported(object? sender, EventArgs e)
     {
-        timer3000ms.Stop();
-
-        var concreteTransporter = _transporterFactory.GetTransporter();
-        concreteTransporter.TransportTestReports();
         statisticsControl.UpdateStatistics();
-
-        timer3000ms.Start();
     }
 
-    private void timer20min_Tick(object sender, EventArgs e)
+    private void FileSystemWatcher_Created(object sender, FileSystemEventArgs e)
     {
-        
+        var lockObj = new Object();
+        lock (lockObj)
+        {
+            RunFileProcessing();
+        }
     }
 
-    private void DowntimeForm_FormClosed(object sender, FormClosedEventArgs e)
-    {
-        
-    }
     #endregion
 
     #region Private methods
+
+    private async Task RunFileProcessing()
+    {
+        var transporter = _transporterFactory.GetTransporter();
+        transporter.FileTransported += Transporter_FileTransported;
+        await Task.Run(() => transporter.TransportTestReports());
+    }
+
+    private async Task ConfigureFileWatcher()
+    {
+        fileSystemWatcher.Path = _directoryConfig.InputDir;
+        fileSystemWatcher.EnableRaisingEvents = true;
+        await RunFileProcessing();
+        fileSystemWatcher.Created += FileSystemWatcher_Created;
+    }
+
     private void TurnOffTestReportTransfer()
     {
         testReportTransferSwitchButton.Text = "OFF";

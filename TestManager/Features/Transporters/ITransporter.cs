@@ -3,4 +3,5 @@
 public interface ITransporter
 {
     public void TransportTestReports();
+    public event EventHandler FileTransported;
 }

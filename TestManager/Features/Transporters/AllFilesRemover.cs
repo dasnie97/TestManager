@@ -9,6 +9,9 @@ public class AllFilesRemover : ITransporter
     {
         _fileProcessor = fileProcessor;
     }
+
+    public event EventHandler FileTransported;
+
     public void TransportTestReports()
     {
         var fileTestReports = _fileProcessor.LoadFiles();

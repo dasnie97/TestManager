@@ -28,9 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.topFailuresButton = new System.Windows.Forms.Button();
-            this.timer3000ms = new System.Windows.Forms.Timer(this.components);
             this.label4 = new System.Windows.Forms.Label();
             this.operatorLoginLabel = new System.Windows.Forms.Label();
             this.stationNameLabel = new System.Windows.Forms.Label();
@@ -56,8 +54,8 @@
             this.panel3 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.transferOptionCombobox = new System.Windows.Forms.ComboBox();
-            this.timer20min = new System.Windows.Forms.Timer(this.components);
             this.statisticsControl = new TestManager.StatisticsControl();
+            this.fileSystemWatcher = new System.IO.FileSystemWatcher();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel4.SuspendLayout();
@@ -65,6 +63,7 @@
             this.panel5.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher)).BeginInit();
             this.SuspendLayout();
             // 
             // topFailuresButton
@@ -79,12 +78,6 @@
             this.topFailuresButton.Text = "Top błędy";
             this.topFailuresButton.UseVisualStyleBackColor = false;
             this.topFailuresButton.Click += new System.EventHandler(this.topFailuresButton_Click);
-            // 
-            // timer3000ms
-            // 
-            this.timer3000ms.Enabled = true;
-            this.timer3000ms.Interval = 3000;
-            this.timer3000ms.Tick += new System.EventHandler(this.timer3000ms_Tick);
             // 
             // label4
             // 
@@ -196,7 +189,7 @@
             this.outputToolStripMenuItem,
             this.copyToolStripMenuItem});
             this.iodirsToolStripMenuItem.Name = "iodirsToolStripMenuItem";
-            this.iodirsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.iodirsToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
             this.iodirsToolStripMenuItem.Text = "I/O Directories";
             // 
             // inputToolStripMenuItem
@@ -225,7 +218,7 @@
             this.mesToolStripMenuItem.CheckOnClick = true;
             this.mesToolStripMenuItem.Enabled = false;
             this.mesToolStripMenuItem.Name = "mesToolStripMenuItem";
-            this.mesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.mesToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
             this.mesToolStripMenuItem.Text = "Verify MES";
             this.mesToolStripMenuItem.Click += new System.EventHandler(this.mesToolStripMenuItem_Click);
             // 
@@ -234,7 +227,7 @@
             this.verify3510ToolStripMenuItem.CheckOnClick = true;
             this.verify3510ToolStripMenuItem.Enabled = false;
             this.verify3510ToolStripMenuItem.Name = "verify3510ToolStripMenuItem";
-            this.verify3510ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.verify3510ToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
             this.verify3510ToolStripMenuItem.Text = "Verify 3-5-10";
             this.verify3510ToolStripMenuItem.Click += new System.EventHandler(this.verify3510ToolStripMenuItem_Click);
             // 
@@ -243,7 +236,7 @@
             this.httpToolStripMenuItem.CheckOnClick = true;
             this.httpToolStripMenuItem.Enabled = false;
             this.httpToolStripMenuItem.Name = "httpToolStripMenuItem";
-            this.httpToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.httpToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
             this.httpToolStripMenuItem.Text = "Send over HTTP";
             this.httpToolStripMenuItem.Click += new System.EventHandler(this.httpToolStripMenuItem_Click);
             // 
@@ -252,7 +245,7 @@
             this.ftpToolStripMenuItem.CheckOnClick = true;
             this.ftpToolStripMenuItem.Enabled = false;
             this.ftpToolStripMenuItem.Name = "ftpToolStripMenuItem";
-            this.ftpToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.ftpToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
             this.ftpToolStripMenuItem.Text = "Send over FTP";
             this.ftpToolStripMenuItem.Click += new System.EventHandler(this.ftpToolStripMenuItem_Click);
             // 
@@ -350,17 +343,18 @@
             this.transferOptionCombobox.TabIndex = 21;
             this.transferOptionCombobox.Visible = false;
             // 
-            // timer20min
-            // 
-            this.timer20min.Enabled = true;
-            this.timer20min.Interval = 10000;
-            // 
             // statisticsControl
             // 
             this.statisticsControl.Location = new System.Drawing.Point(3, 175);
             this.statisticsControl.Name = "statisticsControl";
             this.statisticsControl.Size = new System.Drawing.Size(111, 125);
+            this.statisticsControl.Statistics = null;
             this.statisticsControl.TabIndex = 22;
+            // 
+            // fileSystemWatcher
+            // 
+            this.fileSystemWatcher.EnableRaisingEvents = true;
+            this.fileSystemWatcher.SynchronizingObject = this;
             // 
             // MainForm
             // 
@@ -382,7 +376,6 @@
             this.MinimizeBox = false;
             this.Name = "MainForm";
             this.Text = "TestManager";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.DowntimeForm_FormClosed);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
@@ -392,6 +385,7 @@
             this.panel5.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -400,7 +394,6 @@
         #endregion
 
         private System.Windows.Forms.Button topFailuresButton;
-        private System.Windows.Forms.Timer timer3000ms;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label operatorLoginLabel;
         private System.Windows.Forms.Label stationNameLabel;
@@ -426,8 +419,8 @@
         private ToolStripMenuItem copyToolStripMenuItem;
         private ToolStripMenuItem httpToolStripMenuItem;
         private ToolStripMenuItem ftpToolStripMenuItem;
-        private System.Windows.Forms.Timer timer20min;
         private StatisticsControl statisticsControl;
+        private FileSystemWatcher fileSystemWatcher;
     }
 }
 

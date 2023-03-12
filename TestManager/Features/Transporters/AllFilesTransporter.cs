@@ -19,6 +19,8 @@ public class AllFilesTransporter : ITransporter
         _webAdapter = webAdapter;
     }
 
+    public event EventHandler FileTransported;
+
     public void TransportTestReports()
     {
         var fileTestReports = _fileProcessor.LoadFiles();
@@ -26,6 +28,7 @@ public class AllFilesTransporter : ITransporter
         foreach (var file in fileTestReports)
         {
             ProcessFiles(file);
+            FileTransported?.Invoke(this, EventArgs.Empty);
         }
     }
 
