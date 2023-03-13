@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using ProductTest.Interfaces;
+﻿using ProductTest.Interfaces;
 using System.Diagnostics;
 using TestManager.Configuration;
 using TestManager.Features.ProductionSupervision;
@@ -13,7 +12,6 @@ public partial class MainForm : Form
     private IDirectoryConfig _directoryConfig;
     private IWebConfig _webConfig;
 
-    private ILogger<MainForm> _logger;
     private IStatistics _statistics;
     private ITransporterFactory _transporterFactory;
     private IWorkstation _workstation;
@@ -21,7 +19,6 @@ public partial class MainForm : Form
     public MainForm(IWritableOptions<Config> writableConfig, 
                     IDirectoryConfig directoryConfig,
                     IWebConfig webConfig,
-                    ILogger<MainForm> logger,
                     IStatistics statistics,
                     ITransporterFactory transporterFactory,
                     IWorkstation workstation)
@@ -32,16 +29,15 @@ public partial class MainForm : Form
         _directoryConfig = directoryConfig;
         _webConfig = webConfig;
 
-        _logger = logger;
         _statistics = statistics;
         _transporterFactory = transporterFactory;
         _workstation = workstation;
 
         statisticsControl.Statistics = _statistics;
-        ConfigureFileWatcher();
     }
 
     #region Buttons
+
     private void logOutButton_Click(object sender, EventArgs e)
     {
         Close();
@@ -77,9 +73,11 @@ public partial class MainForm : Form
         MalfunctionReport malfForm = new MalfunctionReport(_workstation.OperatorName, _workstation.Name);
         malfForm.ShowDialog();
     }
+
     #endregion
 
     #region MenuStrip
+
     private void inputToolStripMenuItem_Click(object sender, EventArgs e)
     {
         ProcessStartInfo startInfo = new ProcessStartInfo
@@ -143,18 +141,18 @@ public partial class MainForm : Form
         LoadConfig();
     }
 
+    private async void timer3000ms_Tick(object sender, EventArgs e)
+    {
+        timer3000ms.Stop();
+
+        await RunFileProcessing();
+
+        timer3000ms.Start();
+    }
+
     private void Transporter_FileTransported(object? sender, EventArgs e)
     {
         statisticsControl.UpdateStatistics();
-    }
-
-    private void FileSystemWatcher_Created(object sender, FileSystemEventArgs e)
-    {
-        var lockObj = new Object();
-        lock (lockObj)
-        {
-            RunFileProcessing();
-        }
     }
 
     #endregion
@@ -166,14 +164,6 @@ public partial class MainForm : Form
         var transporter = _transporterFactory.GetTransporter();
         transporter.FileTransported += Transporter_FileTransported;
         await Task.Run(() => transporter.TransportTestReports());
-    }
-
-    private async Task ConfigureFileWatcher()
-    {
-        fileSystemWatcher.Path = _directoryConfig.InputDir;
-        fileSystemWatcher.EnableRaisingEvents = true;
-        await RunFileProcessing();
-        fileSystemWatcher.Created += FileSystemWatcher_Created;
     }
 
     private void TurnOffTestReportTransfer()

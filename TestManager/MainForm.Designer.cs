@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.topFailuresButton = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.operatorLoginLabel = new System.Windows.Forms.Label();
@@ -55,7 +56,7 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.transferOptionCombobox = new System.Windows.Forms.ComboBox();
             this.statisticsControl = new TestManager.StatisticsControl();
-            this.fileSystemWatcher = new System.IO.FileSystemWatcher();
+            this.timer3000ms = new System.Windows.Forms.Timer(this.components);
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel4.SuspendLayout();
@@ -63,7 +64,6 @@
             this.panel5.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher)).BeginInit();
             this.SuspendLayout();
             // 
             // topFailuresButton
@@ -351,10 +351,11 @@
             this.statisticsControl.Statistics = null;
             this.statisticsControl.TabIndex = 22;
             // 
-            // fileSystemWatcher
+            // timer3000ms
             // 
-            this.fileSystemWatcher.EnableRaisingEvents = true;
-            this.fileSystemWatcher.SynchronizingObject = this;
+            this.timer3000ms.Enabled = true;
+            this.timer3000ms.Interval = 3000;
+            this.timer3000ms.Tick += new System.EventHandler(this.timer3000ms_Tick);
             // 
             // MainForm
             // 
@@ -385,7 +386,6 @@
             this.panel5.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -420,7 +420,7 @@
         private ToolStripMenuItem httpToolStripMenuItem;
         private ToolStripMenuItem ftpToolStripMenuItem;
         private StatisticsControl statisticsControl;
-        private FileSystemWatcher fileSystemWatcher;
+        private System.Windows.Forms.Timer timer3000ms;
     }
 }
 

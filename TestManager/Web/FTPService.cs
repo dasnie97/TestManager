@@ -19,7 +19,6 @@ public class FTPService : IFTPService, IDisposable
         CloseConnection();
     }
 
-    //TODO: Run this asynchronously
     public void Upload(string filePath)
     {
         var status = _client.UploadFile(filePath, $"/{Path.GetFileName(filePath)}", verifyOptions: FtpVerify.Throw);

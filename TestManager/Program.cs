@@ -25,7 +25,7 @@ internal static class Program
             ServiceProvider = host.Services;
             Log.Logger.Information("Starting up application...");
             Application.Run(ServiceProvider.GetRequiredService<MainForm>());
-            Log.Logger.Information("Closing application...");
+            Log.Logger.Information("Shutting down application...");
             Log.CloseAndFlush();
             host.Dispose();
         }
@@ -48,7 +48,7 @@ internal static class Program
             services.AddSingleton<IDirectoryConfig, Config>();
             services.AddSingleton<IWebConfig, Config>();
             services.AddSingleton<IWorkstationConfig, Config>();
-            services.AddSingleton<IWorkstation, Web.Workstation>();
+            services.AddSingleton<IWorkstation, Workstation>();
             services.AddSingleton<IStatistics, Statistics>();
             services.AddSingleton<IWebAdapter, WebAdapter>();
             services.AddSingleton<IFTPService, FTPService>();
