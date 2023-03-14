@@ -5,6 +5,7 @@ namespace TestManager.Configuration;
 public class Config : IDirectoryConfig, IWorkstationConfig, IWebConfig
 {
     public string TestStationName { get; set; }
+    public string OperatorName { get; set; }
     public bool SendOverFTP { get; set; }
     public bool SendOverHTTP { get; set; }
     public bool VerifyMES { get; set; }

@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.confirmButton = new System.Windows.Forms.Button();
+            this.sendReportButton = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -37,7 +37,7 @@
             this.descriptionTextbox = new System.Windows.Forms.TextBox();
             this.descriptionComboBox = new System.Windows.Forms.ComboBox();
             this.actionTakenComboBox = new System.Windows.Forms.ComboBox();
-            this.technicianComboBox = new System.Windows.Forms.ComboBox();
+            this.technicianNamesComboBox = new System.Windows.Forms.ComboBox();
             this.breakdownTimeStartedLabel = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
@@ -47,17 +47,17 @@
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // confirmButton
+            // sendReportButton
             // 
-            this.confirmButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.confirmButton.Location = new System.Drawing.Point(63, 276);
-            this.confirmButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.confirmButton.Name = "confirmButton";
-            this.confirmButton.Size = new System.Drawing.Size(94, 28);
-            this.confirmButton.TabIndex = 15;
-            this.confirmButton.Text = "Wyślij";
-            this.confirmButton.UseVisualStyleBackColor = true;
-            this.confirmButton.Click += new System.EventHandler(this.confirmButton_Click);
+            this.sendReportButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.sendReportButton.Location = new System.Drawing.Point(63, 276);
+            this.sendReportButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.sendReportButton.Name = "sendReportButton";
+            this.sendReportButton.Size = new System.Drawing.Size(94, 28);
+            this.sendReportButton.TabIndex = 15;
+            this.sendReportButton.Text = "Wyślij";
+            this.sendReportButton.UseVisualStyleBackColor = true;
+            this.sendReportButton.Click += new System.EventHandler(this.sendReportButton_Click);
             // 
             // label5
             // 
@@ -77,9 +77,9 @@
             this.label3.Location = new System.Drawing.Point(27, 178);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(114, 16);
+            this.label3.Size = new System.Drawing.Size(109, 16);
             this.label3.TabIndex = 13;
-            this.label3.Text = "Podjęte działania";
+            this.label3.Text = "Akcje naprawcze";
             // 
             // label2
             // 
@@ -148,19 +148,19 @@
             this.actionTakenComboBox.Size = new System.Drawing.Size(166, 23);
             this.actionTakenComboBox.TabIndex = 18;
             // 
-            // technicianComboBox
+            // technicianNamesComboBox
             // 
-            this.technicianComboBox.FormattingEnabled = true;
-            this.technicianComboBox.Items.AddRange(new object[] {
+            this.technicianNamesComboBox.FormattingEnabled = true;
+            this.technicianNamesComboBox.Items.AddRange(new object[] {
             "FADICH",
             "MIKUCH",
             "MAKOSI",
             "JAMALI",
             "RADABR"});
-            this.technicianComboBox.Location = new System.Drawing.Point(12, 28);
-            this.technicianComboBox.Name = "technicianComboBox";
-            this.technicianComboBox.Size = new System.Drawing.Size(73, 23);
-            this.technicianComboBox.TabIndex = 18;
+            this.technicianNamesComboBox.Location = new System.Drawing.Point(12, 28);
+            this.technicianNamesComboBox.Name = "technicianNamesComboBox";
+            this.technicianNamesComboBox.Size = new System.Drawing.Size(73, 23);
+            this.technicianNamesComboBox.TabIndex = 18;
             // 
             // breakdownTimeStartedLabel
             // 
@@ -223,10 +223,10 @@
             this.ClientSize = new System.Drawing.Size(219, 309);
             this.Controls.Add(this.malfunctionTimeOptionalTextBox);
             this.Controls.Add(this.panel1);
-            this.Controls.Add(this.technicianComboBox);
+            this.Controls.Add(this.technicianNamesComboBox);
             this.Controls.Add(this.actionTakenComboBox);
             this.Controls.Add(this.descriptionComboBox);
-            this.Controls.Add(this.confirmButton);
+            this.Controls.Add(this.sendReportButton);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.label5);
@@ -238,7 +238,6 @@
             this.MinimizeBox = false;
             this.Name = "MalfunctionReport";
             this.Text = "MalfunctionReport";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MalfunctionReport_FormClosed);
             this.Shown += new System.EventHandler(this.MalfunctionReport_Shown);
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -247,7 +246,7 @@
         }
 
         #endregion
-        private Button confirmButton;
+        private Button sendReportButton;
         private Label label5;
         private Label label3;
         private Label label2;
@@ -255,7 +254,7 @@
         private TextBox descriptionTextbox;
         private ComboBox descriptionComboBox;
         private ComboBox actionTakenComboBox;
-        private ComboBox technicianComboBox;
+        private ComboBox technicianNamesComboBox;
         private Label breakdownTimeStartedLabel;
         private System.Windows.Forms.Timer timer1;
         private Panel panel1;

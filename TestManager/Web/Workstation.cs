@@ -19,5 +19,6 @@ public class Workstation : IWorkstation
     {
         _workstationConfig = workstationConfig;
         Name = _workstationConfig.TestStationName;
+        OperatorName = _workstationConfig.OperatorName;
     }
 }

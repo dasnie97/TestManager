@@ -1,92 +1,102 @@
-﻿using System.Text.RegularExpressions;
+﻿using ProductTest.Interfaces;
+using System.Text.RegularExpressions;
 
 namespace TestManager;
 
 public partial class MalfunctionReport : Form
 {
-    //TODO: Refactor this
     public DateTime BreakdownStarted;
-    public TimeSpan optionalBreakdownTimeInterval;
-    //private HTTPPlugin<LogFile> _httpService = new();
+    public TimeSpan BreakdownTimeSpan;
 
-    public MalfunctionReport(string OperatorLogin, string StationName)
+    private readonly IWorkstation _workstation;
+    private bool formValidationPassed;
+
+    public MalfunctionReport(IWorkstation workstation)
     {
         InitializeComponent();
+        _workstation = workstation;
         BreakdownStarted = DateTime.Now;
         timer1.Start();
-        //_httpService.UpdateTeststations(problemOperator: "1");
     }
 
-    private void confirmButton_Click(object sender, EventArgs e)
+    private void sendReportButton_Click(object sender, EventArgs e)
     {
-        if (technicianComboBox.Text.Length == 0)
+        ValidateForm();
+
+        if (formValidationPassed)
         {
-            MessageBox.Show("Wprowadź swój login!");
+            CalculateBreakdownTimeSpan();
+            // TODO: Send report to DB
+            Close();
+        }
+    }
+
+    private void ValidateForm()
+    {
+        formValidationPassed = true;
+
+        if (string.IsNullOrEmpty(technicianNamesComboBox.Text))
+        {
+            SetValidationFailed("Wprowadź swój login!");
             return;
         }
 
-        if (descriptionComboBox.Text.Length == 0 || actionTakenComboBox.Text.Length == 0)
+        if (string.IsNullOrEmpty(descriptionComboBox.Text))
         {
-            MessageBox.Show("Wprowadź opis awarii oraz podjęte działania!");
+            SetValidationFailed("Wprowadź opis awarii!");
             return;
         }
 
-        if (malfunctionTimeOptionalTextBox.Text.Length != 0)
+        if (string.IsNullOrEmpty(actionTakenComboBox.Text))
         {
-            var minutes = malfunctionTimeOptionalTextBox.Text.Trim();
+            SetValidationFailed("Wprowadź opis podjętych działań!");
+            return;
+        }
+
+        if (!string.IsNullOrEmpty(malfunctionTimeOptionalTextBox.Text))
+        {
+            string userInputTime = malfunctionTimeOptionalTextBox.Text.Trim();
 
             Regex r = new Regex(@"\d{1,3}");
-            Match m = r.Match(minutes);
+            Match m = r.Match(userInputTime);
 
-            if (!m.Success || minutes.Length > 3)
+            if (!m.Success || userInputTime.Length > 3 || m.Length != userInputTime.Length)
             {
-                MessageBox.Show("Wprowadź odpowiednią ilość minut do opcjonalnego pola czasu trwania awarii!");
+                SetValidationFailed("Wprowadź odpowiednią ilość minut do opcjonalnego pola czasu trwania awarii!");
                 malfunctionTimeOptionalTextBox.Clear();
                 return;
             }
-
-            try
-            {
-                var timeSpan = float.Parse(minutes);
-                optionalBreakdownTimeInterval = TimeSpan.FromMinutes(timeSpan);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                return;
-            }
         }
+    }
 
-        // Decide if malfunction time should be caluclated basing on timer or optional textbox input
-        //if (optionalBreakdownTimeInterval == new TimeSpan())
-        //{
-        //    sqlHandle.CrashStarted = BreakdownStarted.ToString("yyyy-MM-dd HH:mm:ss.fff");
-        //    sqlHandle.CrashTime = (DateTime.Now - BreakdownStarted).ToString("hh\\:mm\\:ss");
-        //}
-        //else
-        //{
-        //    sqlHandle.CrashStarted = (DateTime.Now - optionalBreakdownTimeInterval).ToString("yyyy-MM-dd HH:mm:ss.fff");
-        //    sqlHandle.CrashTime = optionalBreakdownTimeInterval.ToString("hh\\:mm\\:ss");
-        //}
-        //sqlHandle.ProblemDescription = descriptionComboBox.Text + " " + descriptionTextbox.Text;
-        //sqlHandle.ActionTaken = actionTakenComboBox.Text + " " + actionTextbox.Text;
-        //sqlHandle.Technician = technicianComboBox.Text;
-        //sqlHandle.InsertCrashlog();
-        Close();
+    private void SetValidationFailed(string textToDisplay)
+    {
+        formValidationPassed = false;
+        MessageBox.Show(textToDisplay);
+    }
+
+    private void CalculateBreakdownTimeSpan()
+    {
+        if (string.IsNullOrEmpty(malfunctionTimeOptionalTextBox.Text))
+        {
+            BreakdownTimeSpan = DateTime.Now - BreakdownStarted;
+        }
+        else
+        {
+            string minutes = malfunctionTimeOptionalTextBox.Text.Trim();
+            float timeSpan = float.Parse(minutes);
+            BreakdownTimeSpan = TimeSpan.FromMinutes(timeSpan);
+        }
     }
 
     private void MalfunctionReport_Shown(object sender, EventArgs e)
     {
-        technicianComboBox.Focus();
+        technicianNamesComboBox.Focus();
     }
 
     private void timer1_Tick(object sender, EventArgs e)
     {
-        breakdownTimeStartedLabel.Text = (DateTime.Now - BreakdownStarted).ToString().Substring(0, 8);
-    }
-
-    private void MalfunctionReport_FormClosed(object sender, FormClosedEventArgs e)
-    {
-        //sqlHandle.UpdateTeststations(problemOperator: "0");
+        TimeSpan timePassedFromStart = DateTime.Now - BreakdownStarted;
+        breakdownTimeStartedLabel.Text = timePassedFromStart.ToString().Substring(0, 8);
     }
 }
