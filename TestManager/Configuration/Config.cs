@@ -16,21 +16,24 @@ public class Config : IDirectoryConfig, IWorkstationConfig, IWebConfig
     public string DateNamedCopyDirectory { get; set; }
     public bool IsCopyingEnabled { get; set; } = false;
 
-    public Config()
+
+    private readonly IConfiguration _configuration;
+
+    public Config(IConfiguration configuration)
     {
+        _configuration = configuration;
         ReadConfig();
         CreateDateNamedCopyDir();
     }
 
+    public Config()
+    {
+
+    }
+
     private void ReadConfig()
     {
-        var config = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Prodction"}.json", optional: true)
-                .Build();
-
-        IConfigurationSection section = config.GetSection(this.GetType().Name);
+        IConfigurationSection section = _configuration.GetSection(this.GetType().Name);
         section.Bind(this);
     }
 
