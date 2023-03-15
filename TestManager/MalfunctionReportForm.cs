@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace TestManager;
 
-public partial class MalfunctionReport : Form
+public partial class MalfunctionReportForm : Form
 {
     public DateTime BreakdownStarted;
     public TimeSpan BreakdownTimeSpan;
@@ -11,7 +11,7 @@ public partial class MalfunctionReport : Form
     private readonly IWorkstation _workstation;
     private bool formValidationPassed;
 
-    public MalfunctionReport(IWorkstation workstation)
+    public MalfunctionReportForm(IWorkstation workstation)
     {
         InitializeComponent();
         _workstation = workstation;

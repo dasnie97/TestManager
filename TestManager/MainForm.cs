@@ -57,20 +57,20 @@ public partial class MainForm : Form
 
     private void topFailuresButton_Click(object sender, EventArgs e)
     {
-        Pareto paretoForm = new Pareto(_statistics.GetProcessedData());
+        ParetoForm paretoForm = new ParetoForm(_statistics.GetProcessedData());
         paretoForm.ShowDialog();
     }
 
     private void detailsButton_Click(object sender, EventArgs e)
     {
-        Details detailsForm = new Details(_statistics.GetProcessedData());
+        DetailsForm detailsForm = new DetailsForm(_statistics.GetProcessedData());
         detailsForm.ShowDialog();
     }
 
     private void breakdownButton_Click(object sender, EventArgs e)
     {
         TurnOffTestReportTransfer();
-        MalfunctionReport malfForm = new MalfunctionReport(_workstation);
+        MalfunctionReportForm malfForm = new MalfunctionReportForm(_workstation);
         malfForm.ShowDialog();
     }
 

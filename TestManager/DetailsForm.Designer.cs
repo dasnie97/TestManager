@@ -1,6 +1,6 @@
 ﻿namespace TestManager
 {
-    partial class Details
+    partial class DetailsForm
     {
         /// <summary>
         /// Required designer variable.

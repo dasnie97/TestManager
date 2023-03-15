@@ -1,6 +1,6 @@
 ﻿namespace TestManager
 {
-    partial class MalfunctionReport
+    partial class MalfunctionReportForm
     {
         /// <summary>
         /// Required designer variable.
