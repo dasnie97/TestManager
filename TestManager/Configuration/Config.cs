@@ -28,10 +28,10 @@ public class Config : IWorkstationConfig, IWebConfig, IDirectoryConfig
 
     public Config()
     {
-
+        
     }
 
-    private void ReadConfig()
+    public void ReadConfig()
     {
         IConfigurationSection section = _configuration.GetSection(this.GetType().Name);
         section.Bind(this);

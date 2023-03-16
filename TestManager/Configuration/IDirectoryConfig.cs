@@ -7,4 +7,5 @@ public interface IDirectoryConfig
     public string CopyDir { get; set; }
     public bool IsCopyingEnabled { get; set; }
     public string DateNamedCopyDirectory { get; set; }
+    public void ReadConfig();
 }

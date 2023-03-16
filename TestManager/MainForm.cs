@@ -112,24 +112,28 @@ public partial class MainForm : Form
     {
         var newValue = ftpToolStripMenuItem.Checked;
         _writableConfig.Update(cfg => cfg.SendOverFTP = newValue);
+        _webConfig.ReadConfig();
     }
 
     private void mesToolStripMenuItem_Click(object sender, EventArgs e)
     {
         var newValue = mesToolStripMenuItem.Checked;
         _writableConfig.Update(cfg => cfg.VerifyMES= newValue);
+        _webConfig.ReadConfig();
     }
 
     private void verify3510ToolStripMenuItem_Click(object sender, EventArgs e)
     {
         var newValue = verify3510ToolStripMenuItem.Checked;
         _writableConfig.Update(cfg => cfg.Verify3510= newValue);
+        _webConfig.ReadConfig();
     }
 
     private void httpToolStripMenuItem_Click(object sender, EventArgs e)
     {
         var newValue = httpToolStripMenuItem.Checked;
         _writableConfig.Update(cfg => cfg.SendOverHTTP= newValue);
+        _webConfig.ReadConfig();
     }
 
     #endregion
