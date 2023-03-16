@@ -1,7 +1,6 @@
 ﻿using ProductTest.Common;
 using System.Data;
 using System.Windows.Forms.DataVisualization.Charting;
-using TestManager.Features.Analysis;
 
 namespace TestManager;
 
@@ -14,24 +13,25 @@ public partial class ParetoForm : Form
         InitializeComponent();
         const string dataSerie = "ParetoSerie";
         chartPoints = paretoChart.Series[dataSerie].Points;
-
-        List<ParetoData> data = GetParetoData(testData);
-        BuildChart(data);
+        
+        Dictionary<string, int> paretoData = GetParetoData(testData);
+        BuildChart(paretoData);
     }
 
-    private List<ParetoData> GetParetoData(IEnumerable<TestReportBase> testData)
+    private Dictionary<string, int> GetParetoData(IEnumerable<TestReportBase> testData)
     {
         var failedTests = testData.Where(testReport => !string.IsNullOrEmpty(testReport.Failure)).ToList();
         var uniqueFailedTests = failedTests.Select(test => GetFailedStepName(test.Failure)).Distinct().ToList();
-        var paretoData = new List<ParetoData>();
+        Dictionary<string, int> paretoData = new Dictionary<string, int>();
 
         foreach (var uniqueFailedTest in uniqueFailedTests)
         {
             int count = failedTests.Where(test => GetFailedStepName(test.Failure) == uniqueFailedTest).Count();
-            paretoData.Add(new ParetoData(uniqueFailedTest, count));
+            paretoData.Add(uniqueFailedTest, count);
         }
 
-        return paretoData.OrderByDescending(x => x.Quantity).ToList();
+        var sortedDictionary = paretoData.OrderByDescending(x => x.Value).ToDictionary(x=>x.Key, x => x.Value);
+        return sortedDictionary;
     }
 
     private string GetFailedStepName(string failureString)
@@ -39,7 +39,7 @@ public partial class ParetoForm : Form
         return failureString.Split("\n")[0];
     }
 
-    private void BuildChart(List<ParetoData> paretoData)
+    private void BuildChart(Dictionary<string, int> paretoData)
     {
         const int MAX_NUMBER_OF_DISTINCT_FAILURES_SHOWN = 5;
         var numberOfFailuresToShow = MAX_NUMBER_OF_DISTINCT_FAILURES_SHOWN;
@@ -52,11 +52,11 @@ public partial class ParetoForm : Form
         {
             if (chartPoints.Count < numberOfFailuresToShow)
             {
-                AddDataPoint(failedStep.TestStepName, failedStep.Quantity);
+                AddDataPoint(failedStep.Key, failedStep.Value);
             }
             else
             {
-                numberOfOtherStepsFailed += failedStep.Quantity;
+                numberOfOtherStepsFailed += failedStep.Value;
             }
         }
 
