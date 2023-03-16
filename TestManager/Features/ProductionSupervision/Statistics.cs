@@ -31,6 +31,14 @@ public class Statistics : IStatistics
         CalculateYield();
     }
 
+    private void CalculateYield()
+    {
+        if (NumberOfFilesProcessed != 0)
+        {
+            Yield = (NumberOfFilesProcessed - NumberOfFilesFailed) * 100.0 / NumberOfFilesProcessed;
+        }
+    }
+
     public void Reset()
     {
         NumberOfFilesPassed = 0;
@@ -38,13 +46,5 @@ public class Statistics : IStatistics
         NumberOfFilesProcessed = 0;
         Yield = 0;
         _processedData.Clear();
-    }
-
-    private void CalculateYield()
-    {
-        if (NumberOfFilesProcessed != 0)
-        {
-            Yield = (NumberOfFilesProcessed - NumberOfFilesFailed) * 100.0 / NumberOfFilesProcessed;
-        }
     }
 }

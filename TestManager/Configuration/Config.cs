@@ -2,7 +2,7 @@
 
 namespace TestManager.Configuration;
 
-public class Config : IDirectoryConfig, IWorkstationConfig, IWebConfig
+public class Config : IWorkstationConfig, IWebConfig, IDirectoryConfig
 {
     public string TestStationName { get; set; }
     public string OperatorName { get; set; }

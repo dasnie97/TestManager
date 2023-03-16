@@ -8,6 +8,8 @@ namespace TestManager.Features.Transporters;
 
 public class PassedFilesTransporter : ITransporter
 {
+    public event EventHandler FileTransported;
+
     private readonly IFileProcessor _fileProcessor;
     private readonly IStatistics _statistics;
     private readonly IWebAdapter _webAdapter;
@@ -18,8 +20,6 @@ public class PassedFilesTransporter : ITransporter
         _statistics = statistics;
         _webAdapter = webAdapter;
     }
-
-    public event EventHandler FileTransported;
 
     public void TransportTestReports()
     {

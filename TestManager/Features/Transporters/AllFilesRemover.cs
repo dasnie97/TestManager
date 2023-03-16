@@ -4,13 +4,13 @@ namespace TestManager.Features.Transporters;
 
 public class AllFilesRemover : ITransporter
 {
+    public event EventHandler FileTransported;
+
     private readonly IFileProcessor _fileProcessor;
     public AllFilesRemover(IFileProcessor fileProcessor)
     {
         _fileProcessor = fileProcessor;
     }
-
-    public event EventHandler FileTransported;
 
     public void TransportTestReports()
     {

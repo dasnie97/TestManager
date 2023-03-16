@@ -26,8 +26,6 @@ public class FileLoader : IFileLoader
     public IEnumerable<FileTestReport> GetTestReportFiles(string inputDirectoryPath)
     {
         var loadedFiles = GetFiles(inputDirectoryPath);
-
-        WaitForFilesUnlocked(loadedFiles);
         return loadedFiles.Select(file => FileTestReport.CreateFromFile(file));
     }
 

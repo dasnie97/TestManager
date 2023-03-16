@@ -2,12 +2,11 @@
 
 public class NoFilesTransporter : ITransporter
 {
+    public event EventHandler FileTransported;
     public NoFilesTransporter()
     {
 
     }
-
-    public event EventHandler FileTransported;
 
     public void TransportTestReports()
     {
