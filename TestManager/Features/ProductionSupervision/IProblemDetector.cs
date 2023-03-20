@@ -2,5 +2,5 @@
 
 public interface IProblemDetector
 {
-    public void Analyze();
+    public void RunDetector();
 }

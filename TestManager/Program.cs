@@ -62,6 +62,7 @@ internal static class Program
                 services.AddSingleton<IFTPService, FTPService>();
                 services.AddSingleton<IFileProcessor, FileProcessor>();
                 services.AddSingleton<ITransporterFactory, TransporterFactory>();
+                services.AddSingleton<IProblemDetector, ProblemDetector>();
                 services.AddSingleton<MainForm>();
             });
     }

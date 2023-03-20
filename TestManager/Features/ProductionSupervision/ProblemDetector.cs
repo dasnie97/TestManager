@@ -1,35 +1,21 @@
 ﻿using TestManager.Features.Analysis;
-using TestManager.FileManagement;
 
 namespace TestManager.Features.ProductionSupervision;
 
-public class ProblemDetector
+public class ProblemDetector : IProblemDetector
 {
-    private readonly FileProcessor _fileProcessor;
     private readonly IStatistics _statistics;
-    public ProblemDetector(FileProcessor fileProcessor, IStatistics statistics)
+    public ProblemDetector(IStatistics statistics)
     {
-        _fileProcessor = fileProcessor;
         _statistics = statistics;
     }
 
-    public void Run()
+    public void RunDetector()
     {
-        if (ThereIsNoTraffic())
-        {
-            return;
-        }
-
+        //TODO: How test reports are classified as false calls or first passed?
         //TODO: Program ProblemDetector logic
         // If 3510 rule is violated - dont allow operator to continue working and PUT workstation status
         // If test data is not showing in MES - turn off data transfer, and PUT workstation status
-    }
-
-    private bool ThereIsNoTraffic()
-    {
-        var latestResults = _statistics.GetProcessedData().Where(logFile => logFile.TestDateTimeStarted >= DateTime.Now.AddMinutes(-20));
-        if (latestResults.Count() == 0) return true;
-        else return false;
     }
 
     private TrackedTestReport CheckFor3510RuleViolation(TrackedTestReport LF)
