@@ -73,6 +73,7 @@ public partial class MainForm : Form
     private void breakdownButton_Click(object sender, EventArgs e)
     {
         TurnOffTestReportTransfer();
+        //TODO: PUT Workstation status
         MalfunctionReportForm malfForm = new MalfunctionReportForm(_workstation);
         malfForm.ShowDialog();
     }
