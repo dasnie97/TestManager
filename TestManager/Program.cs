@@ -60,6 +60,7 @@ internal static class Program
                 services.AddSingleton<IStatistics, Statistics>();
                 services.AddSingleton<IWebAdapter, WebAdapter>();
                 services.AddSingleton<IFTPService, FTPService>();
+                services.AddSingleton<IHTTPService, HTTPService>();
                 services.AddSingleton<IFileProcessor, FileProcessor>();
                 services.AddSingleton<ITransporterFactory, TransporterFactory>();
                 services.AddSingleton<IProblemDetector, ProblemDetector>();

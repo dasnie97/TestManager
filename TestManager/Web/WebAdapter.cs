@@ -1,6 +1,8 @@
 ﻿using ProductTest.Interfaces;
+using ProductTest.Models;
 using System.Net.Http.Json;
 using TestManager.Configuration;
+using TestManager.Features.Analysis;
 
 namespace TestManager.Web;
 
@@ -13,11 +15,13 @@ public class WebAdapter : IWebAdapter
 
     public WebAdapter(IWebConfig webConfig,
                         IWorkstation workstation,
-                        IFTPService ftpService)
+                        IFTPService ftpService,
+                        IHTTPService httpService)
     {
         _webConfig = webConfig;
         _workstation = workstation;
         _ftpService = ftpService;
+        _httpService = httpService;
     }
 
     public void FTPUpload(string filePath)
@@ -26,6 +30,13 @@ public class WebAdapter : IWebAdapter
         {
             _ftpService.Upload(filePath);
         }
+    }
+
+    public TrackedTestReport CreateTrackedTestReport(FileTestReport file)
+    {
+        TrackedTestReport trackedTestReport = new TrackedTestReport(file);
+
+        return trackedTestReport;
     }
 
     private bool WorkstationExists()
