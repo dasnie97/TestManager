@@ -1,4 +1,5 @@
-﻿using ProductTest.Interfaces;
+﻿using ProductTest.Common;
+using ProductTest.Interfaces;
 using ProductTest.Models;
 using System.Net.Http.Json;
 using TestManager.Configuration;
@@ -29,6 +30,14 @@ public class WebAdapter : IWebAdapter
         if (_webConfig.SendOverFTP)
         {
             _ftpService.Upload(filePath);
+        }
+    }
+
+    public void HTTPUpload(TestReportBase testReport)
+    {
+        if (_webConfig.SendOverHTTP)
+        {
+            _httpService.HttpPost<TestReport>(testReport);
         }
     }
 
