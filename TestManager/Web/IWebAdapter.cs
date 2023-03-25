@@ -8,5 +8,5 @@ public interface IWebAdapter
 {
     TrackedTestReport CreateTrackedTestReport(FileTestReport file);
     public void FTPUpload(string filePath);
-    void HTTPUpload(TestReportBase file);
+    void HTTPUpload(TestReport file);
 }

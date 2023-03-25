@@ -33,7 +33,7 @@ public class WebAdapter : IWebAdapter
         }
     }
 
-    public void HTTPUpload(TestReportBase testReport)
+    public void HTTPUpload(TestReport testReport)
     {
         if (_webConfig.SendOverHTTP)
         {
