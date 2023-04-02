@@ -1,11 +1,13 @@
 ﻿using ProductTest.Common;
+using ProductTest.Models;
 
 namespace TestManager.Features.Analysis;
 
-public class TrackedTestReport : TestReportBase
+public class TrackedTestReport : TestReport
 {
     public bool IsFirstPass { get; set; }
     public bool IsFalseCall { get; set; }
+    public string? ProcessStep { get; set; }
 
     public TrackedTestReport(TestReportBase testReportBase)
     {
