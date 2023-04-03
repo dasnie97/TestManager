@@ -1,5 +1,4 @@
-﻿using ProductTest.Common;
-using ProductTest.Models;
+﻿using ProductTest.Models;
 using TestManager.Features.Analysis;
 
 namespace TestManager.Web;

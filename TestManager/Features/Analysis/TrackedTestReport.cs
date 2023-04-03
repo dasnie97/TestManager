@@ -1,5 +1,4 @@
-﻿using ProductTest.Common;
-using ProductTest.Models;
+﻿using ProductTest.Models;
 
 namespace TestManager.Features.Analysis;
 
@@ -9,16 +8,16 @@ public class TrackedTestReport : TestReport
     public bool IsFalseCall { get; set; }
     public string? ProcessStep { get; set; }
 
-    public TrackedTestReport(TestReportBase testReportBase)
+    public TrackedTestReport(TestReport testReport)
     {
-        SerialNumber = testReportBase.SerialNumber;
-        Workstation = testReportBase.Workstation;
-        TestSteps = testReportBase.TestSteps;
-        TestDateTimeStarted = testReportBase.TestDateTimeStarted;
-        Status = testReportBase.Status;
-        Failure = testReportBase.Failure;
-        FixtureSocket = testReportBase.FixtureSocket;
-        TestingTime = testReportBase.TestingTime;
+        SerialNumber = testReport.SerialNumber;
+        Workstation = testReport.Workstation;
+        TestSteps = testReport.TestSteps;
+        TestDateTimeStarted = testReport.TestDateTimeStarted;
+        Status = testReport.Status;
+        Failure = testReport.Failure;
+        FixtureSocket = testReport.FixtureSocket;
+        TestingTime = testReport.TestingTime;
         IsFirstPass = true;
         IsFalseCall = false;
     }

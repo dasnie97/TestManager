@@ -1,10 +1,4 @@
-﻿using ProductTest.Common;
-using ProductTest.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ProductTest.Models;
 using TestManager.Features.ProductionSupervision;
 using TestManager.Features.Analysis;
 
@@ -47,12 +41,12 @@ public class StatisticsTest
 
     private void GenerateStatistics()
     {
-        TestReportBase testReport1 = TestReport.Create("123123123", "Test1", new List<TestStepBase>
-                                                                        {TestStep.Create("Test1", DateTime.Now, TestStatus.Passed)});
-        TestReportBase testReport2 = TestReport.Create("123123123", "Test2", new List<TestStepBase>
-                                                                        {TestStep.Create("Test2", DateTime.Now, TestStatus.Passed)});
-        TestReportBase testReport3 = TestReport.Create("123123123", "Test3", new List<TestStepBase>
-                                                                        {TestStep.Create("Test3", DateTime.Now, TestStatus.Failed)});
+        TestReport testReport1 = new TestReport("123123123", new Workstation("Test1"), new List<TestStep>
+                                                              {new TestStep("Test1", DateTime.Now, TestStatus.Passed)});
+        TestReport testReport2 = new TestReport("123123123", new Workstation("Test2"), new List<TestStep>
+                                                              {new TestStep("Test2", DateTime.Now, TestStatus.Passed)});
+        TestReport testReport3 = new TestReport("123123123", new Workstation("Test3"), new List<TestStep>
+                                                              {new TestStep("Test3", DateTime.Now, TestStatus.Failed)});
 
         _statistics.Add(new TrackedTestReport(testReport1));
         _statistics.Add(new TrackedTestReport(testReport2));

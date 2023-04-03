@@ -1,4 +1,5 @@
 ﻿using ProductTest.Interfaces;
+using ProductTest.Models;
 using System.Diagnostics;
 using TestManager.Configuration;
 using TestManager.Features.ProductionSupervision;
