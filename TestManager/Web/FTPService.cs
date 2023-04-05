@@ -7,11 +7,11 @@ public class FTPService : IFTPService, IDisposable
 {
     private readonly IConfiguration _config;
     private FtpClient _client;
+    private bool connectionEstablished = false;
 
     public FTPService(IConfiguration configuration)
     {
         _config = configuration;
-        InitializeConnection();
     }
 
     public void Dispose()
@@ -21,6 +21,11 @@ public class FTPService : IFTPService, IDisposable
 
     public void Upload(string filePath)
     {
+        if (!connectionEstablished)
+        {
+            InitializeConnection();
+        }
+
         var status = _client.UploadFile(filePath, $"/{Path.GetFileName(filePath)}", verifyOptions: FtpVerify.Throw);
         if (status != FtpStatus.Success)
         {
@@ -37,10 +42,15 @@ public class FTPService : IFTPService, IDisposable
 
         _client = new FtpClient(ftpServer, ftpUsername, ftpPassword);
         _client.AutoConnect();
+        connectionEstablished = true;
     }
 
     private void CloseConnection()
     {
-        _client.Disconnect();
+        if (connectionEstablished)
+        {
+            _client.Disconnect();
+            connectionEstablished = false;
+        }
     }
 }
