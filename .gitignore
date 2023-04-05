@@ -7,7 +7,6 @@
 /TestManager/Img
 /TestManager/bin
 /TestManager/App.config
-/TestManager/Web/MESService.cs
 /README.md
 /.vs
 /TestManager.git
@@ -17,3 +16,4 @@
 /TestManagerTest/Usings.cs
 /TestManager/Other/FileProcessorDeviation.cs
 *.json
+*.txt
