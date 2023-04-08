@@ -1,6 +1,8 @@
-﻿using ProductTest.Models;
+﻿using ProductTest.DTO;
+using ProductTest.Models;
 using TestManager.Configuration;
 using TestManager.Features.Analysis;
+using TestManager.Web.Converters;
 
 namespace TestManager.Web;
 
@@ -29,16 +31,16 @@ public class WebAdapter : IWebAdapter
 
     public void HTTPUpload(TrackedTestReport testReport)
     {
+        var dto = CreateDTO(testReport);
+
         if (_webConfig.SendOverHTTP)
         {
-            _httpService.HttpPost(testReport);
+            _httpService.HttpPost(dto);
         }
     }
 
-    public TrackedTestReport CreateTrackedTestReport(FileTestReport file)
+    private CreateTestReportDTO CreateDTO(TrackedTestReport file)
     {
-        TrackedTestReport trackedTestReport = new TrackedTestReport(file);
-
-        return trackedTestReport;
+        return DTOConverter.ToCreateTestReportDTO(file);
     }
 }

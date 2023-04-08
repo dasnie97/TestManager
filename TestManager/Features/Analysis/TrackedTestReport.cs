@@ -6,7 +6,7 @@ public class TrackedTestReport : TestReport
 {
     public bool IsFirstPass { get; set; }
     public bool IsFalseCall { get; set; }
-    public string? ProcessStep { get; set; }
+    public string ProcessStep { get; set; }
 
     public TrackedTestReport(TestReport testReport)
     {
@@ -20,5 +20,6 @@ public class TrackedTestReport : TestReport
         TestingTime = testReport.TestingTime;
         IsFirstPass = true;
         IsFalseCall = false;
+        ProcessStep = "";
     }
 }

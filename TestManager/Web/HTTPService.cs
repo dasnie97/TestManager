@@ -45,7 +45,7 @@ public class HTTPService : IHTTPService
     private async Task<HttpContent> CreateProductAsync<T>(T Product)
     {
         HttpResponseMessage response = await _httpClient.PostAsJsonAsync<T>(
-            $"api/{typeof(T).BaseType.Name}", Product).ConfigureAwait(false);
+            $"api/TestReport", Product).ConfigureAwait(false);
         response.EnsureSuccessStatusCode();
 
         // return URI of the created resource.
