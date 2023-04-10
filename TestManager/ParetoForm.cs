@@ -1,5 +1,5 @@
-﻿using ProductTest.Common;
-using System.Data;
+﻿using System.Data;
+using ProductTest.Models;
 using System.Windows.Forms.DataVisualization.Charting;
 
 namespace TestManager;
@@ -8,7 +8,7 @@ public partial class ParetoForm : Form
 {
     private DataPointCollection chartPoints;
 
-    public ParetoForm(IEnumerable<TestReportBase> testData)
+    public ParetoForm(IEnumerable<TestReport> testData)
     {
         InitializeComponent();
         const string dataSerie = "ParetoSerie";
@@ -18,7 +18,7 @@ public partial class ParetoForm : Form
         BuildChart(paretoData);
     }
 
-    private Dictionary<string, int> GetParetoData(IEnumerable<TestReportBase> testData)
+    private Dictionary<string, int> GetParetoData(IEnumerable<TestReport> testData)
     {
         var failedTests = testData.Where(testReport => !string.IsNullOrEmpty(testReport.Failure)).ToList();
         var uniqueFailedTests = failedTests.Select(test => GetFailedStepName(test.Failure)).Distinct().ToList();

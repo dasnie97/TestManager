@@ -1,5 +1,4 @@
 ﻿using Moq;
-using ProductTest.Common;
 using ProductTest.Models;
 using TestManager.Features.Analysis;
 using TestManager.Features.ProductionSupervision;
@@ -198,14 +197,14 @@ public class TransporterTest
     private static List<FileTestReport> CreateTestReports()
     {
         var serialNumber = Guid.NewGuid().ToString();
-        var workstation = Guid.NewGuid().ToString();
-        var passedTestSteps = new List<TestStepBase>()
+        var workstation = new ProductTest.Models.Workstation(Guid.NewGuid().ToString());
+        var passedTestSteps = new List<TestStep>()
             {
-                TestStep.Create("Test1", DateTime.Now, TestStatus.Passed)
+                new TestStep("Test1", DateTime.Now, TestStatus.Passed)
             };
-        var failedTestSteps = new List<TestStepBase>()
+        var failedTestSteps = new List<TestStep>()
             {
-                TestStep.Create("Test2", DateTime.Now, TestStatus.Failed)
+                new TestStep("Test2", DateTime.Now, TestStatus.Failed)
             };
         FileTestReport failedFileTestReport = FileTestReport.Create(serialNumber, workstation, failedTestSteps);
         FileTestReport passedFileTestReport = FileTestReport.Create(serialNumber, workstation, passedTestSteps);

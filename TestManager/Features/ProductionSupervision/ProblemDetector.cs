@@ -1,5 +1,6 @@
 ﻿using TestManager.Features.Analysis;
 using TestManager.FileManagement;
+using ProductTest.Models;
 
 namespace TestManager.Features.ProductionSupervision;
 
@@ -38,8 +39,8 @@ public class ProblemDetector
         if (sameSNs.Any()) LF.IsFirstPass = false;
         else LF.IsFirstPass = true;
 
-        var failedSameSNs = sameSNs.Where(logFile => logFile.Status == "Failed" && logFile.TestDateTimeStarted >= DateTime.Now.AddMinutes(-15));
-        if (failedSameSNs.Any() && LF.Status == "Passed") LF.IsFalseCall = true;
+        var failedSameSNs = sameSNs.Where(logFile => logFile.Status == TestStatus.Failed && logFile.TestDateTimeStarted >= DateTime.Now.AddMinutes(-15));
+        if (failedSameSNs.Any() && LF.Status == TestStatus.Passed) LF.IsFalseCall = true;
         else LF.IsFalseCall = false;
 
         var firstPass = _statistics.GetProcessedData().
@@ -47,21 +48,21 @@ public class ProblemDetector
 
         var rule3Check = firstPass.Skip(Math.Max(0, firstPass.Count() - 3));
 
-        if (rule3Check.Where(logFile => logFile.Status == "Failed").Count() >= 3)
+        if (rule3Check.Where(logFile => logFile.Status == TestStatus.Failed).Count() >= 3)
         {
             // 3 violation
         }
 
         var rule5Check = firstPass.Where(logFile => logFile.TestDateTimeStarted >= DateTime.Now.AddHours(-1));
 
-        if (rule5Check.Where(logFile => logFile.Status == "Failed").Count() >= 5)
+        if (rule5Check.Where(logFile => logFile.Status == TestStatus.Failed).Count() >= 5)
         {
             // 5 violation
         }
 
         var rule10Check = firstPass.Where(logFile => logFile.TestDateTimeStarted >= ProductionShift.CurrentShift.ShiftStart && logFile.TestDateTimeStarted < ProductionShift.CurrentShift.ShiftEnd);
 
-        if (rule10Check.Where(logFile => logFile.Status == "Failed").Count() >= 10)
+        if (rule10Check.Where(logFile => logFile.Status == TestStatus.Failed).Count() >= 10)
         {
             // 10 violation
         }

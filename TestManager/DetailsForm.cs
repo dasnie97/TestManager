@@ -1,16 +1,15 @@
-﻿using ProductTest.Common;
-using ProductTest.Models;
+﻿using ProductTest.Models;
 
 namespace TestManager;
 public partial class DetailsForm : Form
 {
-    public DetailsForm(IEnumerable<TestReportBase> testReports)
+    public DetailsForm(IEnumerable<TestReport> testReports)
     {
         InitializeComponent();
         ShowDetails(testReports);
     }
 
-    private void ShowDetails(IEnumerable<TestReportBase> testReports)
+    private void ShowDetails(IEnumerable<TestReport> testReports)
     {
         foreach (var testReport in testReports)
         {

@@ -52,7 +52,7 @@ public class MESService
                 string operation = reader.GetString(1);
                 DateTime timeStarted = reader.GetDateTime(2).ToLocalTime();
                 string testOperator = reader.GetString(3);
-                string status = reader.GetString(4);
+                TestStatus status = Enum.Parse<TestStatus>(reader.GetString(4));
 
                 if (timeStarted == testReport.TestDateTimeStarted && status == testReport.Status)
                     dataPresentInSystem = true;
