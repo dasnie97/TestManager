@@ -1,5 +1,6 @@
-﻿using System.Data;
-using ProductTest.Models;
+﻿using ProductTest.Models;
+using System.Data;
+
 using System.Windows.Forms.DataVisualization.Charting;
 
 namespace TestManager;

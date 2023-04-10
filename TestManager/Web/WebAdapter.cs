@@ -1,23 +1,24 @@
-﻿using ProductTest.Interfaces;
-using System.Net.Http.Json;
+﻿using ProductTest.DTO;
+using ProductTest.Models;
 using TestManager.Configuration;
+using TestManager.Features.Analysis;
+using TestManager.Web.Converters;
 
 namespace TestManager.Web;
 
 public class WebAdapter : IWebAdapter
 {
     private readonly IWebConfig _webConfig;
-    private readonly IWorkstation _workstation;
     private readonly IFTPService _ftpService;
     private readonly IHTTPService _httpService;
 
     public WebAdapter(IWebConfig webConfig,
-                        IWorkstation workstation,
-                        IFTPService ftpService)
+                        IFTPService ftpService,
+                        IHTTPService httpService)
     {
         _webConfig = webConfig;
-        _workstation = workstation;
         _ftpService = ftpService;
+        _httpService = httpService;
     }
 
     public void FTPUpload(string filePath)
@@ -28,26 +29,18 @@ public class WebAdapter : IWebAdapter
         }
     }
 
-    private bool WorkstationExists()
+    public void HTTPUpload(TrackedTestReport testReport)
     {
-        var workstationsFound = _httpService.HttpGet<Workstation>().Result.Where(x => x.Name == _workstation.Name).ToList();
+        var dto = CreateDTO(testReport);
 
-        if (workstationsFound.Count == 0)
+        if (_webConfig.SendOverHTTP)
         {
-            return false;
-        }
-        else if (workstationsFound.Count == 1)
-        {
-            return true;
-        }
-        else
-        {
-            throw new Exception("Invalid workstations existing!");
+            _httpService.HttpPost(dto);
         }
     }
 
-    private IWorkstation PostWorkstation()
+    private CreateTestReportDTO CreateDTO(TrackedTestReport file)
     {
-        return _httpService.HttpPost(_workstation).Result.ReadFromJsonAsync<Workstation>().Result;
+        return DTOConverter.ToCreateTestReportDTO(file);
     }
 }

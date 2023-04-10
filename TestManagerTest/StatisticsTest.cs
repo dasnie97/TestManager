@@ -42,11 +42,11 @@ public class StatisticsTest
     private void GenerateStatistics()
     {
         TestReport testReport1 = new TestReport("123123123", new Workstation("Test1"), new List<TestStep>
-                                                                        {new TestStep("Test1", DateTime.Now, TestStatus.Passed)});
+                                                              {new TestStep("Test1", DateTime.Now, TestStatus.Passed)});
         TestReport testReport2 = new TestReport("123123123", new Workstation("Test2"), new List<TestStep>
-                                                                        {new TestStep("Test2", DateTime.Now, TestStatus.Passed)});
+                                                              {new TestStep("Test2", DateTime.Now, TestStatus.Passed)});
         TestReport testReport3 = new TestReport("123123123", new Workstation("Test3"), new List<TestStep>
-                                                                        {new TestStep("Test3", DateTime.Now, TestStatus.Failed)});
+                                                              {new TestStep("Test3", DateTime.Now, TestStatus.Failed)});
 
         _statistics.Add(new TrackedTestReport(testReport1));
         _statistics.Add(new TrackedTestReport(testReport2));

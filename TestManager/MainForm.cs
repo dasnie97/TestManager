@@ -1,4 +1,5 @@
 ﻿using ProductTest.Interfaces;
+using ProductTest.Models;
 using System.Diagnostics;
 using TestManager.Configuration;
 using TestManager.Features.ProductionSupervision;
@@ -13,13 +14,15 @@ public partial class MainForm : Form
     private IWebConfig _webConfig;
 
     private IStatistics _statistics;
+    private IProblemDetector _problemDetector;
     private ITransporterFactory _transporterFactory;
     private IWorkstation _workstation;
 
-    public MainForm(IWritableOptions<Config> writableConfig, 
+    public MainForm(IWritableOptions<Config> writableConfig,
                     IDirectoryConfig directoryConfig,
                     IWebConfig webConfig,
                     IStatistics statistics,
+                    IProblemDetector problemDetector,
                     ITransporterFactory transporterFactory,
                     IWorkstation workstation)
     {
@@ -30,6 +33,7 @@ public partial class MainForm : Form
         _webConfig = webConfig;
 
         _statistics = statistics;
+        _problemDetector = problemDetector;
         _transporterFactory = transporterFactory;
         _workstation = workstation;
 
@@ -70,6 +74,7 @@ public partial class MainForm : Form
     private void breakdownButton_Click(object sender, EventArgs e)
     {
         TurnOffTestReportTransfer();
+        //TODO: PUT Workstation status
         MalfunctionReportForm malfForm = new MalfunctionReportForm(_workstation);
         malfForm.ShowDialog();
     }
@@ -157,6 +162,7 @@ public partial class MainForm : Form
     private void Transporter_FileTransported(object? sender, EventArgs e)
     {
         statisticsControl.UpdateStatistics();
+        _problemDetector.RunDetector();
     }
 
     #endregion

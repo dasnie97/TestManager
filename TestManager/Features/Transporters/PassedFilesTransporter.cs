@@ -41,8 +41,10 @@ public class PassedFilesTransporter : ITransporter
 
     private void ProcessFile(FileTestReport file)
     {
+        TrackedTestReport trackedTestReport = new TrackedTestReport(file);
         _webAdapter.FTPUpload(file.FilePath);
-        _statistics.Add(new TrackedTestReport(file));
+        _webAdapter.HTTPUpload(trackedTestReport);
+        _statistics.Add(trackedTestReport);
         _fileProcessor.CopyFile(file);
         _fileProcessor.MoveFile(file);
     }

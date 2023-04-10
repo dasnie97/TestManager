@@ -13,7 +13,7 @@ public partial class DetailsForm : Form
     {
         foreach (var testReport in testReports)
         {
-            TableOfResults.Rows.Add(testReport.Status, testReport.SerialNumber, testReport.Failure, testReport.Workstation.Name, testReport.TestDateTimeStarted);
+            TableOfResults.Rows.Add(testReport.Status, testReport.SerialNumber, testReport.Failure, testReport.Workstation, testReport.TestDateTimeStarted);
 
             var lastRowIndex = TableOfResults.Rows.GetLastRow(DataGridViewElementStates.Visible);
 

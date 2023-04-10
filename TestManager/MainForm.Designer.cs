@@ -234,7 +234,6 @@
             // httpToolStripMenuItem
             // 
             this.httpToolStripMenuItem.CheckOnClick = true;
-            this.httpToolStripMenuItem.Enabled = false;
             this.httpToolStripMenuItem.Name = "httpToolStripMenuItem";
             this.httpToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.httpToolStripMenuItem.Text = "Send over HTTP";

@@ -37,7 +37,7 @@ public class MESService
     {
         String sql = GetSQLQuery("MESQuery.txt");
         sql = sql.Replace("UUTSerialNumber", testReport.SerialNumber);
-
+        
         SqlConnection connection;
         connection = new SqlConnection(ConfigurationManager.ConnectionStrings["MES"].ConnectionString);
         connection.Open();
@@ -63,7 +63,7 @@ public class MESService
     }
 
     private string GetSQLQuery(string fileName)
-    {   
+    { 
         // Make sure to set Build Action of target file to Embedded resource
         var assembly = Assembly.GetExecutingAssembly();
         string resourceName = assembly.GetManifestResourceNames()
