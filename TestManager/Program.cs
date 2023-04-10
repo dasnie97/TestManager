@@ -20,6 +20,7 @@ internal static class Program
     {
         try
         {
+            Application.ThreadException += Application_ThreadException;
             ApplicationConfiguration.Initialize();
             var host = CreateHostBuilder().Build();
 
@@ -28,14 +29,24 @@ internal static class Program
             Application.Run(ServiceProvider.GetRequiredService<MainForm>());
 
             Log.Logger.Information("Shutting down application...");
-            Log.CloseAndFlush();
             host.Dispose();
+            Log.CloseAndFlush();
         }
         catch (Exception ex)
         {
+            var exceptionMessage = $"Exception occured at {ex.Source}.\n{ex.Message}";
+            MessageBox.Show(exceptionMessage);
             Log.Logger.Error(ex, ex.ToString());
             Environment.Exit(Environment.ExitCode);
         }
+    }
+
+    private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
+    {
+        var exceptionMessage = $"Exception occured at {e.Exception.Source}.\n{e.Exception.Message}";
+        MessageBox.Show(exceptionMessage);
+        Log.Logger.Error(e.Exception, e.Exception.ToString());
+        Environment.Exit(Environment.ExitCode);
     }
 
     private static IHostBuilder CreateHostBuilder()

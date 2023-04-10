@@ -8,6 +8,7 @@ public class TrackedTestReport : TestReport
     public bool IsFalseCall { get; set; }
     public string ProcessStep { get; set; }
 
+
     public TrackedTestReport(TestReport testReport)
     {
         SerialNumber = testReport.SerialNumber;

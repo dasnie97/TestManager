@@ -35,12 +35,12 @@ public class MESService
 
     private bool ExistsInMES(TestReport testReport)
     {
+        String sql = GetSQLQuery("MESQuery.txt");
+        sql = sql.Replace("UUTSerialNumber", testReport.SerialNumber);
+        
         SqlConnection connection;
         connection = new SqlConnection(ConfigurationManager.ConnectionStrings["MES"].ConnectionString);
         connection.Open();
-
-        String sql = GetSQLQuery("MESQuery.txt");
-        sql = sql.Replace("UUTSerialNumber", testReport.SerialNumber);
 
         SqlCommand command = new SqlCommand(sql, connection);
         var dataPresentInSystem = false;
@@ -63,7 +63,8 @@ public class MESService
     }
 
     private string GetSQLQuery(string fileName)
-    {
+    { 
+        // Make sure to set Build Action of target file to Embedded resource
         var assembly = Assembly.GetExecutingAssembly();
         string resourceName = assembly.GetManifestResourceNames()
                             .Single(str => str.EndsWith(fileName));
