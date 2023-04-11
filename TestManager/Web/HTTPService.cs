@@ -1,35 +1,49 @@
-﻿using System.Net;
+﻿using Microsoft.Extensions.Configuration;
+using System.Net;
 using System.Net.Http.Json;
 
 namespace TestManager.Web;
 
 public class HTTPService : IHTTPService
 {
+    private readonly IConfiguration _config;
     private HttpClient _httpClient;
+    private bool connectionEstablished = false;
 
-    public HTTPService()
+    public HTTPService(IConfiguration configuration)
     {
-        _httpClient = new HttpClient();
-        _httpClient.BaseAddress = new Uri("https://localhost:44362/");
-        _httpClient.DefaultRequestHeaders.Accept.Clear();
-        _httpClient.DefaultRequestHeaders.Accept.Add(
-            new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+        _config = configuration;
     }
 
     public async Task<HttpContent> HttpPost<T>(T Product)
     {
+        if (!connectionEstablished)
+        {
+            InitializeConnection();
+        }
+
         var result = await CreateProductAsync<T>(Product).ConfigureAwait(false);
         return result;
     }
 
     public async Task<List<T>> HttpGet<T>()
     {
+        if (!connectionEstablished)
+        {
+            InitializeConnection();
+        }
+
         var data = await GetProductAsync<T>().ConfigureAwait(false);
         return data;
     }
 
     public async Task<HttpStatusCode> HttpPut<T>(T Product)
     {
+        if (!connectionEstablished)
+        {
+            InitializeConnection();
+        }
+
         var response = await UpdateProductAsync<T>(Product).ConfigureAwait(false);
         return response;
     }
@@ -58,6 +72,20 @@ public class HTTPService : IHTTPService
         response.EnsureSuccessStatusCode();
 
         return response.StatusCode;
+    }
+
+    private void InitializeConnection()
+    {
+        var section = _config.GetRequiredSection("WebAPI");
+        var uri = section.GetValue<string>("URI");
+
+        _httpClient = new HttpClient();
+        _httpClient.BaseAddress = new Uri(uri);
+        _httpClient.DefaultRequestHeaders.Accept.Clear();
+        _httpClient.DefaultRequestHeaders.Accept.Add(
+            new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+
+        connectionEstablished = true;
     }
 }
 
