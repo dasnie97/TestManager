@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System.Net;
 using System.Net.Http.Json;
+using System.Web;
 
 namespace TestManager.Web;
 
@@ -26,14 +27,14 @@ public class HTTPService : IHTTPService
         return result;
     }
 
-    public async Task<List<T>> HttpGet<T>()
+    public async Task<List<T>> HttpGet<T>(string serialNumber)
     {
         if (!connectionEstablished)
         {
             InitializeConnection();
         }
 
-        var data = await GetProductAsync<T>().ConfigureAwait(false);
+        var data = await GetProductAsync<T>(serialNumber).ConfigureAwait(false);
         return data;
     }
 
@@ -48,9 +49,10 @@ public class HTTPService : IHTTPService
         return response;
     }
 
-    private async Task<List<T>> GetProductAsync<T>()
+    private async Task<List<T>> GetProductAsync<T>(string serialNumber)
     {
-        HttpResponseMessage response = await _httpClient.GetAsync($"api/{typeof(T).Name}").ConfigureAwait(false);
+        string query = BuildQuery(serialNumber);
+        HttpResponseMessage response = await _httpClient.GetAsync($"api/TestReport?{query}").ConfigureAwait(false);
         response.EnsureSuccessStatusCode();
         var data = await response.Content.ReadFromJsonAsync<List<T>>().ConfigureAwait(false);
         return data;
@@ -86,6 +88,13 @@ public class HTTPService : IHTTPService
             new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
         connectionEstablished = true;
+    }
+
+    private string BuildQuery(string serialNumber)
+    {
+        var query = HttpUtility.ParseQueryString(string.Empty);
+        query["serialNumber"] = serialNumber;
+        return query.ToString();
     }
 }
 

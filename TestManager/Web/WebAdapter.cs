@@ -39,6 +39,14 @@ public class WebAdapter : IWebAdapter
         }
     }
 
+    public TestReportDTO HTTPGet(string serialNumber)
+    {
+        var response = _httpService.HttpGet<TestReportDTO>(serialNumber);
+        var foundData = response.Result;
+
+        return foundData.FirstOrDefault();
+    }
+
     private CreateTestReportDTO CreateDTO(TrackedTestReport file)
     {
         return DTOConverter.ToCreateTestReportDTO(file);
