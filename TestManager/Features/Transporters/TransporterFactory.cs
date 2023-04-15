@@ -1,4 +1,5 @@
 ﻿using TestManager.Features.ProductionSupervision;
+using TestManager.Features.TrackedTestReports;
 using TestManager.FileManagement;
 using TestManager.Web;
 
@@ -12,12 +13,14 @@ public class TransporterFactory : ITransporterFactory
     private readonly IFileProcessor _fileProcessor;
     private readonly IStatistics _statistics;
     private readonly IWebAdapter _webAdapter;
+    private readonly ITestReportTracker _tracker;
 
-    public TransporterFactory(IFileProcessor fileProcessor, IStatistics statistics, IWebAdapter webAdapter)
+    public TransporterFactory(IFileProcessor fileProcessor, IStatistics statistics, IWebAdapter webAdapter, ITestReportTracker tracker)
     {
         _statistics = statistics;
         _fileProcessor = fileProcessor;
         _webAdapter = webAdapter;
+        _tracker = tracker;
     }
     public ITransporter GetTransporter()
     {
@@ -27,7 +30,7 @@ public class TransporterFactory : ITransporterFactory
         {
             if (TransferOption == 0)
             {
-                transporter = new PassedFilesTransporter(_fileProcessor, _statistics, _webAdapter);
+                transporter = new PassedFilesTransporter(_fileProcessor, _statistics, _webAdapter, _tracker);
             }
             else if (TransferOption == 1)
             {
@@ -35,7 +38,7 @@ public class TransporterFactory : ITransporterFactory
             }
             else if (TransferOption == 2)
             {
-                transporter = new AllFilesTransporter(_fileProcessor, _statistics, _webAdapter);
+                transporter = new AllFilesTransporter(_fileProcessor, _statistics, _webAdapter, _tracker);
             }
             else
             {

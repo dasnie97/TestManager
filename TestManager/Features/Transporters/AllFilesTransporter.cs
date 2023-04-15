@@ -3,6 +3,7 @@ using TestManager.FileManagement;
 using TestManager.Features.Analysis;
 using TestManager.Web;
 using ProductTest.Models;
+using TestManager.Features.TrackedTestReports;
 
 namespace TestManager.Features.Transporters;
 
@@ -13,12 +14,14 @@ public class AllFilesTransporter : ITransporter
     private readonly IFileProcessor _fileProcessor;
     private readonly IStatistics _statistics;
     private readonly IWebAdapter _webAdapter;
+    private readonly ITestReportTracker _tracker;
 
-    public AllFilesTransporter(IFileProcessor fileProcessor, IStatistics statistics, IWebAdapter webAdapter)
+    public AllFilesTransporter(IFileProcessor fileProcessor, IStatistics statistics, IWebAdapter webAdapter, ITestReportTracker tracker)
     {
         _fileProcessor = fileProcessor;
         _statistics = statistics;
         _webAdapter = webAdapter;
+        _tracker = tracker;
     }
 
     public void TransportTestReports()
@@ -34,11 +37,10 @@ public class AllFilesTransporter : ITransporter
 
     private void ProcessFiles(FileTestReport file)
     {
-        TrackedTestReport trackedTestReport = new TrackedTestReport(file);
-
         _webAdapter.FTPUpload(file.FilePath);
-        _webAdapter.HTTPUpload(trackedTestReport);
-        _statistics.Add(trackedTestReport);
+        _webAdapter.HTTPUpload(file);
+        ITrackedTestReport trackedReport = _tracker.CreateTrackedTestReport(file);
+        _statistics.Add(trackedReport);
         _fileProcessor.CopyFile(file);
         _fileProcessor.MoveFile(file);
     }

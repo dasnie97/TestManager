@@ -1,7 +1,7 @@
 ﻿using Moq;
 using ProductTest.Models;
-using TestManager.Features.Analysis;
 using TestManager.Features.ProductionSupervision;
+using TestManager.Features.TrackedTestReports;
 using TestManager.Features.Transporters;
 using TestManager.FileManagement;
 using TestManager.Web;
@@ -16,11 +16,12 @@ public class TransporterTest
         private readonly Mock<IFileProcessor> _fileProcessorMock = new Mock<IFileProcessor>();
         private readonly Mock<IStatistics> _statisticsMock = new Mock<IStatistics>();
         private readonly Mock<IWebAdapter> _webMock = new Mock<IWebAdapter>();
+        private readonly Mock<ITestReportTracker> _tracker = new Mock<ITestReportTracker>();
 
 
         public TransporterFactoryTests()
         {
-            _sut = new TransporterFactory(_fileProcessorMock.Object, _statisticsMock.Object, _webMock.Object);
+            _sut = new TransporterFactory(_fileProcessorMock.Object, _statisticsMock.Object, _webMock.Object, _tracker.Object);
         }
 
         [Theory]
@@ -87,10 +88,11 @@ public class TransporterTest
         private readonly Mock<IFileProcessor> _fileProcessorMock = new Mock<IFileProcessor>();
         private readonly Mock<IStatistics> _statisticsMock = new Mock<IStatistics>();
         private readonly Mock<IWebAdapter> _webMock = new Mock<IWebAdapter>();
+        private readonly Mock<ITestReportTracker> _tracker = new Mock<ITestReportTracker>();
 
         public PassedFilesTransporterTests()
         {
-            _sut = new PassedFilesTransporter(_fileProcessorMock.Object, _statisticsMock.Object, _webMock.Object);
+            _sut = new PassedFilesTransporter(_fileProcessorMock.Object, _statisticsMock.Object, _webMock.Object, _tracker.Object);
         }
 
         [Fact]
@@ -106,7 +108,7 @@ public class TransporterTest
             _fileProcessorMock.Verify(fileProcessor => fileProcessor.MoveFile(It.IsAny<FileTestReport>()), Times.Once);
             _fileProcessorMock.Verify(fileProcessor => fileProcessor.LoadFiles(), Times.Once);
             _fileProcessorMock.VerifyNoOtherCalls();
-            _statisticsMock.Verify(statistics => statistics.Add(It.IsAny<TrackedTestReport>()), Times.Once);
+            _statisticsMock.Verify(statistics => statistics.Add(It.IsAny<ITrackedTestReport>()), Times.Once);
             _statisticsMock.VerifyNoOtherCalls();
         }
     }
@@ -141,10 +143,11 @@ public class TransporterTest
         private readonly Mock<IFileProcessor> _fileProcessorMock = new Mock<IFileProcessor>();
         private readonly Mock<IStatistics> _statisticsMock = new Mock<IStatistics>();
         private readonly Mock<IWebAdapter> _webMock = new Mock<IWebAdapter>();
+        private readonly Mock<ITestReportTracker> _tracker = new Mock<ITestReportTracker>();
 
         public AllFilesTransporterTests()
         {
-            _sut = new AllFilesTransporter(_fileProcessorMock.Object, _statisticsMock.Object, _webMock.Object);
+            _sut = new AllFilesTransporter(_fileProcessorMock.Object, _statisticsMock.Object, _webMock.Object, _tracker.Object);
         }
 
         [Fact]
@@ -160,7 +163,7 @@ public class TransporterTest
             _fileProcessorMock.Verify(fileProcessor => fileProcessor.MoveFile(It.IsAny<FileTestReport>()), Times.Exactly(2));
             _fileProcessorMock.Verify(fileProcessor => fileProcessor.LoadFiles(), Times.Once);
             _fileProcessorMock.VerifyNoOtherCalls();
-            _statisticsMock.Verify(statistics => statistics.Add(It.IsAny<TrackedTestReport>()), Times.Exactly(2));
+            _statisticsMock.Verify(statistics => statistics.Add(It.IsAny<ITrackedTestReport>()), Times.Exactly(2));
             _statisticsMock.VerifyNoOtherCalls();
         }
     }
@@ -189,7 +192,7 @@ public class TransporterTest
             _fileProcessorMock.Verify(fileProcessor => fileProcessor.MoveFile(It.IsAny<FileTestReport>()), Times.Never);
             _fileProcessorMock.Verify(fileProcessor => fileProcessor.LoadFiles(), Times.Never);
             _fileProcessorMock.VerifyNoOtherCalls();
-            _statisticsMock.Verify(statistics => statistics.Add(It.IsAny<TrackedTestReport>()), Times.Never);
+            _statisticsMock.Verify(statistics => statistics.Add(It.IsAny<ITrackedTestReport>()), Times.Never);
             _statisticsMock.VerifyNoOtherCalls();
         }
     }

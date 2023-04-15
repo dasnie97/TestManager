@@ -29,7 +29,7 @@ public class WebAdapter : IWebAdapter
         }
     }
 
-    public void HTTPUpload(TrackedTestReport testReport)
+    public void HTTPUpload(TestReport testReport)
     {
         var dto = CreateDTO(testReport);
 
@@ -47,7 +47,7 @@ public class WebAdapter : IWebAdapter
         return foundData.FirstOrDefault();
     }
 
-    private CreateTestReportDTO CreateDTO(TrackedTestReport file)
+    private CreateTestReportDTO CreateDTO(TestReport file)
     {
         return DTOConverter.ToCreateTestReportDTO(file);
     }

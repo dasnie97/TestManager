@@ -1,15 +1,16 @@
 ﻿using ProductTest.Models;
+using TestManager.Features.TrackedTestReports;
 
 namespace TestManager;
 public partial class DetailsForm : Form
 {
-    public DetailsForm(IEnumerable<TestReport> testReports)
+    public DetailsForm(IEnumerable<ITrackedTestReport> testReports)
     {
         InitializeComponent();
         ShowDetails(testReports);
     }
 
-    private void ShowDetails(IEnumerable<TestReport> testReports)
+    private void ShowDetails(IEnumerable<ITrackedTestReport> testReports)
     {
         foreach (var testReport in testReports)
         {
