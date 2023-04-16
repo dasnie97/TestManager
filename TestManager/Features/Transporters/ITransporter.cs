@@ -2,6 +2,6 @@
 
 public interface ITransporter
 {
-    public void TransportTestReports();
+    public Task TransportTestReports();
     public event EventHandler FileTransported;
 }

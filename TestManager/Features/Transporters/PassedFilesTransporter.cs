@@ -23,7 +23,7 @@ public class PassedFilesTransporter : ITransporter
         _tracker = tracker;
     }
 
-    public void TransportTestReports()
+    public Task TransportTestReports()
     {
         var _fileTestReports = _fileProcessor.LoadFiles();
 
@@ -39,6 +39,7 @@ public class PassedFilesTransporter : ITransporter
                 RemoveFile(file);
             }
         }
+        return Task.CompletedTask;
     }
 
     private void ProcessFile(FileTestReport file)

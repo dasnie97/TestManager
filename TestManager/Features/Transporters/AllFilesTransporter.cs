@@ -24,24 +24,25 @@ public class AllFilesTransporter : ITransporter
         _tracker = tracker;
     }
 
-    public void TransportTestReports()
+    public async Task TransportTestReports()
     {
         var fileTestReports = _fileProcessor.LoadFiles();
 
         foreach (var file in fileTestReports)
         {
-            ProcessFiles(file);
+            await ProcessFiles(file);
             FileTransported?.Invoke(this, EventArgs.Empty);
         }
     }
 
-    private void ProcessFiles(FileTestReport file)
+    private async Task ProcessFiles(FileTestReport file)
     {
         _webAdapter.FTPUpload(file.FilePath);
-        _webAdapter.HTTPUpload(file);
+        var httpTask = _webAdapter.HTTPUpload(file);
         _fileProcessor.CopyFile(file);
         _fileProcessor.MoveFile(file);
 
+        await httpTask;
         ITrackedTestReport trackedReport = _tracker.CreateTrackedTestReport(file);
         _statistics.Add(trackedReport);
     }

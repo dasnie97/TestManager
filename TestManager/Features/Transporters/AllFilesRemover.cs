@@ -12,7 +12,7 @@ public class AllFilesRemover : ITransporter
         _fileProcessor = fileProcessor;
     }
 
-    public void TransportTestReports()
+    public Task TransportTestReports()
     {
         var fileTestReports = _fileProcessor.LoadFiles();
 
@@ -20,5 +20,7 @@ public class AllFilesRemover : ITransporter
         {
             _fileProcessor.DeleteFile(file);
         }
+
+        return Task.CompletedTask;
     }
 }

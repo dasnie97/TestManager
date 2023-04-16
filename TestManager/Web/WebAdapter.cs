@@ -29,14 +29,16 @@ public class WebAdapter : IWebAdapter
         }
     }
 
-    public void HTTPUpload(TestReport testReport)
+    public Task HTTPUpload(TestReport testReport)
     {
         var dto = CreateDTO(testReport);
 
         if (_webConfig.SendOverHTTP)
         {
-            _httpService.HttpPost(dto);
+            Task<HttpContent> task = _httpService.HttpPost(dto);
+            return task;
         }
+        return Task.CompletedTask;
     }
 
     public TestReportDTO HTTPGet(string serialNumber)
