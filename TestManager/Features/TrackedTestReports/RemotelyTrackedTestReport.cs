@@ -8,7 +8,7 @@ public class RemotelyTrackedTestReport : ITrackedTestReport
 {
     public bool IsFirstPass { get; set; }
     public bool IsFalseCall { get; set; }
-    public ProductTest.Models.Workstation Workstation {get;}
+    public Workstation Workstation {get;}
     public string SerialNumber { get; }
     public TestStatus Status { get; }
     public DateTime TestDateTimeStarted { get; }
@@ -40,7 +40,7 @@ public class RemotelyTrackedTestReport : ITrackedTestReport
 
     private void SetFirstPassFlag()
     {
-        var remoteTestReport = _webAdapter.HTTPGet(SerialNumber);
+        var remoteTestReport = _webAdapter.HTTPGetTestReport(SerialNumber);
         IsFirstPass = remoteTestReport.IsFirstPass;
     }
     private void SetFalseCallFlag()
