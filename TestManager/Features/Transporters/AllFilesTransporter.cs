@@ -39,9 +39,10 @@ public class AllFilesTransporter : ITransporter
     {
         _webAdapter.FTPUpload(file.FilePath);
         _webAdapter.HTTPUpload(file);
-        ITrackedTestReport trackedReport = _tracker.CreateTrackedTestReport(file);
-        _statistics.Add(trackedReport);
         _fileProcessor.CopyFile(file);
         _fileProcessor.MoveFile(file);
+
+        ITrackedTestReport trackedReport = _tracker.CreateTrackedTestReport(file);
+        _statistics.Add(trackedReport);
     }
 }

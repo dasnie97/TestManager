@@ -1,6 +1,7 @@
 ﻿using ProductTest.Models;
 using TestManager.Configuration;
 using TestManager.Features.ProductionSupervision;
+using TestManager.Web;
 
 namespace TestManager.Features.TrackedTestReports;
 
@@ -8,11 +9,13 @@ public class TestReportTracker : ITestReportTracker
 {
     private readonly IWebConfig _webConfig;
     private readonly IStatistics _statistics;
+    private readonly IWebAdapter _webAdapter;
 
-    public TestReportTracker(IWebConfig webConfig, IStatistics statistics)
+    public TestReportTracker(IWebConfig webConfig, IStatistics statistics, IWebAdapter webAdapter)
     {
         _webConfig = webConfig;
         _statistics = statistics;
+        _webAdapter = webAdapter;
     }
     public TestReportTracker()
     {
@@ -23,7 +26,7 @@ public class TestReportTracker : ITestReportTracker
     {
         if (_webConfig.SendOverHTTP)
         {
-            return new RemotelyTrackedTestReport(testReport, _statistics);
+            return new RemotelyTrackedTestReport(testReport, _statistics, _webAdapter);
         }
         else
         {

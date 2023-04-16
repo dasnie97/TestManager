@@ -1,5 +1,6 @@
 ﻿using ProductTest.Models;
 using TestManager.Features.ProductionSupervision;
+using TestManager.Web;
 
 namespace TestManager.Features.TrackedTestReports;
 
@@ -7,7 +8,7 @@ public class RemotelyTrackedTestReport : ITrackedTestReport
 {
     public bool IsFirstPass { get; set; }
     public bool IsFalseCall { get; set; }
-    public Workstation Workstation {get;}
+    public ProductTest.Models.Workstation Workstation {get;}
     public string SerialNumber { get; }
     public TestStatus Status { get; }
     public DateTime TestDateTimeStarted { get; }
@@ -17,8 +18,9 @@ public class RemotelyTrackedTestReport : ITrackedTestReport
     public string Failure { get; }
 
     private readonly IStatistics _statistics;
+    private readonly IWebAdapter _webAdapter;
 
-    public RemotelyTrackedTestReport(TestReport testReport, IStatistics statistics)
+    public RemotelyTrackedTestReport(TestReport testReport, IStatistics statistics, IWebAdapter webAdapter)
     {
         Workstation = testReport.Workstation;
         SerialNumber = testReport.SerialNumber;
@@ -30,6 +32,7 @@ public class RemotelyTrackedTestReport : ITrackedTestReport
         Failure = testReport.Failure;
 
         _statistics = statistics;
+        _webAdapter = webAdapter;
         SetFirstPassFlag();
         SetFalseCallFlag();
     }
@@ -37,7 +40,8 @@ public class RemotelyTrackedTestReport : ITrackedTestReport
 
     private void SetFirstPassFlag()
     {
-        IsFirstPass = true;
+        var remoteTestReport = _webAdapter.HTTPGet(SerialNumber);
+        IsFirstPass = remoteTestReport.IsFirstPass;
     }
     private void SetFalseCallFlag()
     {
