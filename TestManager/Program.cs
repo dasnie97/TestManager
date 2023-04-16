@@ -68,7 +68,7 @@ internal static class Program
                 services.AddSingleton<IDirectoryConfig, Config>();
                 services.AddSingleton<IWebConfig, Config>();
                 services.AddSingleton<IWorkstationConfig, Config>();
-                services.AddSingleton<IWorkstation, Workstation>();
+                services.AddSingleton<IWorkstationFactory, WorkstationFactory>();
                 services.AddSingleton<IStatistics, Statistics>();
                 services.AddSingleton<IWebAdapter, WebAdapter>();
                 services.AddSingleton<IFTPService, FTPService>();

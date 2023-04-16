@@ -16,29 +16,40 @@ public class HTTPService : IHTTPService
         _config = configuration;
     }
 
-    public async Task<HttpContent> HttpPost<T>(T Product)
+    public async Task<HttpContent> HttpPostTestReport<T>(T Product)
     {
         if (!connectionEstablished)
         {
             InitializeConnection();
         }
 
-        var result = await CreateProductAsync<T>(Product).ConfigureAwait(false);
+        var result = await CreateTestReportAsync<T>(Product).ConfigureAwait(false);
         return result;
     }
 
-    public async Task<List<T>> HttpGet<T>(string serialNumber)
+    public async Task<List<T>> HttpGetTestReport<T>(string serialNumber)
     {
         if (!connectionEstablished)
         {
             InitializeConnection();
         }
 
-        var data = await GetProductAsync<T>(serialNumber).ConfigureAwait(false);
+        var data = await GetTestReportAsync<T>(serialNumber).ConfigureAwait(false);
         return data;
     }
 
-    public async Task<HttpStatusCode> HttpPut<T>(T Product)
+    public async Task<List<T>> HttpGetWorkstation<T>(string name)
+    {
+        if (!connectionEstablished)
+        {
+            InitializeConnection();
+        }
+
+        var data = await GetWorkstationAsync<T>(name).ConfigureAwait(false);
+        return data;
+    }
+
+    public async Task<HttpStatusCode> HttpPutWorkstation<T>(T Product)
     {
         if (!connectionEstablished)
         {
@@ -49,28 +60,35 @@ public class HTTPService : IHTTPService
         return response;
     }
 
-    private async Task<List<T>> GetProductAsync<T>(string serialNumber)
+    private async Task<List<T>> GetTestReportAsync<T>(string serialNumber)
     {
-        string query = BuildQuery(serialNumber);
+        string query = BuildQuery("serialNumber", serialNumber);
         HttpResponseMessage response = await _httpClient.GetAsync($"api/TestReport?{query}").ConfigureAwait(false);
         response.EnsureSuccessStatusCode();
         var data = await response.Content.ReadFromJsonAsync<List<T>>().ConfigureAwait(false);
         return data;
     }
 
-    private async Task<HttpContent> CreateProductAsync<T>(T Product)
+    private async Task<List<T>> GetWorkstationAsync<T>(string name)
+    {
+        string query = BuildQuery("name", name);
+        HttpResponseMessage response = await _httpClient.GetAsync($"api/Workstation?{query}").ConfigureAwait(false);
+        response.EnsureSuccessStatusCode();
+        var data = await response.Content.ReadFromJsonAsync<List<T>>().ConfigureAwait(false);
+        return data;
+    }
+
+    private async Task<HttpContent> CreateTestReportAsync<T>(T Product)
     {
         HttpResponseMessage response = await _httpClient.PostAsJsonAsync<T>(
             $"api/TestReport", Product).ConfigureAwait(false);
         response.EnsureSuccessStatusCode();
-
-        // return URI of the created resource.
         return response.Content;
     }
 
     private async Task<HttpStatusCode> UpdateProductAsync<T>(T Product)
     {
-        HttpResponseMessage response = await _httpClient.PutAsJsonAsync<T>($"api/{typeof(T).Name}", Product).ConfigureAwait(false);
+        HttpResponseMessage response = await _httpClient.PutAsJsonAsync<T>($"api/Workstation", Product).ConfigureAwait(false);
         response.EnsureSuccessStatusCode();
 
         return response.StatusCode;
@@ -90,10 +108,10 @@ public class HTTPService : IHTTPService
         connectionEstablished = true;
     }
 
-    private string BuildQuery(string serialNumber)
+    private string BuildQuery(string parameter, string value)
     {
         var query = HttpUtility.ParseQueryString(string.Empty);
-        query["serialNumber"] = serialNumber;
+        query[parameter] = value;
         return query.ToString();
     }
 }

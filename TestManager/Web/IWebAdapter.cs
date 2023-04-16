@@ -7,5 +7,7 @@ public interface IWebAdapter
 {
     public void FTPUpload(string filePath);
     public Task HTTPUpload(TestReport file);
-    public TestReportDTO HTTPGet(string serialNumber);
+    public TestReportDTO HTTPGetTestReport(string serialNumber);
+    public Task HTTPPutWorkstation(WorkstationDTO workstation);
+    public Task<List<WorkstationDTO>> HTTPGetWorkstation(string name);
 }

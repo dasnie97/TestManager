@@ -19,4 +19,15 @@ public static class DTOConverter
 
         return dto;
     }
+
+    public static CreateWorkstationDTO ToCreateWorkstationDTO(RemoteWorkstation source)
+    {
+        CreateWorkstationDTO dto = new CreateWorkstationDTO();
+
+        dto.Name = source.Name;
+        dto.OperatorName = source.OperatorName;
+        dto.ProcessStep = source.ProcessStep;
+
+        return dto;
+    }
 }
