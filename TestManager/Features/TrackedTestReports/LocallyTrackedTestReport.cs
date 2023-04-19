@@ -5,8 +5,6 @@ namespace TestManager.Features.TrackedTestReports;
 
 public class LocallyTrackedTestReport : ITrackedTestReport
 {
-    public bool IsFirstPass { get; set; }
-    public bool IsFalseCall { get; set; }
     public Workstation Workstation { get; }
     public string SerialNumber { get; }
     public TestStatus Status { get; }
@@ -15,6 +13,8 @@ public class LocallyTrackedTestReport : ITrackedTestReport
     public TimeSpan TestingTime { get; }
     public string FixtureSocket { get; }
     public string Failure { get; }
+    public bool IsFalseCall { get; set; }
+    public bool IsFirstPass { get; set; }
 
     private readonly IStatistics _statistics;
 
