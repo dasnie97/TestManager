@@ -8,6 +8,7 @@ using TestManager.Features.Transporters;
 using TestManager.FileManagement;
 using ProductTest.Interfaces;
 using Microsoft.Extensions.Configuration;
+using TestManager.Features.TrackedTestReports;
 
 namespace TestManager;
 
@@ -67,7 +68,7 @@ internal static class Program
                 services.AddSingleton<IDirectoryConfig, Config>();
                 services.AddSingleton<IWebConfig, Config>();
                 services.AddSingleton<IWorkstationConfig, Config>();
-                services.AddSingleton<IWorkstation, Workstation>();
+                services.AddSingleton<IWorkstationFactory, WorkstationFactory>();
                 services.AddSingleton<IStatistics, Statistics>();
                 services.AddSingleton<IWebAdapter, WebAdapter>();
                 services.AddSingleton<IFTPService, FTPService>();
@@ -75,6 +76,7 @@ internal static class Program
                 services.AddSingleton<IFileProcessor, FileProcessor>();
                 services.AddSingleton<ITransporterFactory, TransporterFactory>();
                 services.AddSingleton<IProblemDetector, ProblemDetector>();
+                services.AddSingleton<ITestReportTracker, TestReportTracker>();
                 services.AddSingleton<MainForm>();
             });
     }

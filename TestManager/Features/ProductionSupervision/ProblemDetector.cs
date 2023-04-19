@@ -1,6 +1,6 @@
-﻿using TestManager.Features.Analysis;
-using TestManager.FileManagement;
+﻿using TestManager.FileManagement;
 using ProductTest.Models;
+using TestManager.Features.TrackedTestReports;
 
 namespace TestManager.Features.ProductionSupervision;
 
@@ -20,7 +20,7 @@ public class ProblemDetector : IProblemDetector
         // If test data is not showing in MES - turn off data transfer, and PUT workstation status
     }
 
-    private TrackedTestReport CheckFor3510RuleViolation(TrackedTestReport LF)
+    private ITrackedTestReport CheckFor3510RuleViolation(ITrackedTestReport LF)
     {
         var sameSNs = _statistics.GetProcessedData().Where(logFile => logFile.SerialNumber == LF.SerialNumber);
         if (sameSNs.Any()) LF.IsFirstPass = false;

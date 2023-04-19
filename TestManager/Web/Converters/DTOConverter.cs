@@ -1,11 +1,11 @@
 ﻿using ProductTest.DTO;
-using TestManager.Features.Analysis;
+using ProductTest.Models;
 
 namespace TestManager.Web.Converters;
 
 public static class DTOConverter
 {
-    public static CreateTestReportDTO ToCreateTestReportDTO(TrackedTestReport source)
+    public static CreateTestReportDTO ToCreateTestReportDTO(TestReport source)
     {
         CreateTestReportDTO dto = new CreateTestReportDTO();
 
@@ -16,6 +16,16 @@ public static class DTOConverter
         dto.TestingTime = source.TestingTime;
         dto.FixtureSocket = source.FixtureSocket;
         dto.Failure = source.Failure;
+
+        return dto;
+    }
+
+    public static CreateWorkstationDTO ToCreateWorkstationDTO(RemoteWorkstation source)
+    {
+        CreateWorkstationDTO dto = new CreateWorkstationDTO();
+
+        dto.Name = source.Name;
+        dto.OperatorName = source.OperatorName;
         dto.ProcessStep = source.ProcessStep;
 
         return dto;

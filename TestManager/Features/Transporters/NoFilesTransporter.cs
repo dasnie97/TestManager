@@ -8,8 +8,9 @@ public class NoFilesTransporter : ITransporter
 
     }
 
-    public void TransportTestReports()
+    public Task TransportTestReports()
     {
         // No files are transported
+        return Task.CompletedTask;
     }
 }

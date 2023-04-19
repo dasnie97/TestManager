@@ -1,6 +1,7 @@
 ﻿using ProductTest.Models;
 using TestManager.Features.ProductionSupervision;
 using TestManager.Features.Analysis;
+using TestManager.Features.TrackedTestReports;
 
 namespace TestManagerTest;
 
@@ -48,8 +49,10 @@ public class StatisticsTest
         TestReport testReport3 = new TestReport("123123123", new Workstation("Test3"), new List<TestStep>
                                                               {new TestStep("Test3", DateTime.Now, TestStatus.Failed)});
 
-        _statistics.Add(new TrackedTestReport(testReport1));
-        _statistics.Add(new TrackedTestReport(testReport2));
-        _statistics.Add(new TrackedTestReport(testReport3));
+        TestReportTracker tracker = new TestReportTracker();
+
+        _statistics.Add(tracker.CreateUnTrackedTestReport(testReport1));
+        _statistics.Add(tracker.CreateUnTrackedTestReport(testReport2));
+        _statistics.Add(tracker.CreateUnTrackedTestReport(testReport3));
     }
 }

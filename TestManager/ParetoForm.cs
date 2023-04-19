@@ -2,6 +2,7 @@
 using System.Data;
 
 using System.Windows.Forms.DataVisualization.Charting;
+using TestManager.Features.TrackedTestReports;
 
 namespace TestManager;
 
@@ -9,7 +10,7 @@ public partial class ParetoForm : Form
 {
     private DataPointCollection chartPoints;
 
-    public ParetoForm(IEnumerable<TestReport> testData)
+    public ParetoForm(IEnumerable<ITrackedTestReport> testData)
     {
         InitializeComponent();
         const string dataSerie = "ParetoSerie";
@@ -19,7 +20,7 @@ public partial class ParetoForm : Form
         BuildChart(paretoData);
     }
 
-    private Dictionary<string, int> GetParetoData(IEnumerable<TestReport> testData)
+    private Dictionary<string, int> GetParetoData(IEnumerable<ITrackedTestReport> testData)
     {
         var failedTests = testData.Where(testReport => !string.IsNullOrEmpty(testReport.Failure)).ToList();
         var uniqueFailedTests = failedTests.Select(test => GetFailedStepName(test.Failure)).Distinct().ToList();

@@ -1,4 +1,4 @@
-﻿using TestManager.Features.Analysis;
+﻿using TestManager.Features.TrackedTestReports;
 
 namespace TestManager.Features.ProductionSupervision;
 
@@ -8,8 +8,8 @@ public interface IStatistics
     public int NumberOfFilesFailed { get; }
     public int NumberOfFilesProcessed { get; }
     public double Yield { get; }
-    public List<TrackedTestReport> GetProcessedData();
-    public void Add(TrackedTestReport testReport);
+    public List<ITrackedTestReport> GetProcessedData();
+    public void Add(ITrackedTestReport testReport);
     public void Reset();
 
 }

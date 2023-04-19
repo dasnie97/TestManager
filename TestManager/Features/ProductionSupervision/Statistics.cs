@@ -1,5 +1,5 @@
 ﻿using ProductTest.Models;
-using TestManager.Features.Analysis;
+using TestManager.Features.TrackedTestReports;
 
 namespace TestManager.Features.ProductionSupervision;
 
@@ -9,14 +9,14 @@ public class Statistics : IStatistics
     public int NumberOfFilesFailed { get; private set; } = 0;
     public int NumberOfFilesProcessed { get; private set; } = 0;
     public double Yield { get; private set; } = 0;
-    private List<TrackedTestReport> _processedData = new List<TrackedTestReport>();
+    private List<ITrackedTestReport> _processedData = new List<ITrackedTestReport>();
 
-    public List<TrackedTestReport> GetProcessedData()
+    public List<ITrackedTestReport> GetProcessedData()
     {
         return _processedData;
     }
 
-    public void Add(TrackedTestReport testReport)
+    public void Add(ITrackedTestReport testReport)
     {
         _processedData.Add(testReport);
         NumberOfFilesProcessed++;

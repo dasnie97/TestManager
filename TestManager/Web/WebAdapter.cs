@@ -29,26 +29,58 @@ public class WebAdapter : IWebAdapter
         }
     }
 
-    public void HTTPUpload(TrackedTestReport testReport)
+    public Task HTTPUpload(TestReport testReport)
     {
         var dto = CreateDTO(testReport);
 
         if (_webConfig.SendOverHTTP)
         {
-            _httpService.HttpPost(dto);
+            Task<HttpContent> task = _httpService.HttpPostTestReport(dto);
+            return task;
         }
+        return Task.CompletedTask;
     }
 
-    public TestReportDTO HTTPGet(string serialNumber)
+    public Task HTTPUpload(RemoteWorkstation workstation)
     {
-        var response = _httpService.HttpGet<TestReportDTO>(serialNumber);
+        var dto = CreateDTO(workstation);
+
+        if (_webConfig.SendOverHTTP)
+        {
+            Task<HttpContent> task = _httpService.HttpPostTestReport(dto);
+            return task;
+        }
+        return Task.CompletedTask;
+    }
+
+    public TestReportDTO HTTPGetTestReport(string serialNumber)
+    {
+        var response = _httpService.HttpGetTestReport<TestReportDTO>(serialNumber);
         var foundData = response.Result;
 
-        return foundData.FirstOrDefault();
+        var ordered = foundData.OrderByDescending(t=>t.RecordCreated);
+        return ordered.FirstOrDefault();
     }
 
-    private CreateTestReportDTO CreateDTO(TrackedTestReport file)
+    public Task<List<WorkstationDTO>> HTTPGetWorkstation(string name)
+    {
+        Task<List<WorkstationDTO>> task = _httpService.HttpGetWorkstation<WorkstationDTO>(name);
+        return task;
+    }
+
+    public Task HTTPPutWorkstation(WorkstationDTO workstation)
+    {
+        Task task = _httpService.HttpPutWorkstation(workstation);
+        return task;
+    }
+
+    private CreateTestReportDTO CreateDTO(TestReport file)
     {
         return DTOConverter.ToCreateTestReportDTO(file);
+    }
+
+    private CreateWorkstationDTO CreateDTO(RemoteWorkstation file)
+    {
+        return DTOConverter.ToCreateWorkstationDTO(file);
     }
 }

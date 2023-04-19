@@ -1,9 +1,8 @@
-﻿using ProductTest.Interfaces;
-using ProductTest.Models;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using TestManager.Configuration;
 using TestManager.Features.ProductionSupervision;
 using TestManager.Features.Transporters;
+using TestManager.Web;
 
 namespace TestManager;
 
@@ -24,7 +23,7 @@ public partial class MainForm : Form
                     IStatistics statistics,
                     IProblemDetector problemDetector,
                     ITransporterFactory transporterFactory,
-                    IWorkstation workstation)
+                    IWorkstationFactory workstationFactory)
     {
         InitializeComponent();
 
@@ -35,7 +34,7 @@ public partial class MainForm : Form
         _statistics = statistics;
         _problemDetector = problemDetector;
         _transporterFactory = transporterFactory;
-        _workstation = workstation;
+        _workstation = workstationFactory.CreateWorkstation();
 
         statisticsControl.Statistics = _statistics;
     }
@@ -148,6 +147,7 @@ public partial class MainForm : Form
     private void MainForm_Load(object sender, EventArgs e)
     {
         LoadConfig();
+        SyncWorkstation();
     }
 
     private async void timer3000ms_Tick(object sender, EventArgs e)
@@ -206,5 +206,11 @@ public partial class MainForm : Form
         outputToolStripMenuItem.Text = $"Output: {_directoryConfig.OutputDir}";
         copyToolStripMenuItem.Text = $"Copy: {_directoryConfig.CopyDir}";
     }
+
+    private async void SyncWorkstation()
+    {
+        await _workstation.SyncWorkstation();
+    }
+
     #endregion
 }

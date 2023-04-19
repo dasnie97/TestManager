@@ -1,11 +1,13 @@
 ﻿using ProductTest.DTO;
-using TestManager.Features.Analysis;
+using ProductTest.Models;
 
 namespace TestManager.Web;
 
 public interface IWebAdapter
 {
     public void FTPUpload(string filePath);
-    public void HTTPUpload(TrackedTestReport file);
-    public TestReportDTO HTTPGet(string serialNumber);
+    public Task HTTPUpload(TestReport file);
+    public TestReportDTO HTTPGetTestReport(string serialNumber);
+    public Task HTTPPutWorkstation(WorkstationDTO workstation);
+    public Task<List<WorkstationDTO>> HTTPGetWorkstation(string name);
 }
