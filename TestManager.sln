@@ -5,9 +5,9 @@ VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestManager", "TestManager\TestManager.csproj", "{6D74A53A-313A-4E7E-B2D7-0260F1A76121}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductTest", "..\ProductTest\ProductTest\ProductTest.csproj", "{6BFA58DF-25B2-4AAE-A30C-6624B3C950EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestEngineering", "..\TestEngineering\TestEngineering\TestEngineering.csproj", "{6BFA58DF-25B2-4AAE-A30C-6624B3C950EF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductTestTest", "..\ProductTest\ProductTestTest\ProductTestTest.csproj", "{C2DA6506-56F8-4D75-ADE0-7D7893A9BAB6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestEngineering.Tests", "..\TestEngineering\TestEngineering.Tests\TestEngineering.Tests.csproj", "{C2DA6506-56F8-4D75-ADE0-7D7893A9BAB6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestManagerTest", "TestManagerTest\TestManagerTest.csproj", "{22AC2F7A-7856-4DF0-B070-6BD9A6B29BCB}"
 EndProject

@@ -30,7 +30,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Configuration\CustomJSONConfigurationProvider\CustomJSONConfigurationProvider.csproj" />
-    <ProjectReference Include="..\..\ProductTest\ProductTest\ProductTest.csproj" />
+    <ProjectReference Include="..\..\TestEngineering\TestEngineering\TestEngineering.csproj" />
   </ItemGroup>
 
   <ItemGroup>

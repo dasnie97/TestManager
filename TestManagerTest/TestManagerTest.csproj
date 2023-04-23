@@ -23,8 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ProductTest\ProductTestTest\ProductTestTest.csproj" />
-    <ProjectReference Include="..\..\ProductTest\ProductTest\ProductTest.csproj" />
+    <ProjectReference Include="..\..\TestEngineering\TestEngineering.Tests\TestEngineering.Tests.csproj" />
+    <ProjectReference Include="..\..\TestEngineering\TestEngineering\TestEngineering.csproj" />
     <ProjectReference Include="..\TestManager\TestManager.csproj" />
   </ItemGroup>
 

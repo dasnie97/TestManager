@@ -1,4 +1,4 @@
-﻿using ProductTest.DTO;
+﻿using TestEngineering.DTO;
 using TestManager.Configuration;
 
 namespace TestManager.Web;
