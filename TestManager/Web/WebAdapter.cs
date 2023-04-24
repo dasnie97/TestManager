@@ -1,8 +1,7 @@
 ﻿using TestEngineering.DTO;
 using TestEngineering.Models;
+using TestEngineering.Web;
 using TestManager.Configuration;
-using TestManager.Features.Analysis;
-using TestManager.Web.Converters;
 
 namespace TestManager.Web;
 
@@ -13,8 +12,8 @@ public class WebAdapter : IWebAdapter
     private readonly IHTTPService _httpService;
 
     public WebAdapter(IWebConfig webConfig,
-                        IFTPService ftpService,
-                        IHTTPService httpService)
+        IFTPService ftpService,
+        IHTTPService httpService)
     {
         _webConfig = webConfig;
         _ftpService = ftpService;

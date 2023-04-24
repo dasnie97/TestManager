@@ -1,5 +1,7 @@
-﻿using Moq;
+﻿using Microsoft.Extensions.Configuration;
+using Moq;
 using TestEngineering.Models;
+using TestManager.Configuration;
 using TestManager.Features.ProductionSupervision;
 using TestManager.Features.TrackedTestReports;
 using TestManager.Features.Transporters;
@@ -150,7 +152,7 @@ public class TransporterTest
             _sut = new AllFilesTransporter(_fileProcessorMock.Object, _statisticsMock.Object, _webMock.Object, _tracker.Object);
         }
 
-        [Fact]
+        [Fact]  
         public void TransportTestReports_ShouldMoveAndCopyAllTestReports()
         {
             var testReports = CreateTestReports();
