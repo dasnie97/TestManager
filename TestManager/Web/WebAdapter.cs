@@ -30,10 +30,9 @@ public class WebAdapter : IWebAdapter
 
     public Task HTTPUpload(TestReport testReport)
     {
-        var dto = CreateDTO(testReport);
-
         if (_webConfig.SendOverHTTP)
         {
+            var dto = CreateDTO(testReport);
             Task<CreateTestReportDTO> task = _httpService.PostAsync("api/TestReport", dto);
             return task;
         }
@@ -42,31 +41,27 @@ public class WebAdapter : IWebAdapter
 
     public Task HTTPUpload(RemoteWorkstation workstation)
     {
-        var dto = CreateDTO(workstation);
-
         if (_webConfig.SendOverHTTP)
         {
+            var dto = CreateDTO(workstation);
             Task<CreateWorkstationDTO> task = _httpService.PostAsync("api/Workstation", dto);
             return task;
         }
         return Task.CompletedTask;
     }
 
-    public TestReportDTO HTTPGetTestReport(string serialNumber)
+    public Task<List<TestReportDTO>> HTTPGetTestReportsBySerialNumber(string serialNumber)
     {
         var parameters = new Dictionary<string, string>
         {
             { "serialNumber", serialNumber }
         };
 
-        var response = _httpService.GetAsync<TestReportDTO>("api/TestReport", parameters);
-        var foundData = response.Result;
-        var ordered = foundData.OrderByDescending(t=>t.RecordCreated);
-
-        return ordered.FirstOrDefault();
+        Task<List<TestReportDTO>> response = _httpService.GetAsync<TestReportDTO>("api/TestReport", parameters);
+        return response;
     }
 
-    public Task<List<WorkstationDTO>> HTTPGetWorkstations(string name)
+    public Task<List<WorkstationDTO>> HTTPGetWorkstationsByName(string name)
     {
         var parameters = new Dictionary<string, string>
         {
