@@ -1,4 +1,5 @@
-﻿using TestEngineering.Models;
+﻿using TestEngineering.DTO;
+using TestEngineering.Models;
 using TestManager.Features.ProductionSupervision;
 using TestManager.Web;
 
@@ -38,10 +39,11 @@ public class RemotelyTrackedTestReport : ITrackedTestReport
     }
 
 
-    private void SetFirstPassFlag()
+    private async Task SetFirstPassFlag()
     {
-        var remoteTestReport = _webAdapter.HTTPGetTestReport(SerialNumber);
-        IsFirstPass = remoteTestReport.IsFirstPass;
+        var response = await _webAdapter.HTTPGetTestReportsBySerialNumber(SerialNumber);
+        TestReportDTO testResult = response.OrderByDescending(t => t.RecordCreated).FirstOrDefault();
+        IsFirstPass = testResult.IsFirstPass;
     }
     private void SetFalseCallFlag()
     {

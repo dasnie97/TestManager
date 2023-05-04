@@ -1,8 +1,7 @@
 ﻿using TestEngineering.DTO;
 using TestEngineering.Models;
+using TestEngineering.Web;
 using TestManager.Configuration;
-using TestManager.Features.Analysis;
-using TestManager.Web.Converters;
 
 namespace TestManager.Web;
 
@@ -13,8 +12,8 @@ public class WebAdapter : IWebAdapter
     private readonly IHTTPService _httpService;
 
     public WebAdapter(IWebConfig webConfig,
-                        IFTPService ftpService,
-                        IHTTPService httpService)
+        IFTPService ftpService,
+        IHTTPService httpService)
     {
         _webConfig = webConfig;
         _ftpService = ftpService;
@@ -31,11 +30,10 @@ public class WebAdapter : IWebAdapter
 
     public Task HTTPUpload(TestReport testReport)
     {
-        var dto = CreateDTO(testReport);
-
         if (_webConfig.SendOverHTTP)
         {
-            Task<HttpContent> task = _httpService.HttpPostTestReport(dto);
+            var dto = CreateDTO(testReport);
+            Task<CreateTestReportDTO> task = _httpService.PostAsync("api/TestReport", dto);
             return task;
         }
         return Task.CompletedTask;
@@ -43,36 +41,43 @@ public class WebAdapter : IWebAdapter
 
     public Task HTTPUpload(RemoteWorkstation workstation)
     {
-        var dto = CreateDTO(workstation);
-
         if (_webConfig.SendOverHTTP)
         {
-            Task<HttpContent> task = _httpService.HttpPostTestReport(dto);
+            var dto = CreateDTO(workstation);
+            Task<CreateWorkstationDTO> task = _httpService.PostAsync("api/Workstation", dto);
             return task;
         }
         return Task.CompletedTask;
     }
 
-    public TestReportDTO HTTPGetTestReport(string serialNumber)
+    public Task<List<TestReportDTO>> HTTPGetTestReportsBySerialNumber(string serialNumber)
     {
-        var response = _httpService.HttpGetTestReport<TestReportDTO>(serialNumber);
-        var foundData = response.Result;
+        var parameters = new Dictionary<string, string>
+        {
+            { "serialNumber", serialNumber }
+        };
 
-        var ordered = foundData.OrderByDescending(t=>t.RecordCreated);
-        return ordered.FirstOrDefault();
+        Task<List<TestReportDTO>> response = _httpService.GetAsync<TestReportDTO>("api/TestReport", parameters);
+        return response;
     }
 
-    public Task<List<WorkstationDTO>> HTTPGetWorkstation(string name)
+    public Task<List<WorkstationDTO>> HTTPGetWorkstationsByName(string name)
     {
-        Task<List<WorkstationDTO>> task = _httpService.HttpGetWorkstation<WorkstationDTO>(name);
+        var parameters = new Dictionary<string, string>
+        {
+            { "name", name }
+        };
+
+        Task<List<WorkstationDTO>> task = _httpService.GetAsync<WorkstationDTO>("api/Workstation", parameters);
         return task;
     }
 
     public Task HTTPPutWorkstation(WorkstationDTO workstation)
     {
-        Task task = _httpService.HttpPutWorkstation(workstation);
+        Task task = _httpService.PutAsync("api/Workstation", workstation);
         return task;
     }
+
 
     private CreateTestReportDTO CreateDTO(TestReport file)
     {

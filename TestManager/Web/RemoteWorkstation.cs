@@ -25,7 +25,7 @@ public class RemoteWorkstation : IWorkstation
 
     public async Task SyncWorkstation()
     {
-        Task<List<WorkstationDTO>> task = _webAdapter.HTTPGetWorkstation(Name);
+        Task<List<WorkstationDTO>> task = _webAdapter.HTTPGetWorkstationsByName(Name);
         await task;
         WorkstationDTO remoteWorkstation = task.Result.FirstOrDefault();
         remoteWorkstation.ProcessStep = ProcessStep;
