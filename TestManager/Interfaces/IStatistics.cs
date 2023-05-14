@@ -1,6 +1,4 @@
-﻿using TestManager.Features.TrackedTestReports;
-
-namespace TestManager.Features.ProductionSupervision;
+﻿namespace TestManager.Interfaces;
 
 public interface IStatistics
 {

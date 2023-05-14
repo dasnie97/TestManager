@@ -1,4 +1,4 @@
-﻿namespace TestManager.Features.Analysis;
+﻿namespace TestManager.Models;
 
 public class ParetoData
 {

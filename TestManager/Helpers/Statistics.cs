@@ -1,7 +1,7 @@
 ﻿using TestEngineering.Models;
-using TestManager.Features.TrackedTestReports;
+using TestManager.Interfaces;
 
-namespace TestManager.Features.ProductionSupervision;
+namespace TestManager.Helpers;
 
 public class Statistics : IStatistics
 {

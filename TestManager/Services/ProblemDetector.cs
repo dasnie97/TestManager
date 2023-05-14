@@ -1,8 +1,8 @@
-﻿using TestManager.FileManagement;
-using TestEngineering.Models;
-using TestManager.Features.TrackedTestReports;
+﻿using TestEngineering.Models;
+using TestManager.Interfaces;
+using TestManager.Models;
 
-namespace TestManager.Features.ProductionSupervision;
+namespace TestManager.Services;
 
 public class ProblemDetector : IProblemDetector
 {

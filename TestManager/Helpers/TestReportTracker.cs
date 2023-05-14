@@ -1,9 +1,9 @@
 ﻿using TestEngineering.Models;
 using TestManager.Configuration;
-using TestManager.Features.ProductionSupervision;
-using TestManager.Web;
+using TestManager.Interfaces;
+using TestManager.Models;
 
-namespace TestManager.Features.TrackedTestReports;
+namespace TestManager.Helpers;
 
 public class TestReportTracker : ITestReportTracker
 {
@@ -19,7 +19,7 @@ public class TestReportTracker : ITestReportTracker
     }
     public TestReportTracker()
     {
-        
+
     }
 
     public ITrackedTestReport CreateTrackedTestReport(TestReport testReport)

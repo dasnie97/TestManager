@@ -1,4 +1,6 @@
-﻿namespace TestManager.Features.Transporters;
+﻿using TestManager.Interfaces;
+
+namespace TestManager.Services;
 
 public class NoFilesTransporter : ITransporter
 {

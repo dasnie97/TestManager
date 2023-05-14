@@ -1,7 +1,8 @@
 ﻿using TestEngineering.DTO;
 using TestManager.Configuration;
+using TestManager.Interfaces;
 
-namespace TestManager.Web;
+namespace TestManager.Models;
 
 public class RemoteWorkstation : IWorkstation
 {
@@ -29,7 +30,7 @@ public class RemoteWorkstation : IWorkstation
         await task;
         WorkstationDTO remoteWorkstation = task.Result.FirstOrDefault();
         remoteWorkstation.ProcessStep = ProcessStep;
-        
+
         var updateStatus = _webAdapter.HTTPPutWorkstation(remoteWorkstation);
     }
 }

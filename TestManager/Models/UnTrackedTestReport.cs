@@ -1,6 +1,7 @@
 ﻿using TestEngineering.Models;
+using TestManager.Interfaces;
 
-namespace TestManager.Features.TrackedTestReports;
+namespace TestManager.Models;
 
 public class UnTrackedTestReport : ITrackedTestReport
 {

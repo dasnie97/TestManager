@@ -1,9 +1,8 @@
-﻿using TestManager.Features.ProductionSupervision;
-using TestManager.Features.TrackedTestReports;
-using TestManager.FileManagement;
-using TestManager.Web;
+﻿using TestEngineering.Interfaces;
+using TestManager.Interfaces;
+using TestManager.Services;
 
-namespace TestManager.Features.Transporters;
+namespace TestManager.Helpers;
 
 public class TransporterFactory : ITransporterFactory
 {

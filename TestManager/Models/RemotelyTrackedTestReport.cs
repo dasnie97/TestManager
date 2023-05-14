@@ -1,13 +1,12 @@
 ﻿using TestEngineering.DTO;
 using TestEngineering.Models;
-using TestManager.Features.ProductionSupervision;
-using TestManager.Web;
+using TestManager.Interfaces;
 
-namespace TestManager.Features.TrackedTestReports;
+namespace TestManager.Models;
 
 public class RemotelyTrackedTestReport : ITrackedTestReport
 {
-    public Workstation Workstation {get;}
+    public Workstation Workstation { get; }
     public string SerialNumber { get; }
     public TestStatus Status { get; }
     public DateTime TestDateTimeStarted { get; }

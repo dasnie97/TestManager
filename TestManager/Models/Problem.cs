@@ -1,4 +1,4 @@
-﻿namespace TestManager.Features.ProductionSupervision;
+﻿namespace TestManager.Models;
 
 public class Problem
 {
