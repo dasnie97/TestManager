@@ -1,24 +1,24 @@
 ﻿using Moq;
-using TestManager.Web;
-using TestEngineering.Web;
 using TestManager.Configuration;
 using TestEngineering.DTO;
 using TestEngineering.Other;
+using TestEngineering.Interfaces;
+using TestManager.Services;
 
 namespace TestManagerTest;
 
 public class WebAdapterTests
 {
     private readonly WebAdapter adapter;
-    private readonly Mock<IFTPService> mockFtpService;
+    private readonly Mock<IFTP> mockFtpService;
     private readonly Mock<IWebConfig> mockWebConfig;
-    private readonly Mock<IHTTPService> mockHTTPService;
+    private readonly Mock<IHTTP> mockHTTPService;
 
     public WebAdapterTests()
     {
-        mockFtpService = new Mock<IFTPService>();
+        mockFtpService = new Mock<IFTP>();
         mockWebConfig = new Mock<IWebConfig>();
-        mockHTTPService = new Mock<IHTTPService>();
+        mockHTTPService = new Mock<IHTTP>();
         adapter = new WebAdapter(mockWebConfig.Object, mockFtpService.Object, mockHTTPService.Object);
     }
 

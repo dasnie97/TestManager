@@ -1,7 +1,6 @@
 ﻿using TestEngineering.Models;
-using TestManager.Features.ProductionSupervision;
-using TestManager.Features.Analysis;
-using TestManager.Features.TrackedTestReports;
+using TestManager.Interfaces;
+using TestManager.Helpers;
 
 namespace TestManagerTest;
 
