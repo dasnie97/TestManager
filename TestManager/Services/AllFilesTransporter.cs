@@ -1,11 +1,8 @@
-﻿using TestManager.Features.ProductionSupervision;
-using TestManager.FileManagement;
-using TestManager.Features.Analysis;
-using TestManager.Web;
-using TestEngineering.Models;
-using TestManager.Features.TrackedTestReports;
+﻿using TestEngineering.Models;
+using TestManager.Interfaces;
+using TestEngineering.Interfaces;
 
-namespace TestManager.Features.Transporters;
+namespace TestManager.Services;
 
 public class AllFilesTransporter : ITransporter
 {

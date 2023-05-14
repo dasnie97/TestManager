@@ -1,10 +1,8 @@
-﻿using TestEngineering.Models;
-using TestManager.Features.ProductionSupervision;
-using TestManager.FileManagement;
-using TestManager.Web;
-using TestManager.Features.TrackedTestReports;
+﻿using TestEngineering.Interfaces;
+using TestEngineering.Models;
+using TestManager.Interfaces;
 
-namespace TestManager.Features.Transporters;
+namespace TestManager.Services;
 
 public class PassedFilesTransporter : ITransporter
 {

@@ -1,6 +1,7 @@
-﻿using TestManager.FileManagement;
+﻿using TestEngineering.Interfaces;
+using TestManager.Interfaces;
 
-namespace TestManager.Features.Transporters;
+namespace TestManager.Services;
 
 public class AllFilesRemover : ITransporter
 {
