@@ -1,19 +1,21 @@
 ﻿using TestEngineering.DTO;
+using TestEngineering.Interfaces;
 using TestEngineering.Models;
-using TestEngineering.Web;
+using TestManager.Interfaces;
+using TestManager.Models;
 using TestManager.Configuration;
 
-namespace TestManager.Web;
+namespace TestManager.Services;
 
 public class WebAdapter : IWebAdapter
 {
     private readonly IWebConfig _webConfig;
-    private readonly IFTPService _ftpService;
-    private readonly IHTTPService _httpService;
+    private readonly IFTP _ftpService;
+    private readonly IHTTP _httpService;
 
     public WebAdapter(IWebConfig webConfig,
-        IFTPService ftpService,
-        IHTTPService httpService)
+        IFTP ftpService,
+        IHTTP httpService)
     {
         _webConfig = webConfig;
         _ftpService = ftpService;
