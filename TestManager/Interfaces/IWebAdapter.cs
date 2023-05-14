@@ -1,7 +1,7 @@
 ﻿using TestEngineering.DTO;
 using TestEngineering.Models;
 
-namespace TestManager.Web;
+namespace TestManager.Interfaces;
 
 public interface IWebAdapter
 {

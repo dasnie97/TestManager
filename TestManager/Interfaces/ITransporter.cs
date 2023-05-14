@@ -1,4 +1,4 @@
-﻿namespace TestManager.Features.Transporters;
+﻿namespace TestManager.Interfaces;
 
 public interface ITransporter
 {

@@ -1,6 +1,7 @@
 ﻿using TestManager.Configuration;
+using TestManager.Interfaces;
 
-namespace TestManager.Web;
+namespace TestManager.Models;
 
 public class LocalWorkstation : IWorkstation
 {

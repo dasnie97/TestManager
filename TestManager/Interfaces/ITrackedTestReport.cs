@@ -1,6 +1,6 @@
 ﻿using TestEngineering.Models;
 
-namespace TestManager.Features.TrackedTestReports
+namespace TestManager.Interfaces
 {
     public interface ITrackedTestReport
     {

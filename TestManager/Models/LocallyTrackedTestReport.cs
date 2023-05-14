@@ -1,7 +1,7 @@
 ﻿using TestEngineering.Models;
-using TestManager.Features.ProductionSupervision;
+using TestManager.Interfaces;
 
-namespace TestManager.Features.TrackedTestReports;
+namespace TestManager.Models;
 
 public class LocallyTrackedTestReport : ITrackedTestReport
 {

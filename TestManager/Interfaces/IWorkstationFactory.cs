@@ -1,4 +1,4 @@
-﻿namespace TestManager.Web;
+﻿namespace TestManager.Interfaces;
 
 public interface IWorkstationFactory
 {
