@@ -9,14 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="appsettings.Development.json" />
-    <None Remove="appsettings.Production.json" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Maikebing.System.Windows.Forms.DataVisualization" Version="5.0.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
     <PackageReference Include="MySql.Data" Version="8.0.32" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Serilog" Version="2.12.0" />
     <PackageReference Include="Serilog.Extensions.Hosting" Version="5.0.1" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
@@ -27,7 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Configuration\CustomJSONConfigurationProvider\CustomJSONConfigurationProvider.csproj" />
     <ProjectReference Include="..\..\TestEngineering\TestEngineering\TestEngineering.csproj" />
   </ItemGroup>
 
@@ -47,13 +42,13 @@
   </ItemGroup>
 
 	<ItemGroup>
-		<Content Include="Settings\appsettings.Production.json">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		<Content Include="appsettings.Production.json">
+		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</Content>
-		<Content Include="Settings\appsettings.Development.json">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		<Content Include="appsettings.Development.json">
+		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</Content>
-		<Content Include="Settings\appsettings.json">
+		<Content Include="appsettings.json">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 	</ItemGroup>
