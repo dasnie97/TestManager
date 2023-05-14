@@ -24,7 +24,7 @@ public class WebAdapter : IWebAdapter
 
     public void FTPUpload(string filePath)
     {
-        if (_webConfig.SendOverFTP)
+        if (_webConfig.SendToFTP)
         {
             _ftpService.Upload(filePath);
         }
@@ -32,7 +32,7 @@ public class WebAdapter : IWebAdapter
 
     public Task HTTPUpload(TestReport testReport)
     {
-        if (_webConfig.SendOverHTTP)
+        if (_webConfig.SendToWebAPI)
         {
             var dto = CreateDTO(testReport);
             Task<CreateTestReportDTO> task = _httpService.PostAsync("api/TestReport", dto);
@@ -43,7 +43,7 @@ public class WebAdapter : IWebAdapter
 
     public Task HTTPUpload(RemoteWorkstation workstation)
     {
-        if (_webConfig.SendOverHTTP)
+        if (_webConfig.SendToWebAPI)
         {
             var dto = CreateDTO(workstation);
             Task<CreateWorkstationDTO> task = _httpService.PostAsync("api/Workstation", dto);

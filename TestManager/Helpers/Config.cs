@@ -8,8 +8,8 @@ public class Config : IWorkstationConfig, IWebConfig, IDirectoryConfig
     public string TestStationName { get; set; }
     public string OperatorName { get; set; }
     public string ProcessStep { get; set; }
-    public bool SendOverFTP { get; set; }
-    public bool SendOverHTTP { get; set; }
+    public bool SendToFTP { get; set; }
+    public bool SendToWebAPI { get; set; }
     public bool VerifyMES { get; set; }
     public bool Verify3510 { get; set; }
     public string InputDir { get; set; }

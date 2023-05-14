@@ -27,7 +27,7 @@ public class WebAdapterTests
     {
         // Arrange
         string localFilePath = "testfile.txt";
-        mockWebConfig.SetupGet(m=>m.SendOverFTP).Returns(true);
+        mockWebConfig.SetupGet(m=>m.SendToFTP).Returns(true);
 
         // Act
         adapter.FTPUpload(localFilePath);
@@ -41,7 +41,7 @@ public class WebAdapterTests
     {
         // Arrange
         string localFilePath = "testfile.txt";
-        mockWebConfig.SetupGet(m => m.SendOverFTP).Returns(false);
+        mockWebConfig.SetupGet(m => m.SendToFTP).Returns(false);
 
         // Act
         adapter.FTPUpload(localFilePath);
@@ -54,7 +54,7 @@ public class WebAdapterTests
     [Fact]
     public void HTTPUpload_ShouldCallHTTPPostWhenWebConfigOptionIsSetToUseHTTP()
     {
-        mockWebConfig.SetupGet(m=>m.SendOverHTTP).Returns(true);
+        mockWebConfig.SetupGet(m=>m.SendToWebAPI).Returns(true);
         var testReport = TestReportGenerator.GenerateFakeTestReport();
 
         adapter.HTTPUpload(testReport);
@@ -65,7 +65,7 @@ public class WebAdapterTests
     [Fact]
     public void HTTPUpload_ShouldNotCallHTTPPostWhenWebConfigOptionIsSetToNotUseHTTP()
     {
-        mockWebConfig.SetupGet(m => m.SendOverHTTP).Returns(false);
+        mockWebConfig.SetupGet(m => m.SendToWebAPI).Returns(false);
         var testReport = TestReportGenerator.GenerateFakeTestReport();
 
         adapter.HTTPUpload(testReport);
@@ -77,7 +77,7 @@ public class WebAdapterTests
     public void HTTPUpload_WhenSendOverHTTPTrue_ReturnsTask()
     {
         // Arrange
-        mockWebConfig.SetupGet(m => m.SendOverHTTP).Returns(true);
+        mockWebConfig.SetupGet(m => m.SendToWebAPI).Returns(true);
         var testReport = TestReportGenerator.GenerateFakeTestReport();
         var expectedDto = new CreateTestReportDTO();
         var expectedTask = Task.FromResult(expectedDto);
@@ -95,7 +95,7 @@ public class WebAdapterTests
     public void HTTPUpload_WhenSendOverHTTPFalse_ReturnsCompletedTask()
     {
         // Arrange
-        mockWebConfig.SetupGet(m => m.SendOverHTTP).Returns(false);
+        mockWebConfig.SetupGet(m => m.SendToWebAPI).Returns(false);
         var testReport = TestReportGenerator.GenerateFakeTestReport();
 
         // Act

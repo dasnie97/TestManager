@@ -19,7 +19,7 @@ public class WorkstationFactory : IWorkstationFactory
 
     public IWorkstation CreateWorkstation()
     {
-        if (_webConfig.SendOverHTTP)
+        if (_webConfig.SendToWebAPI)
         {
             return new RemoteWorkstation(_workstationConfig, _webAdapter);
         }

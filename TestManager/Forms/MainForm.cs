@@ -8,7 +8,7 @@ public partial class MainForm : Form
 {
     private IWebConfig _webConfig;
     private IDirectoryConfig _directoryConfig;
-    private IAppSettingsWriter  _appSettingsWriter;
+    private IAppSettingsWriter _appSettingsWriter;
 
     private IStatistics _statistics;
     private IProblemDetector _problemDetector;
@@ -113,7 +113,7 @@ public partial class MainForm : Form
     private void ftpToolStripMenuItem_Click(object sender, EventArgs e)
     {
         var newValue = ftpToolStripMenuItem.Checked;
-        _appSettingsWriter.UpdateAppSetting("WebConfig", "SendOverFTP", newValue);
+        _appSettingsWriter.UpdateAppSetting("WebConfig", "SendToFTP", newValue);
         _webConfig.ReadConfig();
     }
 
@@ -134,7 +134,7 @@ public partial class MainForm : Form
     private void httpToolStripMenuItem_Click(object sender, EventArgs e)
     {
         var newValue = httpToolStripMenuItem.Checked;
-        _appSettingsWriter.UpdateAppSetting("WebConfig", "SendOverHTTP", newValue);
+        _appSettingsWriter.UpdateAppSetting("WebConfig", "SendToWebAPI", newValue);
         _webConfig.ReadConfig();
     }
 
@@ -196,8 +196,8 @@ public partial class MainForm : Form
     {
         stationNameLabel.Text = _workstation.Name;
         operatorLoginLabel.Text = _workstation.OperatorName;
-        ftpToolStripMenuItem.Checked = _webConfig.SendOverFTP;
-        httpToolStripMenuItem.Checked = _webConfig.SendOverHTTP;
+        ftpToolStripMenuItem.Checked = _webConfig.SendToFTP;
+        httpToolStripMenuItem.Checked = _webConfig.SendToWebAPI;
         mesToolStripMenuItem.Checked = _webConfig.VerifyMES;
         verify3510ToolStripMenuItem.Checked = _webConfig.Verify3510;
         inputToolStripMenuItem.Text = $"Input: {_directoryConfig.InputDir}";

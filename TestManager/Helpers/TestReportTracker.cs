@@ -24,7 +24,7 @@ public class TestReportTracker : ITestReportTracker
 
     public ITrackedTestReport CreateTrackedTestReport(TestReport testReport)
     {
-        if (_webConfig.SendOverHTTP)
+        if (_webConfig.SendToWebAPI)
         {
             return new RemotelyTrackedTestReport(testReport, _statistics, _webAdapter);
         }
