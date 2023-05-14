@@ -1,35 +1,33 @@
 ﻿using System.Diagnostics;
+using TestManager.Interfaces;
 using TestManager.Configuration;
-using TestManager.Features.ProductionSupervision;
-using TestManager.Features.Transporters;
-using TestManager.Web;
 
 namespace TestManager;
 
 public partial class MainForm : Form
 {
-    private IWritableOptions<Config> _writableConfig;
-    private IDirectoryConfig _directoryConfig;
     private IWebConfig _webConfig;
+    private IDirectoryConfig _directoryConfig;
+    private IAppSettingsWriter  _appSettingsWriter;
 
     private IStatistics _statistics;
     private IProblemDetector _problemDetector;
     private ITransporterFactory _transporterFactory;
     private IWorkstation _workstation;
 
-    public MainForm(IWritableOptions<Config> writableConfig,
-                    IDirectoryConfig directoryConfig,
-                    IWebConfig webConfig,
-                    IStatistics statistics,
-                    IProblemDetector problemDetector,
-                    ITransporterFactory transporterFactory,
-                    IWorkstationFactory workstationFactory)
+    public MainForm(IWebConfig webConfig,
+        IDirectoryConfig directoryConfig,
+        IAppSettingsWriter appSettingsWriter,
+        IStatistics statistics,
+        IProblemDetector problemDetector,
+        ITransporterFactory transporterFactory,
+        IWorkstationFactory workstationFactory)
     {
         InitializeComponent();
 
-        _writableConfig = writableConfig;
-        _directoryConfig = directoryConfig;
         _webConfig = webConfig;
+        _directoryConfig = directoryConfig;
+        _appSettingsWriter = appSettingsWriter;
 
         _statistics = statistics;
         _problemDetector = problemDetector;
@@ -115,28 +113,28 @@ public partial class MainForm : Form
     private void ftpToolStripMenuItem_Click(object sender, EventArgs e)
     {
         var newValue = ftpToolStripMenuItem.Checked;
-        _writableConfig.Update(cfg => cfg.SendOverFTP = newValue);
+        _appSettingsWriter.UpdateAppSetting("WebConfig", "SendOverFTP", newValue);
         _webConfig.ReadConfig();
     }
 
     private void mesToolStripMenuItem_Click(object sender, EventArgs e)
     {
         var newValue = mesToolStripMenuItem.Checked;
-        _writableConfig.Update(cfg => cfg.VerifyMES= newValue);
+        _appSettingsWriter.UpdateAppSetting("WebConfig", "VerifyMES", newValue);
         _webConfig.ReadConfig();
     }
 
     private void verify3510ToolStripMenuItem_Click(object sender, EventArgs e)
     {
         var newValue = verify3510ToolStripMenuItem.Checked;
-        _writableConfig.Update(cfg => cfg.Verify3510= newValue);
+        _appSettingsWriter.UpdateAppSetting("WebConfig", "Verify3510", newValue);
         _webConfig.ReadConfig();
     }
 
     private void httpToolStripMenuItem_Click(object sender, EventArgs e)
     {
         var newValue = httpToolStripMenuItem.Checked;
-        _writableConfig.Update(cfg => cfg.SendOverHTTP= newValue);
+        _appSettingsWriter.UpdateAppSetting("WebConfig", "SendOverHTTP", newValue);
         _webConfig.ReadConfig();
     }
 
