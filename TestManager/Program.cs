@@ -1,15 +1,13 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
-using TestManager.Features.ProductionSupervision;
 using TestManager.Configuration;
-using TestManager.Web;
-using TestManager.Features.Transporters;
-using TestManager.FileManagement;
 using TestEngineering.Interfaces;
 using Microsoft.Extensions.Configuration;
-using TestManager.Features.TrackedTestReports;
-using TestEngineering.Web;
+using TestEngineering.Services;
+using TestManager.Interfaces;
+using TestManager.Helpers;
+using TestManager.Services;
 
 namespace TestManager;
 
@@ -65,16 +63,16 @@ internal static class Program
             )
             .ConfigureServices((context, services) =>
             {
-                services.ConfigureWritable<Config>(context.Configuration.GetSection(nameof(Config)));
-                services.AddSingleton<IDirectoryConfig, Config>();
+                services.AddSingleton<IAppSettingsWriter, AppSettingsWriterService>();
                 services.AddSingleton<IWebConfig, Config>();
                 services.AddSingleton<IWorkstationConfig, Config>();
+                services.AddSingleton<IDirectoryConfig, Config>();
                 services.AddSingleton<IWorkstationFactory, WorkstationFactory>();
                 services.AddSingleton<IStatistics, Statistics>();
                 services.AddSingleton<IWebAdapter, WebAdapter>();
-                services.AddSingleton<IFTPService, FTPService>();
-                services.AddSingleton<IHTTPService, HTTPService>();
-                services.AddSingleton<IFileProcessor, FileProcessor>();
+                services.AddSingleton<IFTP, FTPService>();
+                services.AddSingleton<IHTTP, HTTPService>();
+                services.AddSingleton<IFileProcessor, FileProcessorService>();
                 services.AddSingleton<ITransporterFactory, TransporterFactory>();
                 services.AddSingleton<IProblemDetector, ProblemDetector>();
                 services.AddSingleton<ITestReportTracker, TestReportTracker>();

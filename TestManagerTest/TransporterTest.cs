@@ -1,12 +1,9 @@
-﻿using Microsoft.Extensions.Configuration;
-using Moq;
+﻿using Moq;
+using TestEngineering.Interfaces;
 using TestEngineering.Models;
-using TestManager.Configuration;
-using TestManager.Features.ProductionSupervision;
-using TestManager.Features.TrackedTestReports;
-using TestManager.Features.Transporters;
-using TestManager.FileManagement;
-using TestManager.Web;
+using TestManager.Helpers;
+using TestManager.Interfaces;
+using TestManager.Services;
 
 namespace TestManagerTest;
 
