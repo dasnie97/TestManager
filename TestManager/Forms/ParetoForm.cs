@@ -1,8 +1,6 @@
-﻿using TestEngineering.Models;
-using System.Data;
-
+﻿using System.Data;
 using System.Windows.Forms.DataVisualization.Charting;
-using TestManager.Features.TrackedTestReports;
+using TestManager.Interfaces;
 
 namespace TestManager;
 

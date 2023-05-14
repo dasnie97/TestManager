@@ -1,7 +1,8 @@
 ﻿using TestEngineering.Models;
-using TestManager.Features.TrackedTestReports;
+using TestManager.Interfaces;
 
 namespace TestManager;
+
 public partial class DetailsForm : Form
 {
     public DetailsForm(IEnumerable<ITrackedTestReport> testReports)
