@@ -8,34 +8,23 @@
     <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Update="DetailsForm.cs">
+    <Compile Update="Forms\DetailsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="LogInForm.cs">
+    <Compile Update="Forms\LogInForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="MainForm.cs">
+    <Compile Update="Forms\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="MalfunctionReportForm.cs">
+    <Compile Update="Forms\MalfunctionReportForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="ParetoForm.cs">
+    <Compile Update="Forms\ParetoForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="User controls\StatisticsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Update="DetailsForm.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Update="MalfunctionReportForm.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Update="ParetoForm.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
   </ItemGroup>
 </Project>
