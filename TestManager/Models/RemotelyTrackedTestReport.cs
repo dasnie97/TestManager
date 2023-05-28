@@ -1,4 +1,5 @@
 ﻿using TestEngineering.DTO;
+using TestEngineering.Exceptions;
 using TestEngineering.Models;
 using TestManager.Interfaces;
 
@@ -41,8 +42,15 @@ public class RemotelyTrackedTestReport : ITrackedTestReport
     private async Task SetFirstPassFlag()
     {
         var response = await _webAdapter.HTTPGetTestReportsBySerialNumber(SerialNumber);
-        TestReportDTO testResult = response.OrderByDescending(t => t.RecordCreated).FirstOrDefault();
-        IsFirstPass = testResult.IsFirstPass;
+        if (response.Count == 0)
+        {
+            throw new TestReportNotFoundException($"Test report '{SerialNumber}' does not exist in data base!");
+        }
+        else
+        {
+            TestReportDTO testResult = response.OrderByDescending(t => t.RecordCreated).FirstOrDefault();
+            IsFirstPass = testResult.IsFirstPass;
+        }
     }
     private void SetFalseCallFlag()
     {

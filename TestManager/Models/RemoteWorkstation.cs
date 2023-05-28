@@ -1,4 +1,5 @@
 ﻿using TestEngineering.DTO;
+using TestEngineering.Exceptions;
 using TestManager.Configuration;
 using TestManager.Interfaces;
 
@@ -28,9 +29,16 @@ public class RemoteWorkstation : IWorkstation
     {
         Task<List<WorkstationDTO>> task = _webAdapter.HTTPGetWorkstationsByName(Name);
         await task;
-        WorkstationDTO remoteWorkstation = task.Result.FirstOrDefault();
-        remoteWorkstation.ProcessStep = ProcessStep;
 
-        var updateStatus = _webAdapter.HTTPPutWorkstation(remoteWorkstation);
+        if (task.Result.Count == 0)
+        {
+            throw new WorkstationNotFoundException($"Workstation '{Name}' does not exist in data base!");
+        }
+        else
+        {
+            WorkstationDTO remoteWorkstation = task.Result.FirstOrDefault();
+            remoteWorkstation.ProcessStep = ProcessStep;
+            await _webAdapter.HTTPPutWorkstation(remoteWorkstation);
+        }
     }
 }
