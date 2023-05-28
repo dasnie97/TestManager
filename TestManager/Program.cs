@@ -34,7 +34,7 @@ internal static class Program
         }
         catch (Exception ex)
         {
-            var exceptionMessage = $"Exception occured at {ex.Source}.\n{ex.Message}";
+            var exceptionMessage = $"Exception occured {ex.StackTrace}.\n{ex.Message}";
             MessageBox.Show(exceptionMessage);
             Log.Logger.Error(ex, ex.ToString());
             Environment.Exit(Environment.ExitCode);
@@ -43,7 +43,7 @@ internal static class Program
 
     private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
     {
-        var exceptionMessage = $"Exception occured at {e.Exception.Source}.\n{e.Exception.Message}";
+        var exceptionMessage = $"Exception occured {e.Exception.StackTrace}.\n{e.Exception.Message}";
         MessageBox.Show(exceptionMessage);
         Log.Logger.Error(e.Exception, e.Exception.ToString());
         Environment.Exit(Environment.ExitCode);

@@ -43,10 +43,10 @@
 
 	<ItemGroup>
 		<Content Include="appsettings.Production.json">
-		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="appsettings.Development.json">
-		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 		<Content Include="appsettings.json">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
