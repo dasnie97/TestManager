@@ -43,7 +43,7 @@ public class PassedFilesTransporter : ITransporter
     private void ProcessFile(FileTestReport file)
     {
         _webAdapter.FTPUpload(file.FilePath);
-        _webAdapter.HTTPUpload(file);
+        _webAdapter.HTTPPost(file);
         _fileProcessor.CopyFile(file);
         _fileProcessor.MoveFile(file);
 

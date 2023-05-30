@@ -35,7 +35,7 @@ public class AllFilesTransporter : ITransporter
     private async Task ProcessFiles(FileTestReport file)
     {
         _webAdapter.FTPUpload(file.FilePath);
-        var httpTask = _webAdapter.HTTPUpload(file);
+        var httpTask = _webAdapter.HTTPPost(file);
         _fileProcessor.CopyFile(file);
         _fileProcessor.MoveFile(file);
 
