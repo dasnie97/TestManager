@@ -10,6 +10,6 @@ public interface IWebAdapter
     public Task HTTPPost(TestReport testReport);
     public Task HTTPPost(RemoteWorkstation workstation);
     public Task<List<TestReportDTO>> HTTPGetTestReportsBySerialNumber(string serialNumber);
-    public Task HTTPPutWorkstation(WorkstationDTO workstation);
+    public Task HTTPPutWorkstation(RemoteWorkstation workstation);
     public Task<List<WorkstationDTO>> HTTPGetWorkstationsByName(string name);
 }

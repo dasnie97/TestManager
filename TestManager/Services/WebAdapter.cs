@@ -78,9 +78,10 @@ public class WebAdapter : IWebAdapter
         return task;
     }
 
-    public Task HTTPPutWorkstation(WorkstationDTO workstation)
+    public Task HTTPPutWorkstation(RemoteWorkstation workstation)
     {
-        Task task = _httpService.PutAsync("api/Workstation", workstation);
+        var workstationDTO = _mapper.Map<WorkstationDTO>(workstation);
+        Task task = _httpService.PutAsync("api/Workstation", workstationDTO);
         return task;
     }
 }
