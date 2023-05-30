@@ -10,6 +10,7 @@ public class MappingProfile : Profile
     public MappingProfile()
     {
         CreateMap<RemoteWorkstation, CreateWorkstationDTO>();
+        CreateMap<RemoteWorkstation, WorkstationDTO>();
         CreateMap<TestReport, CreateTestReportDTO>().ForMember(dest => dest.Workstation, opt => opt.MapFrom(src => src.Workstation.Name));
         //CreateMap<TestReport, TestReportDTO>().ForMember(dest=>dest.Workstation, opt=>opt.MapFrom(src=>src.Workstation.Name));
         //CreateMap<CreateTestReportDTO, TestReport>().ForMember(dest => dest.Workstation, opt=>opt.MapFrom(src=>new Workstation(src.Workstation, "")));
