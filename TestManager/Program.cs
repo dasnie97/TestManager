@@ -77,6 +77,7 @@ internal static class Program
                 services.AddSingleton<IProblemDetector, ProblemDetector>();
                 services.AddSingleton<ITestReportTracker, TestReportTracker>();
                 services.AddSingleton<MainForm>();
+                services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             });
     }
 

@@ -4,6 +4,7 @@ using TestEngineering.DTO;
 using TestEngineering.Other;
 using TestEngineering.Interfaces;
 using TestManager.Services;
+using AutoMapper;
 
 namespace TestManagerTest;
 
@@ -13,13 +14,14 @@ public class WebAdapterTests
     private readonly Mock<IFTP> mockFtpService;
     private readonly Mock<IWebConfig> mockWebConfig;
     private readonly Mock<IHTTP> mockHTTPService;
+    private readonly Mock<IMapper> mockMapperService;
 
     public WebAdapterTests()
     {
         mockFtpService = new Mock<IFTP>();
         mockWebConfig = new Mock<IWebConfig>();
         mockHTTPService = new Mock<IHTTP>();
-        adapter = new WebAdapter(mockWebConfig.Object, mockFtpService.Object, mockHTTPService.Object);
+        adapter = new WebAdapter(mockWebConfig.Object, mockFtpService.Object, mockHTTPService.Object, mockMapperService.Object);
     }
 
     [Fact]
@@ -57,7 +59,7 @@ public class WebAdapterTests
         mockWebConfig.SetupGet(m=>m.SendToWebAPI).Returns(true);
         var testReport = TestReportGenerator.GenerateFakeTestReport();
 
-        adapter.HTTPUpload(testReport);
+        adapter.HTTPPost(testReport);
 
         mockHTTPService.Verify(m => m.PostAsync(It.IsAny<string>(), It.IsAny<CreateTestReportDTO>()), Times.Once);
     }
@@ -68,7 +70,7 @@ public class WebAdapterTests
         mockWebConfig.SetupGet(m => m.SendToWebAPI).Returns(false);
         var testReport = TestReportGenerator.GenerateFakeTestReport();
 
-        adapter.HTTPUpload(testReport);
+        adapter.HTTPPost(testReport);
 
         mockHTTPService.Verify(m => m.PostAsync(It.IsAny<string>(), It.IsAny<CreateTestReportDTO>()), Times.Never);
     }
@@ -85,7 +87,7 @@ public class WebAdapterTests
             .Returns(expectedTask);
 
         // Act
-        var result = adapter.HTTPUpload(testReport);
+        var result = adapter.HTTPPost(testReport);
 
         // Assert
         Assert.Same(expectedTask, result);
@@ -99,7 +101,7 @@ public class WebAdapterTests
         var testReport = TestReportGenerator.GenerateFakeTestReport();
 
         // Act
-        var result = adapter.HTTPUpload(testReport);
+        var result = adapter.HTTPPost(testReport);
 
         // Assert
         Assert.Same(Task.CompletedTask, result);

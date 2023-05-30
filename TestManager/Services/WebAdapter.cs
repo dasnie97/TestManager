@@ -4,6 +4,7 @@ using TestEngineering.Models;
 using TestManager.Interfaces;
 using TestManager.Models;
 using TestManager.Configuration;
+using AutoMapper;
 
 namespace TestManager.Services;
 
@@ -12,14 +13,17 @@ public class WebAdapter : IWebAdapter
     private readonly IWebConfig _webConfig;
     private readonly IFTP _ftpService;
     private readonly IHTTP _httpService;
+    private readonly IMapper _mapper;
 
     public WebAdapter(IWebConfig webConfig,
         IFTP ftpService,
-        IHTTP httpService)
+        IHTTP httpService,
+        IMapper mapper)
     {
         _webConfig = webConfig;
         _ftpService = ftpService;
         _httpService = httpService;
+        _mapper = mapper;
     }
 
     public void FTPUpload(string filePath)
@@ -30,22 +34,22 @@ public class WebAdapter : IWebAdapter
         }
     }
 
-    public Task HTTPUpload(TestReport testReport)
+    public Task HTTPPost(TestReport testReport)
     {
         if (_webConfig.SendToWebAPI)
         {
-            var dto = CreateDTO(testReport);
+            var dto = _mapper.Map<CreateTestReportDTO>(testReport);
             Task<CreateTestReportDTO> task = _httpService.PostAsync("api/TestReport", dto);
             return task;
         }
         return Task.CompletedTask;
     }
 
-    public Task HTTPUpload(RemoteWorkstation workstation)
+    public Task HTTPPost(RemoteWorkstation workstation)
     {
         if (_webConfig.SendToWebAPI)
         {
-            var dto = CreateDTO(workstation);
+            var dto = _mapper.Map<CreateWorkstationDTO>(workstation);
             Task<CreateWorkstationDTO> task = _httpService.PostAsync("api/Workstation", dto);
             return task;
         }
@@ -78,16 +82,5 @@ public class WebAdapter : IWebAdapter
     {
         Task task = _httpService.PutAsync("api/Workstation", workstation);
         return task;
-    }
-
-
-    private CreateTestReportDTO CreateDTO(TestReport file)
-    {
-        return DTOConverter.ToCreateTestReportDTO(file);
-    }
-
-    private CreateWorkstationDTO CreateDTO(RemoteWorkstation file)
-    {
-        return DTOConverter.ToCreateWorkstationDTO(file);
     }
 }
