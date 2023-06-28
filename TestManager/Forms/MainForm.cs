@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using TestManager.Interfaces;
 using TestManager.Configuration;
+using System.Reflection;
 
 namespace TestManager;
 
@@ -196,13 +197,18 @@ public partial class MainForm : Form
     {
         stationNameLabel.Text = _workstation.Name;
         operatorLoginLabel.Text = _workstation.OperatorName;
+
         ftpToolStripMenuItem.Checked = _webConfig.SendToFTP;
         httpToolStripMenuItem.Checked = _webConfig.SendToWebAPI;
         mesToolStripMenuItem.Checked = _webConfig.VerifyMES;
         verify3510ToolStripMenuItem.Checked = _webConfig.Verify3510;
+
         inputToolStripMenuItem.Text = $"Input: {_directoryConfig.InputDir}";
         outputToolStripMenuItem.Text = $"Output: {_directoryConfig.OutputDir}";
         copyToolStripMenuItem.Text = $"Copy: {_directoryConfig.CopyDir}";
+
+        var version = Assembly.GetExecutingAssembly().GetName().Version;
+        this.Text = $"TestManager v{version.Major}.{version.Minor}.{version.Build}";
     }
 
     private async void SyncWorkstation()
