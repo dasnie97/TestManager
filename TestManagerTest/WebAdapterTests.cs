@@ -5,6 +5,7 @@ using TestEngineering.Other;
 using TestEngineering.Interfaces;
 using TestManager.Services;
 using AutoMapper;
+using Xunit;
 
 namespace TestManagerTest;
 
