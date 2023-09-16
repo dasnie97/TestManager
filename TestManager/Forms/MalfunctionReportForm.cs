@@ -1,32 +1,46 @@
 ﻿using System.Text.RegularExpressions;
 using TestManager.Interfaces;
+using TestManager.Models;
 
 namespace TestManager;
 
-public partial class MalfunctionReportForm : Form
+public partial class DowntimeReportForm : Form
 {
     public DateTime BreakdownStarted;
     public TimeSpan BreakdownTimeSpan;
 
-    private readonly IWorkstation _workstation;
+    private IWorkstation _workstation;
+    private readonly IWebAdapter _webAdapter;
     private bool formValidationPassed;
 
-    public MalfunctionReportForm(IWorkstation workstation)
+    public DowntimeReportForm(IWorkstationFactory workstationFactory, IWebAdapter webAdapter)
     {
         InitializeComponent();
-        _workstation = workstation;
+        _workstation = workstationFactory.CreateWorkstation();
+        _webAdapter = webAdapter;
+
         BreakdownStarted = DateTime.Now;
         timer1.Start();
     }
 
-    private void sendReportButton_Click(object sender, EventArgs e)
+    private async void sendReportButton_Click(object sender, EventArgs e)
     {
         ValidateForm();
 
         if (formValidationPassed)
         {
             CalculateBreakdownTimeSpan();
-            // TODO: Send report to DB
+            DowntimeReport downtimeReport = new DowntimeReport();
+            downtimeReport.ProblemDescription = descriptionComboBox.Text + "\n" + descriptionTextbox.Text;
+            downtimeReport.ActionTaken = actionTakenComboBox.Text + "\n" + actionTextbox.Text;
+            downtimeReport.Technician = technicianNamesComboBox.Text;
+            downtimeReport.Workstation = _workstation.Name;
+            downtimeReport.Operator = _workstation.OperatorName;
+            downtimeReport.TimeStarted = BreakdownStarted;
+            downtimeReport.TimeFinished = DateTime.Now;
+            downtimeReport.TotalDowntime = new TimeSpan(BreakdownTimeSpan.Hours, BreakdownTimeSpan.Minutes, BreakdownTimeSpan.Seconds);
+
+            await _webAdapter.HTTPPost(downtimeReport);
             Close();
         }
     }
@@ -41,13 +55,13 @@ public partial class MalfunctionReportForm : Form
             return;
         }
 
-        if (string.IsNullOrEmpty(descriptionComboBox.Text))
+        if (string.IsNullOrEmpty(descriptionComboBox.Text) && string.IsNullOrEmpty(descriptionTextbox.Text))
         {
             SetValidationFailed("Wprowadź opis awarii!");
             return;
         }
 
-        if (string.IsNullOrEmpty(actionTakenComboBox.Text))
+        if (string.IsNullOrEmpty(actionTakenComboBox.Text) && string.IsNullOrEmpty(actionTextbox.Text))
         {
             SetValidationFailed("Wprowadź opis podjętych działań!");
             return;
@@ -89,7 +103,7 @@ public partial class MalfunctionReportForm : Form
         }
     }
 
-    private void MalfunctionReport_Shown(object sender, EventArgs e)
+    private void DowntimeReport_Shown(object sender, EventArgs e)
     {
         technicianNamesComboBox.Focus();
     }

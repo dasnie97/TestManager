@@ -56,6 +56,17 @@ public class WebAdapter : IWebAdapter
         return Task.CompletedTask;
     }
 
+    public Task HTTPPost(DowntimeReport downtimeReport)
+    {
+        if (_webConfig.SendToWebAPI)
+        {
+            var dto = _mapper.Map<CreateDowntimeReportDTO>(downtimeReport);
+            Task<CreateDowntimeReportDTO> task = _httpService.PostAsync("api/DowntimeReport", dto);
+            return task;
+        }
+        return Task.CompletedTask;
+    }
+
     public Task<List<TestReportDTO>> HTTPGetTestReportsBySerialNumber(string serialNumber)
     {
         var parameters = new Dictionary<string, string>
