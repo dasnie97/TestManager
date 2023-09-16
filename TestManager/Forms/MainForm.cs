@@ -2,6 +2,7 @@
 using TestManager.Interfaces;
 using TestManager.Configuration;
 using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace TestManager;
 
@@ -73,8 +74,8 @@ public partial class MainForm : Form
     {
         TurnOffTestReportTransfer();
         //TODO: PUT Workstation status
-        MalfunctionReportForm malfForm = new MalfunctionReportForm(_workstation);
-        malfForm.ShowDialog();
+        using (var downtimeForm = Program.ServiceProvider.GetRequiredService<DowntimeReportForm>())
+            downtimeForm.ShowDialog();
     }
 
     #endregion
