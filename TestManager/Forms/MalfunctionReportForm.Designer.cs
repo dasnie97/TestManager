@@ -1,6 +1,6 @@
 ﻿namespace TestManager
 {
-    partial class MalfunctionReportForm
+    partial class DowntimeReportForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,221 +28,202 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.sendReportButton = new System.Windows.Forms.Button();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.actionTextbox = new System.Windows.Forms.TextBox();
-            this.descriptionTextbox = new System.Windows.Forms.TextBox();
-            this.descriptionComboBox = new System.Windows.Forms.ComboBox();
-            this.actionTakenComboBox = new System.Windows.Forms.ComboBox();
-            this.technicianNamesComboBox = new System.Windows.Forms.ComboBox();
-            this.breakdownTimeStartedLabel = new System.Windows.Forms.Label();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.malfunctionTimeOptionalTextBox = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.panel1.SuspendLayout();
-            this.SuspendLayout();
+            components = new System.ComponentModel.Container();
+            sendReportButton = new Button();
+            label5 = new Label();
+            label3 = new Label();
+            label2 = new Label();
+            actionTextbox = new TextBox();
+            descriptionTextbox = new TextBox();
+            descriptionComboBox = new ComboBox();
+            actionTakenComboBox = new ComboBox();
+            technicianNamesComboBox = new ComboBox();
+            breakdownTimeStartedLabel = new Label();
+            timer1 = new System.Windows.Forms.Timer(components);
+            panel1 = new Panel();
+            label1 = new Label();
+            malfunctionTimeOptionalTextBox = new TextBox();
+            label4 = new Label();
+            panel1.SuspendLayout();
+            SuspendLayout();
             // 
             // sendReportButton
             // 
-            this.sendReportButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.sendReportButton.Location = new System.Drawing.Point(63, 276);
-            this.sendReportButton.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.sendReportButton.Name = "sendReportButton";
-            this.sendReportButton.Size = new System.Drawing.Size(94, 28);
-            this.sendReportButton.TabIndex = 15;
-            this.sendReportButton.Text = "Wyślij";
-            this.sendReportButton.UseVisualStyleBackColor = true;
-            this.sendReportButton.Click += new System.EventHandler(this.sendReportButton_Click);
+            sendReportButton.Font = new Font("Microsoft Sans Serif", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            sendReportButton.Location = new Point(63, 276);
+            sendReportButton.Margin = new Padding(4, 3, 4, 3);
+            sendReportButton.Name = "sendReportButton";
+            sendReportButton.Size = new Size(94, 28);
+            sendReportButton.TabIndex = 7;
+            sendReportButton.Text = "Wyślij";
+            sendReportButton.UseVisualStyleBackColor = true;
+            sendReportButton.Click += sendReportButton_Click;
             // 
             // label5
             // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label5.Location = new System.Drawing.Point(13, 9);
-            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(55, 16);
-            this.label5.TabIndex = 12;
-            this.label5.Text = "Technik";
+            label5.AutoSize = true;
+            label5.Font = new Font("Microsoft Sans Serif", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            label5.Location = new Point(15, 16);
+            label5.Margin = new Padding(4, 0, 4, 0);
+            label5.Name = "label5";
+            label5.Size = new Size(55, 16);
+            label5.TabIndex = 12;
+            label5.Text = "Technik";
+            label5.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label3.Location = new System.Drawing.Point(27, 178);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(109, 16);
-            this.label3.TabIndex = 13;
-            this.label3.Text = "Akcje naprawcze";
+            label3.AutoSize = true;
+            label3.Font = new Font("Microsoft Sans Serif", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            label3.Location = new Point(27, 178);
+            label3.Margin = new Padding(4, 0, 4, 0);
+            label3.Name = "label3";
+            label3.Size = new Size(109, 16);
+            label3.TabIndex = 13;
+            label3.Text = "Akcje naprawcze";
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label2.Location = new System.Drawing.Point(27, 79);
-            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(73, 16);
-            this.label2.TabIndex = 14;
-            this.label2.Text = "Opis awarii";
+            label2.AutoSize = true;
+            label2.Font = new Font("Microsoft Sans Serif", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            label2.Location = new Point(27, 79);
+            label2.Margin = new Padding(4, 0, 4, 0);
+            label2.Name = "label2";
+            label2.Size = new Size(73, 16);
+            label2.TabIndex = 14;
+            label2.Text = "Opis awarii";
             // 
             // actionTextbox
             // 
-            this.actionTextbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.actionTextbox.Location = new System.Drawing.Point(27, 226);
-            this.actionTextbox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.actionTextbox.Multiline = true;
-            this.actionTextbox.Name = "actionTextbox";
-            this.actionTextbox.PlaceholderText = "Dodatkowe informacje";
-            this.actionTextbox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.actionTextbox.Size = new System.Drawing.Size(166, 44);
-            this.actionTextbox.TabIndex = 10;
+            actionTextbox.Font = new Font("Microsoft Sans Serif", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            actionTextbox.Location = new Point(27, 226);
+            actionTextbox.Margin = new Padding(4, 3, 4, 3);
+            actionTextbox.Multiline = true;
+            actionTextbox.Name = "actionTextbox";
+            actionTextbox.PlaceholderText = "Dodatkowe informacje";
+            actionTextbox.ScrollBars = ScrollBars.Vertical;
+            actionTextbox.Size = new Size(166, 44);
+            actionTextbox.TabIndex = 6;
             // 
             // descriptionTextbox
             // 
-            this.descriptionTextbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.descriptionTextbox.Location = new System.Drawing.Point(27, 127);
-            this.descriptionTextbox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.descriptionTextbox.Multiline = true;
-            this.descriptionTextbox.Name = "descriptionTextbox";
-            this.descriptionTextbox.PlaceholderText = "Dodatkowe informacje";
-            this.descriptionTextbox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.descriptionTextbox.Size = new System.Drawing.Size(166, 44);
-            this.descriptionTextbox.TabIndex = 11;
+            descriptionTextbox.Font = new Font("Microsoft Sans Serif", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            descriptionTextbox.Location = new Point(27, 127);
+            descriptionTextbox.Margin = new Padding(4, 3, 4, 3);
+            descriptionTextbox.Multiline = true;
+            descriptionTextbox.Name = "descriptionTextbox";
+            descriptionTextbox.PlaceholderText = "Dodatkowe informacje";
+            descriptionTextbox.ScrollBars = ScrollBars.Vertical;
+            descriptionTextbox.Size = new Size(166, 44);
+            descriptionTextbox.TabIndex = 4;
             // 
             // descriptionComboBox
             // 
-            this.descriptionComboBox.FormattingEnabled = true;
-            this.descriptionComboBox.Items.AddRange(new object[] {
-            "Zwieszony tester",
-            "Spady na kroku",
-            "Brak logów",
-            "Brak komunikacji",
-            "Problem ze skanowaniem",
-            "Problem z drukarką",
-            "Inne"});
-            this.descriptionComboBox.Location = new System.Drawing.Point(27, 98);
-            this.descriptionComboBox.Name = "descriptionComboBox";
-            this.descriptionComboBox.Size = new System.Drawing.Size(166, 23);
-            this.descriptionComboBox.TabIndex = 17;
+            descriptionComboBox.FormattingEnabled = true;
+            descriptionComboBox.Items.AddRange(new object[] { "Zwieszony tester", "Spady na kroku", "Brak logów", "Brak komunikacji", "Problem ze skanowaniem", "Problem z drukarką", "Inne" });
+            descriptionComboBox.Location = new Point(27, 98);
+            descriptionComboBox.Name = "descriptionComboBox";
+            descriptionComboBox.Size = new Size(166, 23);
+            descriptionComboBox.TabIndex = 3;
             // 
             // actionTakenComboBox
             // 
-            this.actionTakenComboBox.FormattingEnabled = true;
-            this.actionTakenComboBox.Items.AddRange(new object[] {
-            "Restart komputera",
-            "Restart aplikacji",
-            "Restart urządzenia",
-            "Rekontakt fikstury",
-            "Czyszczenie fikstury",
-            "Wymiana szpilek",
-            "Wymiana przekaźników"});
-            this.actionTakenComboBox.Location = new System.Drawing.Point(27, 197);
-            this.actionTakenComboBox.Name = "actionTakenComboBox";
-            this.actionTakenComboBox.Size = new System.Drawing.Size(166, 23);
-            this.actionTakenComboBox.TabIndex = 18;
+            actionTakenComboBox.FormattingEnabled = true;
+            actionTakenComboBox.Items.AddRange(new object[] { "Restart komputera", "Restart aplikacji", "Restart urządzenia", "Rekontakt fikstury", "Czyszczenie fikstury", "Wymiana szpilek", "Wymiana przekaźników" });
+            actionTakenComboBox.Location = new Point(27, 197);
+            actionTakenComboBox.Name = "actionTakenComboBox";
+            actionTakenComboBox.Size = new Size(166, 23);
+            actionTakenComboBox.TabIndex = 5;
             // 
             // technicianNamesComboBox
             // 
-            this.technicianNamesComboBox.FormattingEnabled = true;
-            this.technicianNamesComboBox.Items.AddRange(new object[] {
-            "FADICH",
-            "MIKUCH",
-            "MAKOSI",
-            "JAMALI",
-            "RADABR"});
-            this.technicianNamesComboBox.Location = new System.Drawing.Point(12, 28);
-            this.technicianNamesComboBox.Name = "technicianNamesComboBox";
-            this.technicianNamesComboBox.Size = new System.Drawing.Size(73, 23);
-            this.technicianNamesComboBox.TabIndex = 18;
+            technicianNamesComboBox.FormattingEnabled = true;
+            technicianNamesComboBox.Items.AddRange(new object[] { "FADICH", "MIKUCH", "MAKOSI", "JAMALI", "RADABR" });
+            technicianNamesComboBox.Location = new Point(12, 34);
+            technicianNamesComboBox.Name = "technicianNamesComboBox";
+            technicianNamesComboBox.Size = new Size(73, 23);
+            technicianNamesComboBox.TabIndex = 0;
             // 
             // breakdownTimeStartedLabel
             // 
-            this.breakdownTimeStartedLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.breakdownTimeStartedLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.breakdownTimeStartedLabel.Location = new System.Drawing.Point(0, 0);
-            this.breakdownTimeStartedLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.breakdownTimeStartedLabel.Name = "breakdownTimeStartedLabel";
-            this.breakdownTimeStartedLabel.Size = new System.Drawing.Size(81, 22);
-            this.breakdownTimeStartedLabel.TabIndex = 1;
-            this.breakdownTimeStartedLabel.Text = "label1";
-            this.breakdownTimeStartedLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            breakdownTimeStartedLabel.Dock = DockStyle.Fill;
+            breakdownTimeStartedLabel.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point);
+            breakdownTimeStartedLabel.Location = new Point(0, 0);
+            breakdownTimeStartedLabel.Margin = new Padding(4, 0, 4, 0);
+            breakdownTimeStartedLabel.Name = "breakdownTimeStartedLabel";
+            breakdownTimeStartedLabel.Size = new Size(81, 22);
+            breakdownTimeStartedLabel.TabIndex = 1;
+            breakdownTimeStartedLabel.Text = "label1";
+            breakdownTimeStartedLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // timer1
             // 
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            timer1.Tick += timer1_Tick;
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.breakdownTimeStartedLabel);
-            this.panel1.Location = new System.Drawing.Point(134, 28);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(81, 22);
-            this.panel1.TabIndex = 19;
+            panel1.Controls.Add(breakdownTimeStartedLabel);
+            panel1.Location = new Point(134, 28);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(81, 22);
+            panel1.TabIndex = 19;
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label1.Location = new System.Drawing.Point(95, 9);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(120, 16);
-            this.label1.TabIndex = 12;
-            this.label1.Text = "Czas trwania awarii";
+            label1.AutoSize = true;
+            label1.Font = new Font("Microsoft Sans Serif", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            label1.Location = new Point(95, 9);
+            label1.Margin = new Padding(4, 0, 4, 0);
+            label1.Name = "label1";
+            label1.Size = new Size(120, 16);
+            label1.TabIndex = 12;
+            label1.Text = "Czas trwania awarii";
             // 
             // malfunctionTimeOptionalTextBox
             // 
-            this.malfunctionTimeOptionalTextBox.Location = new System.Drawing.Point(134, 51);
-            this.malfunctionTimeOptionalTextBox.Name = "malfunctionTimeOptionalTextBox";
-            this.malfunctionTimeOptionalTextBox.PlaceholderText = "[min]";
-            this.malfunctionTimeOptionalTextBox.Size = new System.Drawing.Size(81, 23);
-            this.malfunctionTimeOptionalTextBox.TabIndex = 20;
+            malfunctionTimeOptionalTextBox.Location = new Point(134, 51);
+            malfunctionTimeOptionalTextBox.Name = "malfunctionTimeOptionalTextBox";
+            malfunctionTimeOptionalTextBox.PlaceholderText = "[min]";
+            malfunctionTimeOptionalTextBox.Size = new Size(81, 23);
+            malfunctionTimeOptionalTextBox.TabIndex = 2;
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point);
-            this.label4.Location = new System.Drawing.Point(152, 77);
-            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(63, 13);
-            this.label4.TabIndex = 12;
-            this.label4.Text = "Opcjonalnie";
+            label4.AutoSize = true;
+            label4.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Italic, GraphicsUnit.Point);
+            label4.Location = new Point(152, 77);
+            label4.Margin = new Padding(4, 0, 4, 0);
+            label4.Name = "label4";
+            label4.Size = new Size(63, 13);
+            label4.TabIndex = 12;
+            label4.Text = "Opcjonalnie";
             // 
-            // MalfunctionReport
+            // DowntimeReportForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(219, 309);
-            this.Controls.Add(this.malfunctionTimeOptionalTextBox);
-            this.Controls.Add(this.panel1);
-            this.Controls.Add(this.technicianNamesComboBox);
-            this.Controls.Add(this.actionTakenComboBox);
-            this.Controls.Add(this.descriptionComboBox);
-            this.Controls.Add(this.sendReportButton);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.actionTextbox);
-            this.Controls.Add(this.descriptionTextbox);
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.Name = "MalfunctionReport";
-            this.Text = "MalfunctionReport";
-            this.Shown += new System.EventHandler(this.MalfunctionReport_Shown);
-            this.panel1.ResumeLayout(false);
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(219, 309);
+            Controls.Add(malfunctionTimeOptionalTextBox);
+            Controls.Add(panel1);
+            Controls.Add(technicianNamesComboBox);
+            Controls.Add(actionTakenComboBox);
+            Controls.Add(descriptionComboBox);
+            Controls.Add(sendReportButton);
+            Controls.Add(label4);
+            Controls.Add(label1);
+            Controls.Add(label5);
+            Controls.Add(label3);
+            Controls.Add(label2);
+            Controls.Add(actionTextbox);
+            Controls.Add(descriptionTextbox);
+            MaximizeBox = false;
+            MinimizeBox = false;
+            Name = "DowntimeReportForm";
+            Text = "Awaria";
+            Shown += DowntimeReport_Shown;
+            panel1.ResumeLayout(false);
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion

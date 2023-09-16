@@ -147,7 +147,6 @@
             // breakdownButton
             // 
             breakdownButton.BackColor = SystemColors.Control;
-            breakdownButton.Enabled = false;
             breakdownButton.Font = new Font("Microsoft Sans Serif", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
             breakdownButton.Location = new Point(125, 275);
             breakdownButton.Margin = new Padding(4, 3, 4, 3);
@@ -180,7 +179,7 @@
             // 
             iodirsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { inputToolStripMenuItem, outputToolStripMenuItem, copyToolStripMenuItem });
             iodirsToolStripMenuItem.Name = "iodirsToolStripMenuItem";
-            iodirsToolStripMenuItem.Size = new Size(180, 22);
+            iodirsToolStripMenuItem.Size = new Size(159, 22);
             iodirsToolStripMenuItem.Text = "I/O Directories";
             // 
             // inputToolStripMenuItem
@@ -209,7 +208,7 @@
             mesToolStripMenuItem.CheckOnClick = true;
             mesToolStripMenuItem.Enabled = false;
             mesToolStripMenuItem.Name = "mesToolStripMenuItem";
-            mesToolStripMenuItem.Size = new Size(180, 22);
+            mesToolStripMenuItem.Size = new Size(159, 22);
             mesToolStripMenuItem.Text = "Verify MES";
             mesToolStripMenuItem.Click += mesToolStripMenuItem_Click;
             // 
@@ -218,7 +217,7 @@
             verify3510ToolStripMenuItem.CheckOnClick = true;
             verify3510ToolStripMenuItem.Enabled = false;
             verify3510ToolStripMenuItem.Name = "verify3510ToolStripMenuItem";
-            verify3510ToolStripMenuItem.Size = new Size(180, 22);
+            verify3510ToolStripMenuItem.Size = new Size(159, 22);
             verify3510ToolStripMenuItem.Text = "Verify 3-5-10";
             verify3510ToolStripMenuItem.Click += verify3510ToolStripMenuItem_Click;
             // 
@@ -227,7 +226,7 @@
             httpToolStripMenuItem.CheckOnClick = true;
             httpToolStripMenuItem.Enabled = false;
             httpToolStripMenuItem.Name = "httpToolStripMenuItem";
-            httpToolStripMenuItem.Size = new Size(180, 22);
+            httpToolStripMenuItem.Size = new Size(159, 22);
             httpToolStripMenuItem.Text = "Send to WebAPI";
             httpToolStripMenuItem.Click += httpToolStripMenuItem_Click;
             // 
@@ -236,7 +235,7 @@
             ftpToolStripMenuItem.CheckOnClick = true;
             ftpToolStripMenuItem.Enabled = false;
             ftpToolStripMenuItem.Name = "ftpToolStripMenuItem";
-            ftpToolStripMenuItem.Size = new Size(180, 22);
+            ftpToolStripMenuItem.Size = new Size(159, 22);
             ftpToolStripMenuItem.Text = "Send to FTP";
             ftpToolStripMenuItem.Click += ftpToolStripMenuItem_Click;
             // 
