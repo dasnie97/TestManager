@@ -63,7 +63,7 @@
             // 
             label5.AutoSize = true;
             label5.Font = new Font("Microsoft Sans Serif", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
-            label5.Location = new Point(15, 16);
+            label5.Location = new Point(6, 16);
             label5.Margin = new Padding(4, 0, 4, 0);
             label5.Name = "label5";
             label5.Size = new Size(55, 16);
@@ -119,8 +119,10 @@
             // 
             // descriptionComboBox
             // 
+            descriptionComboBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            descriptionComboBox.AutoCompleteSource = AutoCompleteSource.ListItems;
             descriptionComboBox.FormattingEnabled = true;
-            descriptionComboBox.Items.AddRange(new object[] { "Zwieszony tester", "Spady na kroku", "Brak logów", "Brak komunikacji", "Problem ze skanowaniem", "Problem z drukarką", "Inne" });
+            descriptionComboBox.Items.AddRange(new object[] { "Zwieszony urządzenie", "Zawieszona aplikacja", "Spady na kroku", "Brak logów", "Brak komunikacji", "Problem ze skanowaniem", "Problem z drukarką", "Wybrany zły program", "Przejście", "Problem z inicjalizacją", "Problem z transportem", "Problem z mechaniką" });
             descriptionComboBox.Location = new Point(27, 98);
             descriptionComboBox.Name = "descriptionComboBox";
             descriptionComboBox.Size = new Size(166, 23);
@@ -128,8 +130,10 @@
             // 
             // actionTakenComboBox
             // 
+            actionTakenComboBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            actionTakenComboBox.AutoCompleteSource = AutoCompleteSource.ListItems;
             actionTakenComboBox.FormattingEnabled = true;
-            actionTakenComboBox.Items.AddRange(new object[] { "Restart komputera", "Restart aplikacji", "Restart urządzenia", "Rekontakt fikstury", "Czyszczenie fikstury", "Wymiana szpilek", "Wymiana przekaźników" });
+            actionTakenComboBox.Items.AddRange(new object[] { "Restart komputera", "Restart aplikacji", "Restart urządzenia", "Rekontakt fikstury", "Czyszczenie fikstury", "Czyszczenie szpilek", "Wymiana szpilek", "Wymiana przekaźników", "Opukanie przekaźników", "Ustawienie skanera", "Poprawa parametrów wydruku", "Wymiana tasiemki", "Czyszczenie mechaniki", "Smarowanie mechaniki" });
             actionTakenComboBox.Location = new Point(27, 197);
             actionTakenComboBox.Name = "actionTakenComboBox";
             actionTakenComboBox.Size = new Size(166, 23);
@@ -137,11 +141,13 @@
             // 
             // technicianNamesComboBox
             // 
+            technicianNamesComboBox.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            technicianNamesComboBox.AutoCompleteSource = AutoCompleteSource.ListItems;
             technicianNamesComboBox.FormattingEnabled = true;
-            technicianNamesComboBox.Items.AddRange(new object[] { "FADICH", "MIKUCH", "MAKOSI", "JAMALI", "RADABR" });
-            technicianNamesComboBox.Location = new Point(12, 34);
+            technicianNamesComboBox.Items.AddRange(new object[] { "Fabian Dichting", "Michał Kucharski", "Jakub Maliszewski", "Rafał Dąbrowski", "Kamil Jankowski", "Dymytro Slobodian", "Łukasz Maćkowiak", "Maciej Polatowski", "Krystian Teszke", "Krzysztof Żuchowiecki" });
+            technicianNamesComboBox.Location = new Point(3, 34);
             technicianNamesComboBox.Name = "technicianNamesComboBox";
-            technicianNamesComboBox.Size = new Size(73, 23);
+            technicianNamesComboBox.Size = new Size(97, 23);
             technicianNamesComboBox.TabIndex = 0;
             // 
             // breakdownTimeStartedLabel
