@@ -18,3 +18,4 @@
 /TestManager/Other/FileProcessorDeviation.cs
 *.json
 *.txt
+/TestManager/TestManager.csproj.user
