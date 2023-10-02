@@ -1,6 +1,8 @@
 ﻿using TestEngineering.Models;
 using TestManager.Interfaces;
 using TestEngineering.Interfaces;
+using System.Net.Sockets;
+using TestManager.Models;
 
 namespace TestManager.Services;
 
@@ -34,13 +36,21 @@ public class AllFilesTransporter : ITransporter
 
     private async Task ProcessFiles(FileTestReport file)
     {
-        _webAdapter.FTPUpload(file.FilePath);
-        var httpTask = _webAdapter.HTTPPost(file);
-        _fileProcessor.CopyFile(file);
-        _fileProcessor.MoveFile(file);
+        try
+        {
+            _webAdapter.FTPUpload(file.FilePath);
+            var httpTask = _webAdapter.HTTPPost(file);
+            _fileProcessor.CopyFile(file);
+            _fileProcessor.MoveFile(file);
 
-        await httpTask;
-        ITrackedTestReport trackedReport = _tracker.CreateTrackedTestReport(file);
-        _statistics.Add(trackedReport);
+            await httpTask;
+            ITrackedTestReport trackedReport = _tracker.CreateTrackedTestReport(file);
+            _statistics.Add(trackedReport);
+        }
+        catch (Exception ex) when (ex is HttpRequestException || ex is SocketException)
+        {
+            var locallyTrackedTestReport = new LocallyTrackedTestReport(file, _statistics);
+            _statistics.Add(locallyTrackedTestReport);
+        }
     }
 }
